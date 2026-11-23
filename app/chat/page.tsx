@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useBookmarks, useLog, useProfile, type LogEvent, type Msg } from "@/lib/store";
+import { useBookmarks, useLog, useMemory, useProfile, useViewed, type LogEvent, type Msg } from "@/lib/store";
+import { WORDS } from "@/lib/more";
 import { useChat } from "@/lib/chat";
 import type { Reply } from "@/lib/engine";
 import { TOPICS } from "@/lib/content";
@@ -29,7 +30,8 @@ export default function Chat() {
   const [profile, , pready] = useProfile();
   const { active, activeId, ready, addMsg, patchMsg, newChat } = useChat();
   const msgs = active?.msgs ?? [];
-  const [, setLog] = useLog(); const [marks, setMarks] = useBookmarks();
+  const [, setLog] = useLog(); const [marks, setMarks] = useBookmarks(); const [memory, setMemory] = useMemory(); const [, setViewed] = useViewed();
+  const [pick, setPick] = useState<{ text: string; x: number; y: number } | null>(null);
   const [input, setInput] = useState(""); const [busy, setBusy] = useState(false); const [typing, setTyping] = useState<string | null>(null);
   const [sel, setSel] = useState<string | null>(null); const [drawer, setDrawer] = useState(false);
   const [listening, setListening] = useState(false); const [speaking, setSpeaking] = useState<string | null>(null); const [copied, setCopied] = useState<string | null>(null);
@@ -44,10 +46,11 @@ export default function Chat() {
     const sid = addMsg({ id: uid(), role: "user", text: q }); setInput(""); setBusy(true);
     if (ta.current) ta.current.style.height = "auto";
     try {
-      const r = await fetch("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, profile, lastTopic: last }) });
+      const r = await fetch("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, profile, lastTopic: last, memory }) });
       const reply: Reply = await r.json(); const id = reply.id ?? uid();
+      setMemory(reply.memory); if (reply.topicId) setViewed(v => [reply.topicId!, ...v.filter(x => x !== reply.topicId)].slice(0, 20));
       fresh.current.add(id); setTyping(id); addMsg({ id, role: "bot", text: reply.text, reply }); setSel(id);
-      const ev: LogEvent = { id, session: sid, ts: reply.ts ?? new Date().toISOString(), age: profile.age, detail: profile.detail, format: profile.format, topic: reply.topicId, adaptations: reply.adaptations, source: reply.source,
+      const ev: LogEvent = { id, session: sid, signals: reply.signals, levelShift: reply.memory.levelShift, targetGrade: reply.plan?.targetGrade ?? null, ts: reply.ts ?? new Date().toISOString(), age: profile.age, detail: profile.detail, format: profile.format, topic: reply.topicId, adaptations: reply.adaptations, source: reply.source,
         coverage: reply.coverage ?? null, grade: reply.metrics?.grade ?? null, words: reply.metrics?.words ?? null, model: reply.model ?? "unknown", promptVersion: reply.promptVersion ?? "", safety: reply.safety, clarification: clar, feedback: null };
       setLog(l => [...l, ev]);
     } catch { addMsg({ id: uid(), role: "bot", text: "Sorry, something went wrong. Please try again." }); }
@@ -60,6 +63,9 @@ export default function Chat() {
   const copy = (m: Msg) => { navigator.clipboard?.writeText(m.text); setCopied(m.id); setTimeout(() => setCopied(null), 1200); };
   const save = (m: Msg) => setMarks(b => b.some(x => x.id === m.id) ? b.filter(x => x.id !== m.id) : [...b, { id: m.id, title: TOPICS.find(t => t.id === m.reply?.topicId)?.title ?? "Explanation", text: m.text, ts: new Date().toISOString() }]);
 
+  const onSel = () => { const sel = window.getSelection(); const t = sel?.toString().trim() ?? ""; if (!t || t.length > 40 || !sel?.anchorNode?.parentElement?.closest(".btext")) { setPick(null); return; }
+    const r = sel.getRangeAt(0).getBoundingClientRect(); setPick({ text: t, x: r.left + r.width / 2, y: r.top }); };
+  const def = pick ? WORDS.find(w => w.term.toLowerCase() === pick.text.toLowerCase().replace(/[^a-z ]/gi, "")) : null;
   if (!ready || !pready) return null;
   const rep = msgs.find(m => m.id === sel)?.reply ?? [...msgs].reverse().find(m => m.reply)?.reply;
   const lastTopic = [...msgs].reverse().find(m => m.reply?.topicId)?.reply?.topicId;
@@ -67,7 +73,7 @@ export default function Chat() {
   return (<div className="chatwrap">
     <div className="chathead"><span className="muted">Ages {profile.age} · {profile.detail} detail{!profile.updatedAt && <> · <Link href="/setup">set up profile</Link></>}</span>
       <button className="btn alt sm" onClick={() => setDrawer(d => !d)}>{drawer ? "Hide" : "Research"} panel</button></div>
-    <div className="scroll" ref={scroller}><div className="col760">
+    <div className="scroll" ref={scroller} onMouseUp={onSel}><div className="col760">
       {msgs.length === 0 && <div className="empty"><div className="bigmark">◐</div><h1>What would you like to understand?</h1>
         <p className="muted">Explanations adapted to you, with a clear record of how.</p>
         <div className="sugg">{SUGGEST.map(([t, d]) => <button key={t} onClick={() => send(t)}><b>{t}</b><span>{d}</span></button>)}</div></div>}
@@ -107,6 +113,9 @@ export default function Chat() {
       </form>
       <div className="muted" style={{ textAlign: "center", marginTop: 8, fontSize: ".75rem" }}>General education only, not advice about your own care. Draft content pending clinician review.</div>
     </div></div>
+    {pick && <div className="defpop" style={{ left: Math.max(8, Math.min(pick.x - 130, innerWidth - 270)), top: Math.max(8, pick.y - 12), transform: "translateY(-100%)" }} onMouseDown={e => e.preventDefault()}>
+      {def ? <><b>{def.term}</b><p>{def.simple}</p><div className="muted">{def.example}</div></> : <p style={{ margin: 0 }}>“{pick.text}” isn't in the word list.</p>}
+      <div className="row"><button className="btn sm" onClick={() => { send(`What does ${pick.text} mean?`); setPick(null); }}>Ask Onconnect</button><button className="btn alt sm" onClick={() => setPick(null)}>Close</button></div></div>}
     <aside className={"drawer" + (drawer ? " open" : "")}>
       <div className="drawerhead"><div><div className="eyebrow">Research panel</div><h2 style={{ margin: 0 }}>Live adaptation</h2></div><button className="ib" onClick={() => setDrawer(false)} aria-label="Close">✕</button></div>
       {!rep ? <p className="muted">Ask a question to see how the answer was adapted, measured and grounded.</p> : <>
@@ -117,7 +126,11 @@ export default function Chat() {
         <table style={{ marginTop: 14 }}><tbody>
           <tr><td className="muted">Profile</td><td>Ages {profile.age}</td></tr><tr><td className="muted">Model</td><td>{rep.model}</td></tr><tr><td className="muted">Prompt</td><td>{rep.promptVersion}</td></tr>
           <tr><td className="muted">Grounded in</td><td>{rep.source ?? "No retrieved content"}</td></tr><tr><td className="muted">Safety rule</td><td>{rep.safety ?? "None triggered"}</td></tr></tbody></table>
-        <p className="muted">Grade and coverage are automated heuristics, not clinical measures. <Link href="/method">Method</Link> · <Link href="/log">Audit log</Link></p></>}
+        <h3 style={{ marginTop: 18 }}>Chat memory</h3>
+        <table><tbody><tr><td className="muted">Level shift</td><td>{memory.levelShift}</td></tr><tr><td className="muted">Length bias</td><td>{memory.lengthBias}</td></tr><tr><td className="muted">Scaffolding</td><td>{memory.scaffold}</td></tr><tr><td className="muted">Turns learned from</td><td>{memory.turns}</td></tr></tbody></table>
+        <h3 style={{ marginTop: 18 }}>Algorithm trace</h3>
+        <ol className="trace">{rep.trace?.map(t => <li key={t.n} className={t.status}><b>{t.name}</b><span>{t.result}</span></li>)}</ol>
+        <p className="muted">Grade and coverage are automated heuristics, not clinical measures. <Link href="/report">Full report</Link> · <Link href="/method">Method</Link> · <Link href="/log">Audit log</Link></p></>}
     </aside>
   </div>);
 }

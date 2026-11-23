@@ -4,7 +4,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useChat } from "@/lib/chat";
 
-const PAGES = [["/compare", "Compare ages"], ["/log", "Audit log"], ["/method", "Method"], ["/library", "Saved"], ["/words", "Medical words"], ["/questions", "My questions"], ["/report", "Session report"], ["/setup", "My profile"]] as const;
+const GROUPS: [string, [string, string][]][] = [
+  ["Learn", [["/dashboard", "Dashboard"], ["/procedures", "Procedure explorer"], ["/anatomy", "Anatomy"], ["/words", "Medical words"]]],
+  ["Support", [["/feelings", "My feelings"], ["/questions", "My questions"], ["/family", "Family & school"]]],
+  ["Research", [["/study", "Comprehension study"], ["/research", "Research dashboard"], ["/compare", "Compare ages"], ["/log", "Audit log"], ["/clinician", "Clinician review"], ["/method", "Method"]]],
+  ["You", [["/report", "Session report"], ["/library", "Saved"], ["/setup", "My profile"], ["/privacy", "Privacy & data"]]],
+];
+const PAGES = GROUPS.flatMap(([, l]) => l);
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname(); const router = useRouter(); const { convos, activeId, select, newChat, remove } = useChat();
@@ -17,7 +23,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     addEventListener("keydown", h); return () => removeEventListener("keydown", h); }, []);
   useEffect(() => setSide(false), [path]);
   const go = (h: string) => { router.push(h); setPal(false); setQ(""); };
-  const items = [["/", "New chat"], ...PAGES].filter(([, l]) => l.toLowerCase().includes(q.toLowerCase()));
+  const items: [string, string][] = ([["/", "New chat"], ...PAGES] as [string, string][]).filter(([, l]) => l.toLowerCase().includes(q.toLowerCase()));
   const list = convos.filter(c => c.title.toLowerCase().includes(find.toLowerCase()));
   return (<div className="app">
     <aside className={"side" + (side ? " open" : "")}>
@@ -31,7 +37,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           <button onClick={() => { select(c.id); router.push("/"); }}>{c.title || "New chat"}</button>
           <button className="x" onClick={() => remove(c.id)} aria-label="Delete conversation">✕</button></div>)}
       </div>
-      <div className="sidenav">{PAGES.map(([h, l]) => <Link key={h} href={h} className={path === h ? "act" : ""}>{l}</Link>)}</div>
+      <div className="sidenav">{GROUPS.map(([g, links]) => <div key={g}><div className="grp">{g}</div>{links.map(([h, l]) => <Link key={h} href={h} className={path === h || path.startsWith(h + "/") ? "act" : ""}>{l}</Link>)}</div>)}</div>
       <div className="sidefoot"><button className="ib" onClick={() => setPal(true)}>⌘K</button>
         <button className="ib" onClick={() => setSize(s => Math.max(85, s - 10))} aria-label="Smaller text">A−</button>
         <button className="ib" onClick={() => setSize(s => Math.min(135, s + 10))} aria-label="Larger text">A+</button>

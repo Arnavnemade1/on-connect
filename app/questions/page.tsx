@@ -1,24 +1,22 @@
 "use client";
 import { useState } from "react";
 import { TOPICS } from "@/lib/content";
-import { useSaved } from "@/lib/store";
+import { useQs } from "@/lib/store";
+const CATS = ["Diagnosis", "Procedure", "Tests and imaging", "Treatment", "Recovery", "School", "Daily life", "Emotional concerns"];
 export default function Questions() {
-  const [saved, setSaved, ready] = useSaved();
-  const [topic, setTopic] = useState(TOPICS[0].id);
-  const [custom, setCustom] = useState("");
+  const [qs, setQs, ready] = useQs(); const [text, setText] = useState(""); const [cat, setCat] = useState("Procedure"); const [topic, setTopic] = useState(TOPICS[0].id); const [busy, setBusy] = useState(false); const [f, setF] = useState("All");
   if (!ready) return null;
-  const mine = saved.questions[topic] ?? [];
-  const t = TOPICS.find(x => x.id === topic)!;
-  const set = (qs: string[]) => setSaved({ ...saved, questions: { ...saved.questions, [topic]: qs } });
-  const all = Object.entries(saved.questions).flatMap(([id, qs]) => qs.map(q => `${TOPICS.find(x => x.id === id)?.title}: ${q}`));
-  return (<div className="card"><h1>My Questions</h1>
-    <p>Build a list to bring to your healthcare team.</p>
-    <div className="chips">{TOPICS.map(x => <button key={x.id} className={"chip" + (x.id === topic ? " on" : "")} onClick={() => setTopic(x.id)}>{x.title}</button>)}</div>
-    <h2 style={{ marginTop: 16 }}>Ideas for {t.title}</h2>
-    {t.questions.map(q => <p key={q}>{q} <button className="btn alt sm" disabled={mine.includes(q)} onClick={() => set([...mine, q])}>{mine.includes(q) ? "Added" : "Add"}</button></p>)}
-    <form onSubmit={e => { e.preventDefault(); if (custom.trim()) { set([...mine, custom.trim()]); setCustom(""); } }}>
-      <input type="text" value={custom} onChange={e => setCustom(e.target.value)} placeholder="Write your own question…" aria-label="Your own question" /></form>
-    <h2 style={{ marginTop: 16 }}>My list</h2>
-    {all.length ? <ul>{all.map(q => <li key={q}>{q}</li>)}</ul> : <p className="muted">Nothing yet.</p>}
-    <button className="btn alt" onClick={() => window.print()}>Print list</button></div>);
+  const t = TOPICS.find(x => x.id === topic)!; const add = (tx: string, c: string) => tx.trim() && !qs.some(q => q.text === tx) && setQs(a => [...a, { id: Math.random().toString(36).slice(2), text: tx.trim(), cat: c, answered: false }]);
+  const clarify = async () => { setBusy(true); try { const r = await fetch("/api/clarify", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text }) }); setText((await r.json()).text); } catch {} setBusy(false); };
+  const shown = qs.filter(q => f === "All" || q.cat === f);
+  return (<><div className="eyebrow">Question builder</div><h1>My questions</h1><p className="muted">Build a list to bring to your healthcare team. Onconnect helps with wording but does not answer personal medical questions.</p>
+    <div className="card"><h2>Add a question</h2><input type="text" value={text} onChange={e => setText(e.target.value)} placeholder="Write your own question…" aria-label="Your question" />
+      <div className="chips" style={{ margin: "10px 0" }}>{CATS.map(c => <button key={c} className={"chip" + (cat === c ? " on" : "")} onClick={() => setCat(c)}>{c}</button>)}</div>
+      <div className="row"><button className="btn" onClick={() => { add(text, cat); setText(""); }} disabled={!text.trim()}>Add</button><button className="btn alt" onClick={clarify} disabled={!text.trim() || busy}>{busy ? "Working…" : "✨ Clarify my wording"}</button></div>
+      <h3 style={{ marginTop: 18 }}>Suggested</h3><div className="chips">{TOPICS.map(x => <button key={x.id} className={"chip" + (topic === x.id ? " on" : "")} onClick={() => setTopic(x.id)}>{x.title}</button>)}</div>
+      {t.questions.map(q => <p key={q}>{q} <button className="btn alt sm" disabled={qs.some(x => x.text === q)} onClick={() => add(q, cat)}>{qs.some(x => x.text === q) ? "Added" : "Add"}</button></p>)}</div>
+    <div className="card" id="sheet"><h2>Appointment question sheet</h2><div className="chips" style={{ marginBottom: 10 }}>{["All", ...CATS].map(c => <button key={c} className={"chip" + (f === c ? " on" : "")} onClick={() => setF(c)}>{c}</button>)}</div>
+      {!shown.length && <p className="muted">Nothing here yet.</p>}
+      {shown.map(q => <div key={q.id} className="step" style={{ alignItems: "center" }}><input type="checkbox" checked={q.answered} onChange={() => setQs(a => a.map(x => x.id === q.id ? { ...x, answered: !x.answered } : x))} aria-label="Answered" /><span style={{ flex: 1, textDecoration: q.answered ? "line-through" : "none" }}>{q.text}<span className="tagl">{q.cat}</span></span><button className="btn alt sm" onClick={() => setQs(a => a.filter(x => x.id !== q.id))}>✕</button></div>)}
+      <div className="row"><button className="btn alt" onClick={() => window.print()}>Print sheet</button><button className="btn alt" onClick={() => navigator.clipboard?.writeText(shown.map((q, i) => `${i + 1}. ${q.text}`).join("\n"))}>Copy list</button></div></div></>);
 }
