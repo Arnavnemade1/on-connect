@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { DEFAULT_PROFILE, type Profile, type Reply } from "./engine";
 import { DEFAULT_MEMORY, type Memory } from "./memory";
 
-export interface Msg { id: string; role: "user" | "bot"; text: string; reply?: Reply; feedback?: "up" | "down" | "simpler" | "detail"; }
+export interface Msg { id: string; role: "user" | "bot"; text: string; reply?: Reply; feedback?: "up" | "down" | "simpler" | "detail"; stopped?: boolean; }
 export interface Saved { questions: Record<string, string[]>; understood: string[]; }
 
 function load<T>(key: string, fallback: T): T {
@@ -22,7 +22,7 @@ export function useLocal<T>(key: string, fallback: T): [T, (v: T | ((p: T) => T)
 }
 export const useProfile = () => useLocal<Profile>("onc.profile", DEFAULT_PROFILE);
 export const useSaved = () => useLocal<Saved>("onc.saved", { questions: {}, understood: [] });
-export interface LogEvent { id: string; session: string; signals?: string[]; levelShift?: number; targetGrade?: number | null; ts: string; age: string; detail: string; format: string[]; topic: string | null; adaptations: string[]; source: string | null; coverage: number | null; grade: number | null; words: number | null; model: string; promptVersion: string; safety: string | null; clarification: string | null; feedback: string | null; }
+export interface LogEvent { id: string; session: string; signals?: string[]; levelShift?: number; targetGrade?: number | null; ts: string; age: string; detail: string; format: string[]; topic: string | null; adaptations: string[]; source: string | null; coverage: number | null; grade: number | null; words: number | null; model: string; promptVersion: string; safety: string | null; clarification: string | null; feedback: string | null; lang?: string; mode?: string; }
 export interface Bookmark { id: string; title: string; text: string; ts: string; }
 export const useLog = () => useLocal<LogEvent[]>("onc.log", []);
 export const useBookmarks = () => useLocal<Bookmark[]>("onc.bookmarks", []);

@@ -23,13 +23,13 @@ export default function Report() {
   const terms = [...new Set(topicIds.flatMap(id => TOPICS.find(t => t.id === id)?.terms ?? []))];
   const sources = [...new Set(bots.map(m => m.reply!.source).filter(Boolean))];
   const signals = bots.flatMap(m => m.reply!.signals ?? []);
-  const shifts = bots.map(m => m.reply!.memory.levelShift);
+  const shifts = bots.map(m => (m.reply!.memory?.levelShift ?? 0));
   const w = 360, h = 70; const pts = shifts.map((v, i) => `${shifts.length === 1 ? w / 2 : (i / (shifts.length - 1)) * w},${h / 2 - (v / 2) * (h / 2 - 6)}`).join(" ");
   const fbs = bots.filter(m => m.feedback);
   const last = bots[bots.length - 1].reply!;
   return (<>
     <div className="eyebrow">Session report</div><h1>How Onconnect adapted this conversation</h1>
-    <div className="kpi"><div><b>{asked}</b><span>Questions</span></div><div><b>{adapt.length}</b><span>Adaptation types</span></div><div><b>{signals.length}</b><span>Signals detected</span></div><div><b>{last.memory.levelShift}</b><span>Final level shift</span></div></div>
+    <div className="kpi"><div><b>{asked}</b><span>Questions</span></div><div><b>{adapt.length}</b><span>Adaptation types</span></div><div><b>{signals.length}</b><span>Signals detected</span></div><div><b>{(last.memory?.levelShift ?? 0)}</b><span>Final level shift</span></div></div>
     <div className="card"><h2>Overview</h2><ul><li>{new Date().toLocaleString()}</li><li>Topics: {topicIds.map(id => TOPICS.find(t => t.id === id)?.title).join(", ") || "general questions"}</li><li>Profile: ages {profile.age}, {profile.detail} detail</li></ul>
       <h3>Personalization applied</h3><ul>{adapt.map(a => <li key={a}>{LABELS[a] ?? a}</li>)}</ul></div>
     <div className="card"><h2>Memory evolution</h2><p className="muted">How the level shift (−2 simpler to +2 more advanced) changed after each reply.</p>
@@ -38,9 +38,9 @@ export default function Report() {
     <div className="card"><h2>The algorithm, step by step</h2>
       <p className="muted" style={{ maxWidth: 680 }}>Each reply runs the same pipeline. Below is what actually ran for every reply in this conversation, with real inputs and results. Teal steps changed the response. Orange steps are rules that fired.</p>
       <div className="legend"><span>● ok</span><span style={{ color: "var(--teal)" }}>● adapted</span><span style={{ color: "#d9822b" }}>● rule fired</span><span>○ skipped</span></div>
-      {bots.map((m, i) => <details key={m.id} open={i === bots.length - 1} style={{ marginTop: 14 }}><summary>Reply {i + 1}: {m.reply!.topicId ?? "general"} <span className="muted">· {m.reply!.model}</span></summary>
-        <div className="flow">{m.reply!.trace.map((t, j) => <span key={t.n} style={{ display: "contents" }}>{j > 0 && <span className="arrow">→</span>}<span className={"node " + t.status} title={t.result}>{t.name}</span></span>)}</div>
-        <pre className="algo">{pseudo(m.reply!.trace)}</pre></details>)}</div>
+      {bots.map((m, i) => <details key={m.id} open={i === bots.length - 1} style={{ marginTop: 14 }}><summary>Reply {i + 1}{!m.reply!.trace && " (saved before traces existed)"}: {m.reply!.topicId ?? "general"} <span className="muted">· {m.reply!.model}</span></summary>
+        <div className="flow">{(m.reply!.trace ?? []).map((t, j) => <span key={t.n} style={{ display: "contents" }}>{j > 0 && <span className="arrow">→</span>}<span className={"node " + t.status} title={t.result}>{t.name}</span></span>)}</div>
+        <pre className="algo">{pseudo(m.reply!.trace ?? [])}</pre></details>)}</div>
     <div className="card"><h2>Learning summary</h2><p>Medical words introduced: {terms.join(", ") || "none"}.</p><ul>{terms.map(t => <li key={t}><b>{t}</b>: {GLOSSARY[t]}</li>)}</ul>
       <p className="muted">Reading a topic does not mean it was mastered, so understanding was not assessed.</p>
       <h3>Sources</h3><ul>{sources.map(s => <li key={s}>{s}</li>)}</ul><h3>Your feedback</h3><p>{fbs.length ? fbs.map(m => m.feedback).join(", ") : "No feedback given."}</p></div>

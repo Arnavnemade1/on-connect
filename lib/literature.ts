@@ -1,0 +1,38 @@
+// Reference list written from memory by an AI assistant. Verify every entry against the original source before citing it.
+export interface Ref { id: string; cite: string; }
+export const REFS: Ref[] = [
+  { id: "vygotsky78", cite: "Vygotsky, L. S. (1978). Mind in Society: The Development of Higher Psychological Processes. Harvard University Press." },
+  { id: "wood76", cite: "Wood, D., Bruner, J. S., & Ross, G. (1976). The role of tutoring in problem solving. Journal of Child Psychology and Psychiatry, 17(2), 89–100." },
+  { id: "sweller88", cite: "Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. Cognitive Science, 12(2), 257–285." },
+  { id: "sweller98", cite: "Sweller, J., van Merriënboer, J. J. G., & Paas, F. G. W. C. (1998). Cognitive architecture and instructional design. Educational Psychology Review, 10(3), 251–296." },
+  { id: "piaget52", cite: "Piaget, J. (1952). The Origins of Intelligence in Children. International Universities Press." },
+  { id: "flesch48", cite: "Flesch, R. (1948). A new readability yardstick. Journal of Applied Psychology, 32(3), 221–233." },
+  { id: "kincaid75", cite: "Kincaid, J. P., Fishburne, R. P., Rogers, R. L., & Chissom, B. S. (1975). Derivation of new readability formulas for Navy enlisted personnel (Research Branch Report 8-75). Naval Technical Training Command." },
+  { id: "iom04", cite: "Institute of Medicine. (2004). Health Literacy: A Prescription to End Confusion. National Academies Press." },
+  { id: "weiss05", cite: "Weiss, B. D., Mays, M. Z., Martz, W., et al. (2005). Quick assessment of literacy in primary care: The Newest Vital Sign. Annals of Family Medicine, 3(6), 514–522." },
+  { id: "dunlosky13", cite: "Dunlosky, J., Rawson, K. A., Marsh, E. J., Nathan, M. J., & Willingham, D. T. (2013). Improving students' learning with effective learning techniques. Psychological Science in the Public Interest, 14(1), 4–58." },
+  { id: "singhal23", cite: "Singhal, K., Azizi, S., Tu, T., et al. (2023). Large language models encode clinical knowledge. Nature, 620, 172–180." },
+  { id: "ji23", cite: "Ji, Z., Lee, N., Frieske, R., et al. (2023). Survey of hallucination in natural language generation. ACM Computing Surveys, 55(12), Article 248." },
+  { id: "zheng23", cite: "Zheng, L., Chiang, W.-L., Sheng, Y., et al. (2023). Judging LLM-as-a-judge with MT-Bench and Chatbot Arena. Advances in Neural Information Processing Systems 36." },
+  { id: "cohen88", cite: "Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences (2nd ed.). Lawrence Erlbaum Associates." },
+  { id: "lakens13", cite: "Lakens, D. (2013). Calculating and reporting effect sizes to facilitate cumulative science: A practical primer for t-tests and ANOVAs. Frontiers in Psychology, 4, Article 863." },
+  { id: "welch47", cite: "Welch, B. L. (1947). The generalization of “Student's” problem when several different population variances are involved. Biometrika, 34(1–2), 28–35." },
+  { id: "mann47", cite: "Mann, H. B., & Whitney, D. R. (1947). On a test of whether one of two random variables is stochastically larger than the other. Annals of Mathematical Statistics, 18(1), 50–60." },
+  { id: "holm79", cite: "Holm, S. (1979). A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 6(2), 65–70." },
+  { id: "efron79", cite: "Efron, B. (1979). Bootstrap methods: Another look at the jackknife. Annals of Statistics, 7(1), 1–26." },
+  { id: "cohen60", cite: "Cohen, J. (1960). A coefficient of agreement for nominal scales. Educational and Psychological Measurement, 20(1), 37–46." },
+  { id: "landis77", cite: "Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement for categorical data. Biometrics, 33(1), 159–174." },
+];
+export type Status = "inspired" | "measured" | "untested";
+export interface Link { part: string; what: string; theory: string; refs: string[]; status: Status; note: string; }
+export const MAP: Link[] = [
+  { part: "Age bands and reading-level targets", what: "Four age bands with target Flesch–Kincaid grades (3, 5.5, 8, 11) and word budgets.", theory: "Developmental stages shape what explanations a child can use; readability formulas give a coarse, checkable proxy for text difficulty.", refs: ["piaget52", "flesch48", "kincaid75"], status: "measured", note: "Fit to target is measured in the evaluation harness. The targets themselves are my assumption, not validated norms." },
+  { part: "Chat memory: level shift and scaffolding", what: "“Simpler” and “I don't understand” lower the level and add support; “got it” eases support and nudges the challenge back up.", theory: "Scaffolding that is withdrawn as competence grows, aimed at the zone just above what the learner can do alone.", refs: ["vygotsky78", "wood76"], status: "measured", note: "Experiment 2 tests that memory persists across turns. Whether the adjustments help real children learn is untested." },
+  { part: "Short sentences, one idea at a time, steps", what: "Length caps, numbered steps and short sentences when the reader needs more support.", theory: "Working memory is limited; reducing extraneous load frees capacity for the content.", refs: ["sweller88", "sweller98"], status: "inspired", note: "Design inspiration only. No cognitive-load measurement is made." },
+  { part: "Examples and analogies; alternate strategy after repeated confusion", what: "Concrete comparisons, and an analogy-first rewrite once a topic has confused the reader twice.", theory: "Elaboration with concrete examples is among the more useful study techniques.", refs: ["dunlosky13"], status: "inspired", note: "Not tested here. The evidence cited is about students' study techniques, not patient education." },
+  { part: "Plain-language definitions and the word lookup", what: "Glossary entries, define-on-select, vocabulary lists.", theory: "Limited health literacy is common, and unexplained jargon is a barrier to understanding care.", refs: ["iom04", "weiss05"], status: "inspired", note: "Definitions are unreviewed draft content." },
+  { part: "Grounding in approved content, with an honest fallback", what: "Answers use approved text when a topic matches; otherwise general model knowledge, labelled as such.", theory: "Language models can state fluent falsehoods, so grounding and labelling matter, and medical use needs expert review.", refs: ["ji23", "singhal23"], status: "untested", note: "Hallucination rate has not been measured. Content has not been clinician-reviewed." },
+  { part: "Output guard and individual-advice redirect", what: "Regex checks for dosing, prognosis and personal-diagnosis language, with a care-team redirect.", theory: "Education must stay separate from individual medical advice.", refs: ["singhal23"], status: "untested", note: "A pattern list will miss things. Its recall has not been measured." },
+  { part: "Automated evaluation harness", what: "Fixed question bank, three-arm ablation, scripted memory experiment.", theory: "Use of models to assess other models is common but has known biases, so outcomes here are rule-based, not model-graded.", refs: ["zheng23"], status: "measured", note: "Measures readability fit and concept coverage, not comprehension." },
+  { part: "Statistics", what: "Welch t with Cohen's d, Mann–Whitney U, bootstrap CIs, Holm correction, Cohen's kappa, power analysis.", theory: "Report effect sizes and intervals, not only p-values; check rank-based tests; correct for multiple comparisons; quantify rater agreement.", refs: ["welch47", "mann47", "efron79", "holm79", "cohen88", "lakens13", "cohen60", "landis77"], status: "measured", note: "Implemented from the published formulas and unit-tested against hand-checked cases." },
+];

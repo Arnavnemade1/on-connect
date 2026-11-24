@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Volume2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { GLOSSARY, PROFILES, TOPICS, type Level } from "@/lib/content";
 import { PROC, QUIZ } from "@/lib/more";
@@ -42,7 +43,7 @@ export default function Procedure() {
         {stages[i].b.map(x => <p key={x}>{x}</p>)}
         <div className="banner">Question to think about or ask: {t.questions[i % t.questions.length]}</div>
         <div className="row"><button className="btn alt" disabled={i === 0} onClick={() => setI(i - 1)}>Previous</button><button className="btn" onClick={() => setI(i + 1)}>Next</button>
-          <button className="btn alt" onClick={() => speak(stages[i].b.join(" "))}>🔊 Read aloud</button><Link className="btn alt" href="/procedures">Pause and exit</Link></div></>
+          <button className="btn alt" onClick={() => speak(stages[i].b.join(" "))}><Volume2 size={15} /> Read aloud</button><Link className="btn alt" href="/procedures">Pause and exit</Link></div></>
       : <><h2>Quick check (optional)</h2>{quiz.map((q, k) => <div key={q.q} style={{ margin: "14px 0" }}><b>{q.q}</b><div className="chips" style={{ marginTop: 6 }}>{q.options.map((o, x) => <button key={o} className={"chip" + (ans[k] === x ? (x === q.answer ? " on" : "") : "")} style={ans[k] === x && x !== q.answer ? { borderColor: "#d9822b" } : undefined} onClick={() => setAns({ ...ans, [k]: x })}>{o}</button>)}</div>
         {ans[k] !== undefined && <div className="muted" style={{ marginTop: 4 }}>{ans[k] === q.answer ? "Yes, that's right." : "Not quite. Try another one."}</div>}</div>)}
         <div className="row"><button className="btn alt" onClick={() => setI(stages.length - 1)}>Back</button><button className="btn" onClick={() => setMode("guide")}>Finish</button></div></>}

@@ -1,4 +1,5 @@
 "use client";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useChat } from "@/lib/chat";
@@ -26,7 +27,7 @@ export default function Dashboard() {
           <div className="bar" style={{ margin: "6px 0 12px" }}><i style={{ width: `${(finished / plan.length) * 100}%` }} /></div><p className="muted">{finished} of {plan.length} done</p>
           {plan.map((id, i) => <div key={id} className="step" style={{ alignItems: "center" }}><input type="checkbox" checked={!!done[id]} onChange={() => setDone({ ...done, [id]: !done[id] })} aria-label={`Mark ${id} done`} />
             <span style={{ flex: 1 }}><Link href={`/procedures/${id}`}>{TOPICS.find(t => t.id === id)?.title}</Link><div className="muted">Recommended because you selected it.</div></span>
-            <button className="btn alt sm" onClick={() => move(i, -1)} aria-label="Move up">↑</button><button className="btn alt sm" onClick={() => move(i, 1)} aria-label="Move down">↓</button></div>)}</>}
+            <button className="btn alt sm" onClick={() => move(i, -1)} aria-label="Move up"><ChevronUp size={14} /></button><button className="btn alt sm" onClick={() => move(i, 1)} aria-label="Move down"><ChevronDown size={14} /></button></div>)}</>}
       </div>
       <div className="card"><h2>Continue learning</h2>
         {viewed.length ? <div className="chips">{viewed.slice(0, 5).map(id => <Link key={id} href={`/procedures/${id}`} className="chip" style={{ textDecoration: "none" }}>{TOPICS.find(t => t.id === id)?.title}</Link>)}</div> : <p className="muted">Topics you ask about will show up here.</p>}
@@ -34,7 +35,7 @@ export default function Dashboard() {
         <h3 style={{ marginTop: 16 }}>Today&apos;s suggestion</h3><p>Learn about <Link href={`/procedures/${daily.id}`}>{daily.title.toLowerCase()}</Link>.</p></div></div>
     <div className="card"><h2>Recent conversations and reports</h2>
       {convos.length === 0 ? <p className="muted">No conversations yet.</p> : convos.slice(0, 4).map(c => <div key={c.id} className="step" style={{ alignItems: "center" }}><span style={{ flex: 1 }}>{c.title}<div className="muted">{new Date(c.ts).toLocaleDateString()} · {c.msgs.filter(m => m.role === "user").length} questions</div></span>
-        <button className="btn alt sm" onClick={() => { select(c.id); router.push("/report"); }}>Report</button><button className="btn alt sm" onClick={() => { select(c.id); router.push("/"); }}>Open</button></div>)}</div>
+        <button className="btn alt sm" onClick={() => { select(c.id); router.push("/report"); }}>Report</button><button className="btn alt sm" onClick={() => { select(c.id); router.push("/chat"); }}>Open</button></div>)}</div>
     <div className="card"><h2>Chat memory</h2><p className="muted">Level shift {mem.levelShift} · length bias {mem.lengthBias} · scaffolding {mem.scaffold}. <Link href="/setup">See details or reset</Link></p>
       <h2 style={{ marginTop: 16 }}>Privacy</h2><p className="muted">Your data stays in this browser. <Link href="/privacy">Export or delete it</Link></p></div></>);
 }

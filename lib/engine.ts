@@ -6,23 +6,23 @@ export interface Profile {
   age: Level;
   detail: "short" | "balanced" | "detailed";
   format: ("steps" | "examples" | "define" | "check")[];
-  topics: string[]; concerns: string[]; notes: string; updatedAt: string;
+  topics: string[]; concerns: string[]; notes: string; updatedAt: string; lang?: string;
 }
-export const DEFAULT_PROFILE: Profile = { role: "child", age: "9-11", detail: "balanced", format: ["define", "examples"], topics: [], concerns: [], notes: "", updatedAt: "" };
+export const DEFAULT_PROFILE: Profile = { role: "child", age: "9-11", detail: "balanced", format: ["define", "examples"], topics: [], concerns: [], notes: "", updatedAt: "", lang: "en" };
 
 export interface TraceStep { n: number; name: string; call: string; result: string; status: "ok" | "adapted" | "triggered" | "skipped"; }
 export interface Plan { level: Level; effDetail: 0 | 1 | 2; steps: boolean; examples: boolean; define: boolean; alt: boolean; targetGrade: number; maxWords: number; }
 export interface Reply {
   text: string; topicId: string | null; used: string[]; changed: string[]; notDone: string[]; adaptations: string[]; safety: string | null; source: string | null;
   id?: string; ts?: string; model?: string; promptVersion?: string; metrics?: import("./metrics").Metrics; coverage?: number;
-  trace: TraceStep[]; memory: Memory; signals: Signal[]; plan?: Plan;
+  trace: TraceStep[]; memory: Memory; signals: Signal[]; plan?: Plan; lang?: string; mode?: "adaptive" | "baseline" | "age"; stopped?: boolean;
 }
 
 const ADVICE = /\b(should i|do i need|do i have to|dose|dosage|how much (medicine|medication)|will i (die|survive)|am i going to (die|be ok)|stop (taking|my)|is it safe for me|prognosis|survival rate)\b/i;
 const DISTRESS = /\b(hurt myself|kill myself|want to die|don'?t want to live|suicid|self.?harm|scared of dying|i'?m (so )?scared|i can'?t do this)\b/i;
 const ORDER: Level[] = ["6-8", "9-11", "12-14", "15-17"];
-const BASE_GRADE = [3, 5.5, 8, 11];
-const WORDS = [70, 140, 260];
+export const BASE_GRADE = [3, 5.5, 8, 11];
+export const WORDS = [70, 140, 260];
 
 export function matchTopic(q: string): { topic: Topic; keyword: string } | null {
   const s = q.toLowerCase(); let best: { topic: Topic; keyword: string } | null = null;

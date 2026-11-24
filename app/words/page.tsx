@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Bookmark, BookmarkCheck, Volume2 } from "lucide-react";
 import { WORDS } from "@/lib/more";
 import { useWordsSaved } from "@/lib/store";
 export default function Words() {
@@ -15,8 +16,8 @@ export default function Words() {
     <div className="chips" style={{ marginBottom: 16 }}>{letters.map(l => <button key={l} className={"chip" + (letter === l ? " on" : "")} style={{ padding: "2px 10px" }} onClick={() => setLetter(letter === l ? "" : l)}>{l}</button>)}</div>
     {list.map(w => <div className="card" key={w.term} style={{ padding: 18 }}>
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}><h3 style={{ margin: 0, textTransform: "capitalize", flex: 1 }}>{w.term} <span className="tag">{w.cat}</span></h3>
-        <button className="btn alt sm" onClick={() => speak(w.term)} aria-label={`Pronounce ${w.term}`}>🔊</button>
-        <button className="btn alt sm" onClick={() => setSaved(s => s.includes(w.term) ? s.filter(x => x !== w.term) : [...s, w.term])}>{saved.includes(w.term) ? "★" : "☆"}</button></div>
+        <button className="btn alt sm" onClick={() => speak(w.term)} aria-label={`Pronounce ${w.term}`}><Volume2 size={15} /></button>
+        <button className="btn alt sm" onClick={() => setSaved(s => s.includes(w.term) ? s.filter(x => x !== w.term) : [...s, w.term])} aria-label="Save word">{saved.includes(w.term) ? <BookmarkCheck size={15} /> : <Bookmark size={15} />}</button></div>
       <p style={{ margin: "8px 0" }}>{w.simple}</p>
       <button className="btn alt sm" onClick={() => setOpen(open?.toLowerCase() === w.term.toLowerCase() ? null : w.term)}>{open?.toLowerCase() === w.term.toLowerCase() ? "Less" : "More"}</button>
       {open?.toLowerCase() === w.term.toLowerCase() && <div style={{ marginTop: 10 }}><p>{w.detail}</p><p className="muted">{w.example}</p><div className="chips">{w.related.map(r => <button key={r} className="chip" onClick={() => { setQ(r); setOpen(r.toLowerCase()); window.scrollTo?.({ top: 0 }); }}>{r}</button>)}</div></div>}</div>)}

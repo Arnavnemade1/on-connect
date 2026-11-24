@@ -5,6 +5,7 @@ import { useMemory, useProfile } from "@/lib/store";
 import { DEFAULT_MEMORY } from "@/lib/memory";
 import { TOPICS, PROFILES, type Level } from "@/lib/content";
 import type { Profile } from "@/lib/engine";
+import { LANGS } from "@/lib/langs";
 
 const CONCERNS = ["I don't know what will happen", "I'm confused about medical words", "I'm worried about pain or discomfort", "I'm worried about missing school", "I have questions I don't know how to ask"];
 const FORMATS: [Profile["format"][number], string][] = [["steps", "Step by step"], ["examples", "Give me examples"], ["define", "Explain medical words"], ["check", "Ask me if I understand"]];
@@ -26,6 +27,9 @@ export default function Setup() {
     {step === 0 && <><h1>Who is using Onconnect?</h1>
       <div className="chips">{([["child", "I'm the patient"], ["caregiver", "I'm a parent or caregiver"], ["together", "We're using it together"]] as const).map(([v, l]) =>
         <Chip key={v} on={p.role === v} onClick={() => setP({ ...p, role: v })}>{l}</Chip>)}</div>
+      <label>Language for answers</label>
+      <div className="chips">{LANGS.map(l => <Chip key={l.code} on={(p.lang ?? "en") === l.code} onClick={() => setP({ ...p, lang: l.code })}>{l.native}</Chip>)}</div>
+      <p className="muted">Non-English answers are written by the AI model and have not been checked by a medical translator.</p>
       <label>Age range</label>
       <div className="chips">{(Object.keys(PROFILES) as Level[]).map(a => <Chip key={a} on={p.age === a} onClick={() => setP({ ...p, age: a })}>{a}</Chip>)}</div></>}
     {step === 1 && <><h1>What would you like help understanding?</h1>
@@ -43,7 +47,7 @@ export default function Setup() {
       <div className="muted" style={{ textAlign: "right" }}>{(p.notes ?? "").length} / 4000</div>
       <p className="muted">Your notes are sent to the AI model with your questions so answers can be more relevant. They are stored only in this browser and are never treated as verified information.</p></>}
     {step === 4 && <><h1>Here is what Onconnect knows about how you want to learn</h1>
-      <ul><li>Role: {p.role}</li><li>Age range: {p.age} ({PROFILES[p.age]})</li><li>Detail: {p.detail}</li>
+      <ul><li>Role: {p.role}</li><li>Age range: {p.age} ({PROFILES[p.age]})</li><li>Language: {(LANGS.find(l => l.code === (p.lang ?? "en")) ?? LANGS[0]).native}</li><li>Detail: {p.detail}</li>
         <li>Preferences: {p.format.join(", ") || "none"}</li><li>Topics: {p.topics.map(id => TOPICS.find(t => t.id === id)?.title).join(", ") || "none selected"}</li>
         <li>Concerns: {p.concerns.join("; ") || "none shared"}</li><li>Your notes: {(p.notes ?? "").trim() ? `${(p.notes ?? "").length} characters (shared with the AI model as unverified context)` : "none"}</li></ul>
       <p className="muted">Entered by you · not verified by a healthcare professional.{saved.updatedAt && ` Last updated ${new Date(saved.updatedAt).toLocaleString()}.`}</p>
