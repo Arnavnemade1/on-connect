@@ -11,6 +11,7 @@ import { TOPICS } from "@/lib/content";
 import { LANGS, langOf } from "@/lib/langs";
 import { useSmooth } from "@/lib/useSmooth";
 import Md from "@/components/Md";
+import { shareAnswer } from "@/lib/research";
 
 const SUGGEST: [string, LucideIcon][] = [["What happens during a biopsy?", Stethoscope], ["What is an MRI?", Magnet], ["Can you explain a CT scan?", Scan], ["What does tissue mean?", BookOpen]];
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -90,7 +91,7 @@ export default function Chat() {
       addMsg({ id, role: "bot", text: reply.text, reply }); setSel(id); setLive(l => l && { ...l, text: reply.text, committed: true });
       const ev: LogEvent = { id, session: sid, signals: reply.signals, levelShift: reply.memory?.levelShift, targetGrade: reply.plan?.targetGrade ?? null, ts: reply.ts ?? new Date().toISOString(), age: profile.age, detail: profile.detail, format: profile.format, topic: reply.topicId, adaptations: reply.adaptations, source: reply.source,
         coverage: reply.coverage ?? null, grade: reply.metrics?.grade ?? null, words: reply.metrics?.words ?? null, model: reply.model ?? "unknown", promptVersion: reply.promptVersion ?? "", safety: reply.safety, clarification: regenOf ? "REGENERATE" : clar, feedback: null, lang: reply.lang, mode: reply.mode };
-      setLog(l => [...l, ev]);
+      setLog(l => [...l, ev]); void shareAnswer(ev);
     } catch (e) {
       const stopped = e instanceof DOMException && e.name === "AbortError";
       if (stopped && text.trim()) addMsg({ id, role: "bot", text, stopped: true });
@@ -160,7 +161,7 @@ export default function Chat() {
           <div className="bbody" onClick={() => m.reply && setSel(m.id)}>
             {m.id === live?.id && !live.text ? <div className="thinking"><span>{live.status}…</span></div>
               : <Bubble text={m.id === live?.id ? live.text : m.text} animate={m.id === live?.id} rtl={langOf(m.reply?.lang).rtl ?? false} onTick={toBottom} onCaughtUp={() => { if (!live?.committed) return false; finished(m as Msg); return true; }} />}
-            {m.stopped && <div className="muted" style={{ marginTop: 6, fontSize: ".8rem" }}>Stopped</div>}
+            {m.stopped && <div className="muted" style={{ marginTop: 6, fontSize: "var(--t1)" }}>Stopped</div>}
             {m.reply && m.id !== live?.id && <>
               {m.reply.source && <div className="src"><ShieldCheck size={13} />{m.reply.source}</div>}
               <details><summary>Why this explanation?</summary>
@@ -209,8 +210,8 @@ export default function Chat() {
         {tab === "memory" && <>
           <p className="muted" style={{ marginTop: 0 }}>What the app has learned from how you respond. Say “simpler”, “shorter”, “I don&apos;t understand” or “more detail” and watch these move.</p>
           {([["Level shift", memory.levelShift, 2, "Reading level up (+) or down (−) from your age band"], ["Length bias", memory.lengthBias, 2, "Longer (+) or shorter (−) answers"], ["Scaffolding", memory.scaffold, 3, "Extra support: short sentences, examples, steps"]] as const).map(([l, v, mx, d]) => (
-            <div key={l} style={{ margin: "12px 0" }}><div style={{ display: "flex", justifyContent: "space-between" }}><b style={{ fontSize: ".86rem" }}>{l}</b><span className="muted">{v}</span></div>
-              <div className="bar" style={{ position: "relative" }}><i style={{ width: `${((v + (l === "Scaffolding" ? 0 : mx)) / (l === "Scaffolding" ? mx : mx * 2)) * 100}%` }} /></div><div className="muted" style={{ fontSize: ".74rem" }}>{d}</div></div>))}
+            <div key={l} style={{ margin: "12px 0" }}><div style={{ display: "flex", justifyContent: "space-between" }}><b style={{ fontSize: "var(--t2)" }}>{l}</b><span className="muted">{v}</span></div>
+              <div className="bar" style={{ position: "relative" }}><i style={{ width: `${((v + (l === "Scaffolding" ? 0 : mx)) / (l === "Scaffolding" ? mx : mx * 2)) * 100}%` }} /></div><div className="muted" style={{ fontSize: "var(--t1)" }}>{d}</div></div>))}
           <table><tbody><tr><td className="muted">Turns learned from</td><td>{memory.turns}</td></tr><tr><td className="muted">Example preference</td><td>{memory.exampleAffinity}</td></tr><tr><td className="muted">Step preference</td><td>{memory.stepAffinity}</td></tr></tbody></table>
           <p className="muted"><Link href="/setup">View or reset memory</Link></p></>}
         {tab === "trace" && <>

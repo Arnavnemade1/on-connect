@@ -23,7 +23,7 @@ export default function Procedure() {
   return (<>
     <Link href="/procedures" className="muted">← All procedures</Link>
     <div className="eyebrow" style={{ marginTop: 10 }}>Procedure explorer</div><h1>{t.title}</h1>
-    <div className="tabs"><button className={"chip" + (mode === "guide" ? " on" : "")} onClick={() => setMode("guide")}>Guide</button><button className={"chip" + (mode === "walk" ? " on" : "")} onClick={() => { setMode("walk"); setI(0); }}>Interactive walkthrough</button>
+    <div className="tabs"><button className={mode === "guide" ? "on" : ""} onClick={() => setMode("guide")}>Guide</button><button className={mode === "walk" ? "on" : ""} onClick={() => { setMode("walk"); setI(0); }}>Interactive walkthrough</button>
       {mode === "guide" && <><span style={{ width: 16 }} />{(["simple", "standard", "detailed"] as const).map(x => <button key={x} className={"chip" + (depth === x ? " on" : "")} onClick={() => setDepth(x)}>{x}</button>)}</>}
       {mode === "walk" && <button className={"chip" + (simple ? " on" : "")} onClick={() => setSimple(s => !s)}>{simple ? "Simple mode" : "Standard mode"}</button>}</div>
     {mode === "guide" ? <>

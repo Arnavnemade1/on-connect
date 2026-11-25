@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Msg } from "./store";
 import { migrateConvos, migrateStorage } from "./migrate";
+import { REMOTE, notifyWrite } from "./syncbus";
 
 export interface Convo { id: string; title: string; ts: string; msgs: Msg[]; }
 interface Ctx { convos: Convo[]; active?: Convo; activeId: string | null; ready: boolean;
@@ -20,7 +21,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     try { migrateStorage(); setConvos(migrateConvos(JSON.parse(localStorage.getItem("onc.convos") || "[]")) as Convo[]); const a = localStorage.getItem("onc.active"); ref.current = a; setActive(a); } catch {}
     setReady(true);
   }, []);
-  useEffect(() => { if (!ready) return; try { localStorage.setItem("onc.convos", JSON.stringify(convos)); localStorage.setItem("onc.active", activeId ?? ""); } catch {} }, [convos, activeId, ready]);
+  useEffect(() => { if (!ready) return; try { localStorage.setItem("onc.convos", JSON.stringify(convos)); localStorage.setItem("onc.active", activeId ?? ""); notifyWrite("onc.convos"); } catch {} }, [convos, activeId, ready]);
+  useEffect(() => { const h = (e: Event) => { if ((e as CustomEvent).detail?.key === "onc.convos") try { setConvos(migrateConvos(JSON.parse(localStorage.getItem("onc.convos") || "[]")) as Convo[]); } catch {} }; addEventListener(REMOTE, h); return () => removeEventListener(REMOTE, h); }, []);
   const select = useCallback((id: string) => { ref.current = id; setActive(id); }, []);
   const newChat = useCallback(() => { ref.current = null; setActive(null); }, []);
   const remove = useCallback((id: string) => { setConvos(c => c.filter(x => x.id !== id)); if (ref.current === id) { ref.current = null; setActive(null); } }, []);

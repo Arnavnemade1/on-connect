@@ -15,13 +15,11 @@ export default function Dashboard() {
   const move = (i: number, d: number) => { const a = [...plan]; const j = i + d; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; setProfile({ ...profile, topics: a }); };
   const next = TOPICS.filter(t => !viewed.includes(t.id) && !plan.includes(t.id)).slice(0, 3);
   const daily = TOPICS[new Date().getDate() % TOPICS.length];
-  const acts: [string, string][] = [["/", "Ask Onconnect"], ["/procedures/biopsy", "Understand a procedure"], ["/words", "Learn a medical word"], ["/questions", "Prepare a question"], ["/feelings", "Check in with my feelings"], ["/report", "Latest session report"]];
   return (<>
     <div className="eyebrow">Dashboard</div><h1>{hello}.</h1>
     <p className="muted">{profile.updatedAt ? `Profile: ages ${profile.age}, ${profile.detail} detail. Last updated ${new Date(profile.updatedAt).toLocaleDateString()}.` : <>You haven&apos;t built a profile yet. <Link href="/setup">Build one</Link> so explanations fit you.</>}</p>
     <div className="kpi"><div><b>{viewed.length}</b><span>Topics explored</span></div><div><b>{marks.length}</b><span>Saved explanations</span></div><div><b>{convos.length}</b><span>Conversations</span></div><div><b>{feel.length}</b><span>Check-ins</span></div></div>
-    <div className="card"><h2>Quick actions</h2><div className="chips">{acts.map(([h, l]) => <Link key={h} href={h} className="chip" style={{ textDecoration: "none" }}>{l}</Link>)}</div></div>
-    <div className="grid2" style={{ gridTemplateColumns: "1fr 1fr" }}>
+    <div className="dashgrid">
       <div className="card"><h2>My learning plan</h2>
         {plan.length === 0 ? <p className="muted">No topics yet. Pick some in <Link href="/setup">My profile</Link>.</p> : <>
           <div className="bar" style={{ margin: "6px 0 12px" }}><i style={{ width: `${(finished / plan.length) * 100}%` }} /></div><p className="muted">{finished} of {plan.length} done</p>

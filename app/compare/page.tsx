@@ -15,7 +15,7 @@ export default function Compare() {
     <div className="eyebrow">Adaptation study</div><h1>One topic, four developmental profiles</h1>
     <p className="muted" style={{ maxWidth: 680 }}>Each version preserves the same essential facts but changes vocabulary, sentence structure and depth. Readability is estimated with the Flesch–Kincaid grade formula.</p>
     <div className="chips" style={{ margin: "16px 0 24px" }}>{TOPICS.map(x => <button key={x.id} className={"chip" + (x.id === id ? " on" : "")} onClick={() => setId(x.id)}>{x.title}</button>)}</div>
-    <div className="cols4">{rows.map(r => (<div key={r.l} className="col" style={r.l === profile.age ? { borderColor: "var(--teal)" } : undefined}>
+    <div className="cols4">{rows.map(r => (<div key={r.l} className="col" style={r.l === profile.age ? { borderColor: "var(--blue)" } : undefined}>
       <div className="eyebrow">Ages {r.l}{r.l === profile.age ? " · your profile" : ""}</div><h3>{PROFILES[r.l]}</h3>
       <p>{r.text}</p>
       <div className="muted">Reading grade {r.m.grade}</div><div className="bar" style={{ margin: "4px 0 10px" }}><i style={{ width: `${(r.m.grade / max) * 100}%` }} /></div>

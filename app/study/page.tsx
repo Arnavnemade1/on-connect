@@ -6,6 +6,7 @@ import { DEFAULT_PROFILE, respond } from "@/lib/engine";
 import { metrics } from "@/lib/metrics";
 import { mean, sd, welch } from "@/lib/stats";
 import { useStudy, type StudyRow } from "@/lib/store";
+import { shareStudy } from "@/lib/research";
 
 const csv = (rows: StudyRow[]) => { const h = ["id", "ts", "pid", "condition", "topic", "age", "score", "total", "selfRated", "ms", "grade"]; return [h.join(","), ...rows.map(r => h.map(k => `"${(r as any)[k] ?? ""}"`).join(","))].join("\n"); };
 export default function Study() {
@@ -22,7 +23,7 @@ export default function Study() {
     setCond(c); setText(out); setAns([]); setSelf(0); t0.current = Date.now(); setPhase("read");
   };
   const submit = () => { const score = quiz.filter((q, i) => ans[i] === q.answer).length;
-    setRows(r => [...r, { id: Math.random().toString(36).slice(2, 8), ts: new Date().toISOString(), pid, condition: cond, topic, age, score, total: quiz.length, selfRated: self, ms: Date.now() - t0.current, grade: metrics(text).grade }]); setPhase("done"); };
+    const row: StudyRow = { id: Math.random().toString(36).slice(2, 8), ts: new Date().toISOString(), pid, condition: cond, topic, age, score, total: quiz.length, selfRated: self, ms: Date.now() - t0.current, grade: metrics(text).grade }; setRows(r => [...r, row]); void shareStudy(row); setPhase("done"); };
   const A = rows.filter(r => r.condition === "adapted").map(r => r.score / r.total * 100), G = rows.filter(r => r.condition === "generic").map(r => r.score / r.total * 100); const w = welch(A, G);
   const f = (v: number, d = 1) => Number.isFinite(v) ? v.toFixed(d) : "–";
   return (<><div className="eyebrow">Comprehension study</div><h1>Does adapting an explanation improve understanding?</h1>

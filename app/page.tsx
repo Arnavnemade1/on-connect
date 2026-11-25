@@ -1,54 +1,113 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { useChat } from "@/lib/chat";
-import { useLog, useMemory, useProfile } from "@/lib/store";
-import { langOf } from "@/lib/langs";
+import { useMemo, useState } from "react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import Starfield from "@/components/landing/Starfield";
+import Md from "@/components/Md";
+import { DEFAULT_PROFILE, respond } from "@/lib/engine";
+import { DEFAULT_MEMORY } from "@/lib/memory";
+import { metrics } from "@/lib/metrics";
 
-const STARTERS = ["What happens during a biopsy?", "What is an MRI?", "What does chemotherapy do?"];
+const AGES = [["6-8", "6 to 8"], ["9-11", "9 to 11"], ["12-14", "12 to 14"], ["15-17", "15 to 17"]] as const;
+const ASKS = ["What is an MRI?", "What happens during a biopsy?", "What is a CT scan?", "What is a blood test for?"];
 const STEPS: [string, string][] = [
-  ["Profile", "Your age band, preferred detail, language and notes set the starting level."],
-  ["Memory", "Saying “simpler” or “I don't get it” changes later answers in the same chat."],
-  ["Generate", "The model answers from approved content when there is some, from general knowledge when not."],
-  ["Check", "Reading level, length and safety are checked, then every step is logged."],
+  ["Profile", "Age band, preferred detail, language and notes set the starting reading level."],
+  ["Memory", "Saying “simpler” or “I don't get it” shifts later answers, and the shift is stored per topic."],
+  ["Generate", "A language model writes from approved content when there is some, and from general knowledge when not."],
+  ["Check", "Reading grade, length and safety are measured against the target, and every step is logged."],
 ];
-const LINKS: [string, [string, string][]][] = [
-  ["Learn", [["/procedures", "Procedure explorer"], ["/anatomy", "Anatomy"], ["/words", "Medical words"], ["/dashboard", "Dashboard"]]],
-  ["Support", [["/feelings", "My feelings"], ["/questions", "My questions"], ["/family", "Family and school"]]],
-  ["Research", [["/eval", "Evaluation harness"], ["/study", "Comprehension study"], ["/protocol", "Protocol and power"], ["/analysis", "Data analysis"], ["/literature", "Literature map"], ["/paper", "Paper draft"]]],
+const RESEARCH: [string, string, string][] = [
+  ["/eval", "Evaluation harness", "A three-arm ablation (control, age band only, full profile) and a test of whether chat memory persists, with bootstrap intervals and Holm-adjusted p-values."],
+  ["/protocol", "Protocol and power", "Power calculator, seeded block randomisation, counterbalancing, consent and assent templates, and a pre-registration export."],
+  ["/analysis", "Data analysis", "Group comparisons on study data, clinician agreement with Cohen's kappa, and any CSV you paste in."],
+  ["/literature", "Literature map", "Each design choice linked to its theory, marked as measured here, borrowed, or untested."],
+  ["/paper", "Paper draft", "A write-up filled from your own results. Anything missing says so instead of being invented."],
 ];
 
-export default function Home() {
-  const router = useRouter(); const [q, setQ] = useState(""); const { convos, select } = useChat(); const [log] = useLog(); const [mem] = useMemory(); const [p] = useProfile();
-  const ask = (t: string) => { if (t.trim()) router.push(`/chat?q=${encodeURIComponent(t.trim())}`); };
-  const graded = log.filter(e => e.grade != null && e.targetGrade != null); const within = graded.filter(e => Math.abs(e.grade! - e.targetGrade!) <= 2).length;
-  return (<>
-    <section className="hero">
-      <h1>Medical explanations that adjust to the reader</h1>
-      <p>Onconnect explains procedures and scans to children with cancer and their families. It changes the wording as you tell it what works, and it records how each answer was made so it can be checked.</p>
-      <form className="ask" onSubmit={e => { e.preventDefault(); ask(q); }}>
-        <input type="text" value={q} onChange={e => setQ(e.target.value)} placeholder="Ask about a procedure, scan or medical word" aria-label="Ask a question" />
-        <button className="btn" aria-label="Ask">Ask <ArrowRight size={15} /></button>
-      </form>
-      <div className="chips">{STARTERS.map(s => <button key={s} className="chip" onClick={() => ask(s)}>{s}</button>)}</div>
-      {!p.updatedAt && <p className="muted" style={{ marginTop: 14 }}>You can <Link href="/setup">set up a profile</Link> so answers match your age, language and preferences.</p>}
-    </section>
+/** The real engine running in the browser: same question, four readers, then what happens after “I don't get it”. */
+function Demo() {
+  const [age, setAge] = useState<(typeof AGES)[number][0]>("9-11"); const [q, setQ] = useState(ASKS[0]); const [after, setAfter] = useState(false);
+  const { first, second } = useMemo(() => {
+    const profile = { ...DEFAULT_PROFILE, age };
+    const first = respond(q, profile, null, DEFAULT_MEMORY);
+    const second = respond("I don't get it, can you explain that more simply?", profile, first.topicId ?? null, first.memory);
+    return { first, second };
+  }, [age, q]);
+  const r = after ? second : first; const m = useMemo(() => metrics(r.text), [r.text]); const m1 = useMemo(() => metrics(first.text), [first.text]); const m2 = useMemo(() => metrics(second.text), [second.text]);
+  const set = (fn: () => void) => () => { fn(); setAfter(false); };
+  return (
+    <div className="frame" id="demo">
+      <div className="framebar">
+        <div className="seg" role="radiogroup" aria-label="Reader age">{AGES.map(([k, l]) => <button key={k} role="radio" aria-checked={age === k} className={age === k ? "on" : ""} onClick={set(() => setAge(k))}>{l}</button>)}</div>
+        <div className="seg" role="radiogroup" aria-label="Question">{ASKS.map(a => <button key={a} role="radio" aria-checked={q === a} className={q === a ? "on" : ""} onClick={set(() => setQ(a))}>{a}</button>)}</div>
+      </div>
+      <div className="framebody">
+        <div className="answer">
+          <div className="who">Child, ages {age.replace("-", " to ")}</div><p className="q">{q}</p>
+          {after && <><div className="who">Reader</div><p className="q">I don&apos;t get it, can you explain that more simply?</p></>}
+          <div className="who">Onconnect</div>
+          <div className="text" key={r.text}><Md text={r.text} /></div>
+          <button className="pillbtn" onClick={() => setAfter(a => !a)}>{after ? "Back to the first answer" : "Reply: “I don't get it”"}</button>
+        </div>
+        <dl className="metrics">
+          <div><dt>Target reading grade</dt><dd>{r.plan?.targetGrade ?? "n/a"}</dd></div>
+          <div><dt>Measured grade</dt><dd>{m.grade}</dd></div>
+          <div><dt>Words</dt><dd>{m.words}</dd></div>
+          <div><dt>Adaptations</dt><dd className="small">{r.adaptations.length ? r.adaptations.map(a => a.replaceAll("_", " ").toLowerCase()).join(", ") : "none"}</dd></div>
+          {after && <div><dt>After “I don&apos;t get it”</dt><dd className="small">Grade {m1.grade} to {m2.grade}. Memory carried: level shift {second.memory.levelShift}, scaffolding {second.memory.scaffold}.</dd></div>}
+        </dl>
+      </div>
+      <div className="framefoot">Runs in your browser on the built-in approved-content engine, so you are seeing real numbers, not a mock-up. The live chat uses a language model and the same checks.</div>
+    </div>
+  );
+}
 
-    <div className="kpi">
-      <div><b>{log.length}</b><span>Answers logged</span></div>
-      <div><b>{graded.length ? Math.round((within / graded.length) * 100) + "%" : "–"}</b><span>Within 2 grades of target</span></div>
-      <div><b>{mem.turns}</b><span>Turns learned from</span></div>
-      <div><b>{langOf(p.lang).native}</b><span>Answer language</span></div></div>
+export default function Landing() {
+  return (
+    <div className="lp">
+      <header className="lpnav">
+        <Link href="/" className="logo" aria-label="Onconnect"><span className="mark"><i /></span>Onconnect</Link>
+        <nav aria-label="Sections"><a href="#demo">Product</a><a href="#how">How it works</a><a href="#research">Research</a><a href="#care">Care</a></nav>
+        <span className="grow" />
+        <Link href="/account" className="pbtn dark">Log in</Link><Link href="/chat" className="pbtn light">Open Onconnect <ArrowUpRight size={15} /></Link>
+      </header>
 
-    <div className="sect"><h2>How an answer is made</h2><Link href="/report" className="muted">Algorithm report</Link></div>
-    <div className="flowrow">{STEPS.map(([t, d], i) => <div key={t} className="flowcard"><div className="n">{i + 1}</div><h3>{t}</h3><p>{d}</p></div>)}</div>
+      <section className="lphero">
+        <Starfield />
+        <h1 className="display"><span>Explained</span><span>for you</span></h1>
+        <div className="herofoot">
+          <p>Onconnect explains procedures and scans to children with cancer and their families, rewrites each answer for the reader, and records how every answer was made.</p>
+          <div className="heroctas"><Link href="/chat" className="pbtn light">Ask a question <ArrowRight size={15} /></Link><a href="#demo" className="pbtn dark">See it adapt</a></div>
+        </div>
+      </section>
 
-    {convos.length > 0 && <><div className="sect"><h2>Recent chats</h2><Link href="/chat" className="muted">Open chat</Link></div>
-      <div className="listlinks">{convos.slice(0, 4).map(c => <button key={c.id} onClick={() => { select(c.id); router.push("/chat"); }}><span>{c.title || "New chat"}</span><span className="muted">{c.msgs.length} messages · {new Date(c.ts).toLocaleDateString()}</span></button>)}</div></>}
+      <section className="lpsec"><div className="lpcol"><div className="eyebrow">Live demo</div><h2 className="big">Same question. Different reader.</h2></div>
+        <Demo />
+      </section>
 
-    <div className="sect"><h2>Everything else</h2></div>
-    <div className="cols4">{LINKS.map(([g, ls]) => <div key={g}><div className="eyebrow">{g}</div><div className="listlinks">{ls.map(([h, l]) => <Link key={h} href={h}>{l}</Link>)}</div></div>)}</div>
-  </>);
+      <section className="lpsec"><div className="lpcol narrow">
+        <p className="lead">A child of eight and a teenager of sixteen should not get the same explanation of an MRI. Onconnect writes for the reader in front of it, adjusts when they say it was too hard or too long, and shows its work.</p>
+        <p className="note"><em>Prototype.</em> Content is a draft pending clinician review. Onconnect is general education, not advice about anyone&apos;s own care.</p>
+      </div></section>
+
+      <section className="lpsec" id="how"><div className="lpcol"><div className="eyebrow">How it works</div><h2 className="big">Four steps, every one logged.</h2>
+        <div className="rows">{STEPS.map(([t, d], i) => <div key={t} className="row4"><span className="n">0{i + 1}</span><h3>{t}</h3><p>{d}</p></div>)}</div>
+        <Link href="/report" className="textlink">Read an algorithm report <ArrowRight size={14} /></Link></div></section>
+
+      <section className="lpsec" id="research"><div className="lpcol"><div className="eyebrow">Research</div><h2 className="big">Measured, not claimed.</h2>
+        <p className="sub">The research tools are part of the product. Run the experiments, export the data, and the paper draft fills itself from what you actually measured.</p>
+        <div className="rows">{RESEARCH.map(([h, t, d]) => <Link key={h} href={h} className="row3"><h3>{t}</h3><p>{d}</p><ArrowUpRight size={18} /></Link>)}</div>
+        <p className="note">Nothing on this page claims an outcome. Results appear in the tools above only after you have run them.</p></div></section>
+
+      <section className="lpsec" id="care"><div className="lpcol"><div className="eyebrow">Care</div><h2 className="big">Built to be trusted with children.</h2>
+        <div className="three">
+          <div><h3>Local first</h3><p>Your profile, chats and notes stay in your browser. Signing in to sync is optional, and sharing anonymised usage for research is a separate, off-by-default choice.</p></div>
+          <div><h3>Honest about limits</h3><p>It will not diagnose, give doses or discuss prognosis. Safety rules run before and after the model, and the answer says when it is only general education.</p></div>
+          <div><h3>Open to review</h3><p>Every answer lists what it used, what it changed and what it did not do. Clinicians can rate any answer, and ratings feed the research tools.</p></div>
+        </div></div></section>
+
+      <section className="lpend"><h2 className="big">Ask your first question.</h2><Link href="/chat" className="pbtn light lg">Open Onconnect <ArrowUpRight size={16} /></Link></section>
+      <footer className="lpfoot"><span>Onconnect, a research prototype for general education. Not a medical device.</span><span className="grow" /><Link href="/privacy">Privacy</Link><Link href="/method">Method</Link><Link href="/account">Account</Link></footer>
+    </div>
+  );
 }

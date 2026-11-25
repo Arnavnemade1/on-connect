@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { REMOTE, notifyWrite } from "./syncbus";
 import { DEFAULT_PROFILE, type Profile, type Reply } from "./engine";
 import { DEFAULT_MEMORY, type Memory } from "./memory";
 
@@ -13,9 +14,10 @@ export function useLocal<T>(key: string, fallback: T): [T, (v: T | ((p: T) => T)
   const [val, setVal] = useState<T>(fallback);
   const [ready, setReady] = useState(false);
   useEffect(() => { setVal(load(key, fallback)); setReady(true); /* eslint-disable-next-line */ }, [key]);
+  useEffect(() => { const h = (e: Event) => { if ((e as CustomEvent).detail?.key === key) setVal(load(key, fallback)); }; addEventListener(REMOTE, h); return () => removeEventListener(REMOTE, h); /* eslint-disable-next-line */ }, [key]);
   const set = (v: T | ((p: T) => T)) => setVal(prev => {
     const next = typeof v === "function" ? (v as (p: T) => T)(prev) : v;
-    try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
+    try { localStorage.setItem(key, JSON.stringify(next)); notifyWrite(key); } catch {}
     return next;
   });
   return [val, set, ready];

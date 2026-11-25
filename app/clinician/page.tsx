@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { PROFILES, TOPICS, type Level } from "@/lib/content";
-import { useRatings } from "@/lib/store";
+import { useRatings, type Rating } from "@/lib/store";
+import { shareRating } from "@/lib/research";
 const dl = (n: string, t: string) => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([t], { type: "text/csv" })); a.download = n; a.click(); };
 export default function Clinician() {
   const [rs, setRs, ready] = useRatings(); const [id, setId] = useState(TOPICS[0].id); const [acc, setAcc] = useState(0); const [fit, setFit] = useState(0); const [saf, setSaf] = useState(0); const [dec, setDec] = useState("Approve"); const [c, setC] = useState(""); const [who, setWho] = useState("");
@@ -16,7 +17,7 @@ export default function Clinician() {
         <Scale v={acc} set={setAcc} l="Medical accuracy (1–5)" /><Scale v={fit} set={setFit} l="Age appropriateness (1–5)" /><Scale v={saf} set={setSaf} l="Safety and tone (1–5)" />
         <label>Decision</label><div className="chips">{["Approve", "Request revision", "Reject"].map(d => <button key={d} className={"chip" + (dec === d ? " on" : "")} onClick={() => setDec(d)}>{d}</button>)}</div>
         <label>Comments</label><textarea className="big" style={{ minHeight: 90 }} value={c} onChange={e => setC(e.target.value)} />
-        <div className="row"><button className="btn" disabled={!acc || !fit || !saf || !who.trim()} onClick={() => { setRs(a => [...a, { id: Math.random().toString(36).slice(2, 8), topic: id, decision: dec, accuracy: acc, ageFit: fit, safety: saf, comment: c, rater: who, ts: new Date().toISOString() }]); setAcc(0); setFit(0); setSaf(0); setC(""); }}>Submit review</button>
+        <div className="row"><button className="btn" disabled={!acc || !fit || !saf || !who.trim()} onClick={() => { const row: Rating = { id: Math.random().toString(36).slice(2, 8), topic: id, decision: dec, accuracy: acc, ageFit: fit, safety: saf, comment: c, rater: who, ts: new Date().toISOString() }; setRs(a => [...a, row]); void shareRating(row); setAcc(0); setFit(0); setSaf(0); setC(""); }}>Submit review</button>
           <button className="btn alt" disabled={!rs.length} onClick={() => dl("onconnect-clinician-reviews.csv", ["id,topic,decision,accuracy,ageFit,safety,rater,ts,comment", ...rs.map(r => [r.id, r.topic, r.decision, r.accuracy, r.ageFit, r.safety, r.rater, r.ts, r.comment].map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))].join("\n"))}>Export CSV</button></div>
         <h3 style={{ marginTop: 18 }}>Review history</h3>{!mine.length && <p className="muted">No reviews for this topic.</p>}{mine.map(r => <div key={r.id} className="step"><span><b>{r.decision}</b> · acc {r.accuracy}, fit {r.ageFit}, safety {r.safety}<div className="muted">{r.rater} · {new Date(r.ts).toLocaleDateString()}</div>{r.comment && <div>{r.comment}</div>}</span></div>)}</div></div></>);
 }

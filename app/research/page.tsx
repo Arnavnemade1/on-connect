@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useLog, useMemory, useRatings, useStudy } from "@/lib/store";
 import { mean } from "@/lib/stats";
-const Bars = ({ data }: { data: [string, number][] }) => { const m = Math.max(1, ...data.map(d => d[1])); return <div>{data.map(([k, v]) => <div key={k} style={{ display: "flex", gap: 10, alignItems: "center", margin: "5px 0" }}><span className="muted" style={{ width: 210, flex: "none", fontSize: ".72rem", fontFamily: "ui-monospace,monospace" }}>{k}</span><div className="bar" style={{ flex: 1 }}><i style={{ width: `${(v / m) * 100}%` }} /></div><b style={{ width: 28, textAlign: "right" }}>{v}</b></div>)}</div>; };
+const Bars = ({ data }: { data: [string, number][] }) => { const m = Math.max(1, ...data.map(d => d[1])); return <div>{data.map(([k, v]) => <div key={k} style={{ display: "flex", gap: 10, alignItems: "center", margin: "5px 0" }}><span className="muted" style={{ width: 210, flex: "none", fontSize: "var(--t1)", fontFamily: "ui-monospace,monospace" }}>{k}</span><div className="bar" style={{ flex: 1 }}><i style={{ width: `${(v / m) * 100}%` }} /></div><b style={{ width: 28, textAlign: "right" }}>{v}</b></div>)}</div>; };
 const count = (a: string[]) => Object.entries(a.reduce<Record<string, number>>((o, k) => (o[k] = (o[k] ?? 0) + 1, o), {})).sort((x, y) => y[1] - x[1]) as [string, number][];
 export default function Research() {
   const [log, , r1] = useLog(); const [mem, , r2] = useMemory(); const [study, , r3] = useStudy(); const [ratings, , r4] = useRatings();

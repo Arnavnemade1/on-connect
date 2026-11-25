@@ -9,7 +9,7 @@ export default function Family() {
   const conf = Object.entries(mem.confusion).filter(([, n]) => n > 0).map(([id]) => TOPICS.find(t => t.id === id)?.title ?? id);
   const tabs = [["talk", "Talking with your child"], ["school", "School & everyday life"], ["learning", "Your child's learning"], ["dir", "Community directory"]];
   return (<><div className="eyebrow">Family</div><h1>For parents, caregivers and school</h1>
-    <div className="tabs" style={{ marginTop: 14 }}>{tabs.map(([k, l]) => <button key={k} className={"chip" + (tab === k ? " on" : "")} onClick={() => setTab(k)}>{l}</button>)}</div>
+    <div className="tabs" style={{ marginTop: 14 }}>{tabs.map(([k, l]) => <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{l}</button>)}</div>
     {tab === "talk" && TALK.map(x => <div className="card" key={x.t}><h3>{x.t}</h3><p style={{ margin: 0 }}>{x.d}</p></div>)}
     {tab === "school" && SCHOOL.map(x => <div className="card" key={x.t}><h3>{x.t}</h3><p style={{ margin: 0 }}>{x.d}</p></div>)}
     {tab === "learning" && <div className="card"><h2>Learning summary on this device</h2><p className="muted">Nothing is shared with anyone. This view reads what is stored in this browser, so a child and caregiver using the same device can review it together.</p>

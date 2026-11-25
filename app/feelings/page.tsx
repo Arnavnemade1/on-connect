@@ -1,8 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Angry, Annoyed, BatteryLow, CloudRain, Frown, Laugh, Meh, Smile, type LucideIcon } from "lucide-react";
 import { FEELINGS, JOURNAL, TRUSTED } from "@/lib/more";
 import { useFeelings, useLocal } from "@/lib/store";
 
+const FACE: Record<string, LucideIcon> = { Good: Laugh, Calm: Smile, Okay: Meh, Worried: Annoyed, Sad: Frown, Angry: Angry, Tired: BatteryLow, Overwhelmed: CloudRain };
+const Face = ({ label, size = 16 }: { label: string; size?: number }) => { const I = FACE[label] ?? Meh; return <I size={size} aria-hidden />; };
 const CONCERNS = ["Procedure", "Pain", "School", "Family", "Not knowing what's next", "Other"];
 export default function Feelings() {
   const [tab, setTab] = useState("checkin"); const [list, setList] = useFeelings(); const [em, setEm] = useState<readonly [string, string] | null>(null); const [note, setNote] = useState(""); const [con, setCon] = useState("");
@@ -14,13 +17,13 @@ export default function Feelings() {
   const tabs = [["checkin", "Check-in"], ["history", "History"], ["breathe", "Breathe"], ["ground", "Grounding"], ["journal", "Journal"], ["talk", "Talk to a trusted adult"]];
   return (<><div className="eyebrow">My feelings</div><h1>How are you doing?</h1>
     <p className="muted" style={{ maxWidth: 640 }}>This space is optional. These activities are not therapy and Onconnect does not diagnose feelings. If you feel very upset or unsafe, tell a trusted adult right away.</p>
-    <div className="tabs" style={{ marginTop: 14 }}>{tabs.map(([k, l]) => <button key={k} className={"chip" + (tab === k ? " on" : "")} onClick={() => setTab(k)}>{l}</button>)}</div>
-    {tab === "checkin" && <div className="card"><h2>Check in</h2><div className="chips">{FEELINGS.map(f => <button key={f[1]} className={"chip" + (em?.[1] === f[1] ? " on" : "")} onClick={() => setEm(f)}>{f[0]} {f[1]}</button>)}</div>
+    <div className="tabs" style={{ marginTop: 14 }}>{tabs.map(([k, l]) => <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{l}</button>)}</div>
+    {tab === "checkin" && <div className="card"><h2>Check in</h2><div className="chips">{FEELINGS.map(f => <button key={f[1]} className={"chip" + (em?.[1] === f[1] ? " on" : "")} onClick={() => setEm(f)}><Face label={f[1]} />{f[1]}</button>)}</div>
       <label>What is it about? (optional)</label><div className="chips">{CONCERNS.map(c => <button key={c} className={"chip" + (con === c ? " on" : "")} onClick={() => setCon(con === c ? "" : c)}>{c}</button>)}</div>
       <label>A note (optional)</label><textarea className="big" style={{ minHeight: 80 }} value={note} onChange={e => setNote(e.target.value)} />
       {flagged && <div className="banner" style={{ marginTop: 12 }}>I&apos;m glad you wrote that down. Please tell a trusted adult right now. If you are in danger, tell an adult immediately or call your local emergency number (in the US, call or text 988).</div>}
-      <div className="row"><button className="btn" disabled={!em} onClick={() => { setList(l => [...l, { id: Math.random().toString(36).slice(2), ts: new Date().toISOString(), emoji: em![0], label: em![1], note, concern: con }]); setEm(null); setNote(""); setCon(""); setTab("history"); }}>Save check-in</button></div></div>}
-    {tab === "history" && <div className="card"><h2>My check-ins</h2>{!list.length && <p className="muted">None yet.</p>}{[...list].reverse().map(f => <div key={f.id} className="step"><b style={{ fontSize: "1.4rem" }}>{f.emoji}</b><span style={{ flex: 1 }}>{f.label}{f.concern && <span className="tagl">{f.concern}</span>}{f.note && <div>{f.note}</div>}<div className="muted">{new Date(f.ts).toLocaleString()}</div></span></div>)}
+      <div className="row"><button className="btn" disabled={!em} onClick={() => { setList(l => [...l, { id: Math.random().toString(36).slice(2), ts: new Date().toISOString(), emoji: "", label: em![1], note, concern: con }]); setEm(null); setNote(""); setCon(""); setTab("history"); }}>Save check-in</button></div></div>}
+    {tab === "history" && <div className="card"><h2>My check-ins</h2>{!list.length && <p className="muted">None yet.</p>}{[...list].reverse().map(f => <div key={f.id} className="step"><b><Face label={f.label} size={20} /></b><span style={{ flex: 1 }}>{f.label}{f.concern && <span className="tagl">{f.concern}</span>}{f.note && <div>{f.note}</div>}<div className="muted">{new Date(f.ts).toLocaleString()}</div></span></div>)}
       <p className="muted">These are your own notes, not clinical assessments.</p></div>}
     {tab === "breathe" && <div className="card" style={{ textAlign: "center" }}><h2>Calm breathing</h2><p className="muted">In for 4, hold for 4, out for 6.</p>
       <div className="breathe" style={{ transform: on ? `scale(${L[phase][1]})` : "scale(1)", transitionDuration: on ? `${[4, 0.5, 6][phase]}s` : ".3s" }}>{on ? L[phase][0] : "Ready"}</div>

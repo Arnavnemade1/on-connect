@@ -8,6 +8,6 @@ export default function Literature() {
     <div className="callout"><b>Verify before you cite.</b> This reference list was written from memory by an AI assistant, not pulled from a database. Check every entry (authors, year, journal, pages) against the original paper.</div>
     <div className="wrap"><table><thead><tr><th>Component</th><th>Idea behind it</th><th>Sources</th><th>Status</th></tr></thead><tbody>
       {MAP.map(m => <tr key={m.part}><td><b>{m.part}</b><div className="muted">{m.what}</div></td><td>{m.theory}<div className="muted" style={{ marginTop: 4 }}>{m.note}</div></td><td>{m.refs.map(r => `[${n(r)}]`).join(" ")}</td><td><span className="tag">{LABEL[m.status]}</span></td></tr>)}</tbody></table></div>
-    <div className="card" style={{ marginTop: 22 }}><h2>References</h2><ol style={{ paddingLeft: "1.3em", margin: 0 }}>{REFS.map(r => <li key={r.id} style={{ margin: "8px 0", fontSize: ".9rem" }}>{r.cite}</li>)}</ol></div>
+    <div className="card" style={{ marginTop: 22 }}><h2>References</h2><ol style={{ paddingLeft: "1.3em", margin: 0 }}>{REFS.map(r => <li key={r.id} style={{ margin: "8px 0", fontSize: "var(--t2)" }}>{r.cite}</li>)}</ol></div>
   </>);
 }

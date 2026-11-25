@@ -2,14 +2,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Activity, Bone, BookOpen, Bookmark, Calculator, ChartLine, ChevronDown, ChevronsLeft, ChevronsRight, CircleHelp, ClipboardCheck, FileText, FlaskConical, GitCompare, HeartPulse, House, LayoutDashboard, Library, Lock, Menu, MessageSquarePlus, Microscope, Moon, PenLine, Plus, ScrollText, Search, ShieldCheck, Stethoscope, Sun, UserRound, Users, X, Sigma, type LucideIcon } from "lucide-react";
+import { Activity, Bone, BookOpen, Bookmark, Calculator, ChartLine, ChevronDown, ChevronsLeft, Cloud, ChevronsRight, CircleHelp, ClipboardCheck, FileText, FlaskConical, GitCompare, HeartPulse, LayoutDashboard, Library, Lock, Menu, MessageSquarePlus, Microscope, Moon, PenLine, Plus, ScrollText, Search, ShieldCheck, Stethoscope, Sun, UserRound, Users, X, Sigma, type LucideIcon } from "lucide-react";
 import { useChat } from "@/lib/chat";
 
 const GROUPS: [string, [string, string, LucideIcon][]][] = [
   ["Learn", [["/dashboard", "Dashboard", LayoutDashboard], ["/procedures", "Procedure explorer", Stethoscope], ["/anatomy", "Anatomy", Bone], ["/words", "Medical words", BookOpen]]],
   ["Support", [["/feelings", "My feelings", HeartPulse], ["/questions", "My questions", CircleHelp], ["/family", "Family & school", Users]]],
   ["Research", [["/study", "Comprehension study", FlaskConical], ["/protocol", "Protocol & power", Calculator], ["/eval", "Evaluation harness", Activity], ["/analysis", "Data analysis", Sigma], ["/research", "Research dashboard", ChartLine], ["/compare", "Compare ages", GitCompare], ["/literature", "Literature map", Library], ["/log", "Audit log", ScrollText], ["/clinician", "Clinician review", ClipboardCheck], ["/method", "Method", Microscope], ["/paper", "Paper draft", PenLine]]],
-  ["You", [["/report", "Session report", FileText], ["/library", "Saved", Bookmark], ["/setup", "My profile", UserRound], ["/privacy", "Privacy & data", Lock]]],
+  ["You", [["/report", "Session report", FileText], ["/library", "Saved", Bookmark], ["/setup", "My profile", UserRound], ["/account", "Account & sync", Cloud], ["/privacy", "Privacy & data", Lock]]],
 ];
 const PAGES = GROUPS.flatMap(([, l]) => l);
 
@@ -18,17 +18,18 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const [dark, setDark] = useState(false); const [size, setSize] = useState(100); const [rail, setRail] = useState(false);
   const [shut, setShut] = useState<Record<string, boolean>>({}); const [pal, setPal] = useState(false); const [q, setQ] = useState(""); const [side, setSide] = useState(false); const [find, setFind] = useState("");
   const isChat = path === "/chat";
-  useEffect(() => { try { const t = localStorage.getItem("onc.theme"); setDark(t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches); setSize(Number(localStorage.getItem("onc.size")) || 100); setRail(localStorage.getItem("onc.rail") === "1"); } catch {} }, []);
-  useEffect(() => { document.documentElement.dataset.theme = dark ? "dark" : "light"; document.documentElement.style.fontSize = `${size}%`; try { localStorage.setItem("onc.theme", dark ? "dark" : "light"); localStorage.setItem("onc.size", String(size)); localStorage.setItem("onc.rail", rail ? "1" : "0"); } catch {} }, [dark, size, rail]);
+  useEffect(() => { try { const t = localStorage.getItem("onc.theme"); setDark(t ? t === "dark" : true); setSize(Number(localStorage.getItem("onc.size")) || 100); setRail(localStorage.getItem("onc.rail") === "1"); } catch {} }, []);
+  useEffect(() => { document.documentElement.dataset.theme = path === "/" || dark ? "dark" : "light"; document.documentElement.style.fontSize = `${size}%`; try { localStorage.setItem("onc.theme", dark ? "dark" : "light"); localStorage.setItem("onc.size", String(size)); localStorage.setItem("onc.rail", rail ? "1" : "0"); } catch {} }, [dark, size, rail, path]);
   useEffect(() => { const h = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setPal(o => !o); } if (e.key === "Escape") { setPal(false); setSide(false); } };
     addEventListener("keydown", h); return () => removeEventListener("keydown", h); }, []);
   useEffect(() => setSide(false), [path]);
   const go = (h: string) => { router.push(h); setPal(false); setQ(""); };
-  const items: [string, string][] = ([["/", "Home"], ["/chat", "New chat"], ...PAGES.map(([h, l]) => [h, l])] as [string, string][]).filter(([, l]) => l.toLowerCase().includes(q.toLowerCase()));
+  const items: [string, string][] = ([["/", "Landing page"], ["/chat", "New chat"], ...PAGES.map(([h, l]) => [h, l])] as [string, string][]).filter(([, l]) => l.toLowerCase().includes(q.toLowerCase()));
   const list = convos.filter(c => c.title.toLowerCase().includes(find.toLowerCase()));
   const on = (h: string) => path === h || (h !== "/" && path.startsWith(h + "/"));
   const startChat = () => { newChat(); router.push("/chat"); };
 
+  if (path === "/") return <>{children}</>;
   return (<div className={"app" + (rail ? " railed" : "") + (isChat ? " chatmode" : "")}>
     <aside className={"side" + (side ? " open" : "") + (rail ? " rail" : "")} aria-label="Primary">
       <div className="sidetop"><Link href="/" className="logo" aria-label="Onconnect home"><span className="mark"><i /></span><span className="lbl">Onconnect</span></Link>
@@ -37,7 +38,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <button className="newchat" onClick={startChat} title="New chat"><MessageSquarePlus size={17} /><span className="lbl">New chat</span></button>
       <button className="searchbtn" onClick={() => setPal(true)} title="Search and jump (⌘K)"><Search size={15} /><span className="lbl">Search or jump to…</span><kbd className="lbl">⌘K</kbd></button>
       <nav className="sidenav" aria-label="Sections">
-        <Link href="/" className={on("/") && path === "/" ? "act" : ""} title="Home"><House size={17} /><span className="lbl">Home</span></Link>
         <div className="convhead lbl"><span>Chats</span><span className="muted">{convos.length}</span></div>
         <div className="convos lbl">
           {convos.length > 6 && <input className="find" type="text" placeholder="Filter chats" value={find} onChange={e => setFind(e.target.value)} aria-label="Filter chats" />}
