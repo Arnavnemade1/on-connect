@@ -1,6 +1,6 @@
 // Thin OpenRouter client (OpenAI-compatible chat completions). Server-side only. OPENROUTER_BASE can point at a mock in tests.
 import type { GenResult, Turn } from "./gemini";
-export const OR_MODEL = () => process.env.OPENROUTER_MODEL || "google/gemini-2.5-flash";
+export const OR_MODEL = () => process.env.OPENROUTER_MODEL || "~openai/gpt-terra-latest";
 const BASE = () => process.env.OPENROUTER_BASE || "https://openrouter.ai/api/v1";
 const headers = (key: string) => ({ authorization: `Bearer ${key}`, "content-type": "application/json", "x-title": "Onconnect", ...(process.env.OPENROUTER_REFERER ? { "http-referer": process.env.OPENROUTER_REFERER } : {}) });
 const body = (system: string, turns: Turn[], max: number, stream: boolean) => JSON.stringify({ model: OR_MODEL(), stream, max_tokens: max,
