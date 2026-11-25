@@ -3,7 +3,7 @@ import { respond, DEFAULT_PROFILE, type Profile, type Reply } from "./engine";
 import { DEFAULT_MEMORY, type Memory } from "./memory";
 import { TOPICS } from "./content";
 import { coverage, metrics } from "./metrics";
-import { generate, generateStream, MODEL, type Turn } from "./gemini";
+import { generate, generateStream, pickLLM, type Turn } from "./llm";
 import { langOf } from "./langs";
 
 export const PROMPT_VERSION = "adaptive-v0.5";
@@ -43,13 +43,13 @@ export async function run(inp: RunInput, emit: Emit = () => {}, signal?: AbortSi
   const q = String(inp.question ?? "").slice(0, 1000);
   const lang = langOf(profile.lang);
   const reply = respond(q, profile, inp.lastTopic, memory); reply.lang = lang.code; reply.mode = inp.mode ?? "adaptive";
-  const key = process.env.GEMINI_API_KEY; const topic = TOPICS.find(t => t.id === reply.topicId);
+  const llm = pickLLM(); const MODEL = llm?.model ?? ""; const topic = TOPICS.find(t => t.id === reply.topicId);
   const { plan, trace, memory: mem } = reply; const safetyStop = reply.safety?.startsWith("SUPPORT");
   const notes = profile.notes;
   let model = "onconnect-templates"; let genResult = "template engine (no model call)"; let genCall = "generate(template)";
   const history = baseline || ageOnly ? [] : cleanHistory(inp.history);
 
-  if (key && plan && !safetyStop) {
+  if (llm && plan && !safetyStop) {
     const style = baseline
       ? "Explain clearly for a general audience."
       : `Write for ages ${plan.level}. Aim for roughly Flesch–Kincaid grade ${plan.targetGrade} and at most ${plan.maxWords} words. Detail: ${["short", "balanced", "detailed"][plan.effDetail]}.` +
@@ -65,14 +65,14 @@ export async function run(inp: RunInput, emit: Emit = () => {}, signal?: AbortSi
     const turns: Turn[] = [...history, { role: "user", text: q }];
     genCall = `stream(${MODEL}, ${baseline ? "baseline" : `grade≈${plan.targetGrade}, ≤${plan.maxWords} words`}, history=${history.length}, lang=${lang.code}, notes=${notes.length} chars)`;
     emit({ t: "status", s: "Writing" });
-    let g = await generateStream(key, system, turns, d => emit({ t: "delta", d }), { signal });
+    let g = await generateStream(llm, system, turns, d => emit({ t: "delta", d }), { signal });
     let attempts = 1; let note = "";
     if (g.error && g.text && g.text.length > 60) { note += `, stream interrupted (${g.error}), kept partial`; g.error = undefined; }
     if (g.text && !g.error && !baseline && lang.code === "en") {
       const m1 = metrics(g.text);
       if (m1.grade > plan.targetGrade + 3 || m1.words > plan.maxWords * 1.6) {
         emit({ t: "status", s: "Adjusting to the right level" });
-        const g2 = await generate(key, system + ` IMPORTANT: your last attempt was too ${m1.grade > plan.targetGrade + 3 ? "hard (grade " + m1.grade + ")" : "long (" + m1.words + " words)"}. Fix that.`, turns);
+        const g2 = await generate(llm, system + ` IMPORTANT: your last attempt was too ${m1.grade > plan.targetGrade + 3 ? "hard (grade " + m1.grade + ")" : "long (" + m1.words + " words)"}. Fix that.`, turns);
         attempts = 2;
         if (g2.text) {
           const m2 = metrics(g2.text); const dist = (m: typeof m1) => Math.abs(m.grade - plan.targetGrade) / 3 + Math.max(0, m.words / plan.maxWords - 1);

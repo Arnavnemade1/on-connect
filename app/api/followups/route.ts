@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generate } from "@/lib/gemini";
+import { generate, pickLLM } from "@/lib/llm";
 import { TOPICS } from "@/lib/content";
 import { cleanProfile } from "@/lib/pipeline";
 import { langOf } from "@/lib/langs";
@@ -11,10 +11,10 @@ export async function POST(req: Request) {
   const { question, answer, topicId, profile } = await req.json().catch(() => ({}));
   const topic = TOPICS.find(t => t.id === topicId);
   const fallback = topic ? topic.questions.slice(0, 3) : [];
-  const key = process.env.GEMINI_API_KEY;
-  if (!key || typeof answer !== "string") return NextResponse.json({ questions: fallback, source: "curated" });
+  const llm = pickLLM();
+  if (!llm || typeof answer !== "string") return NextResponse.json({ questions: fallback, source: "curated" });
   const p = cleanProfile(profile); const lang = langOf(p.lang);
-  const r = await generate(key, `Suggest exactly 3 short follow-up questions (max 9 words each) that a child aged ${p.age} or their caregiver might ask next. Write them in ${lang.name}, first person, simple words. Return ONLY a JSON array of 3 strings.`,
+  const r = await generate(llm, `Suggest exactly 3 short follow-up questions (max 9 words each) that a child aged ${p.age} or their caregiver might ask next. Write them in ${lang.name}, first person, simple words. Return ONLY a JSON array of 3 strings.`,
     [{ role: "user", text: `Question: ${String(question).slice(0, 300)}\nAnswer: ${answer.slice(0, 1200)}` }], { timeout: 9000, maxOutputTokens: 400 });
   try {
     const arr = JSON.parse((r.text ?? "").replace(/^```(json)?|```$/gm, "").trim());
