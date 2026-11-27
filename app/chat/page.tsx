@@ -8,7 +8,7 @@ import { useChat } from "@/lib/chat";
 import type { Reply } from "@/lib/engine";
 import { DEFAULT_MEMORY, recordCheck, reverseEvent } from "@/lib/memory";
 import { initialConfig } from "@/lib/params";
-import { AdaptLine, Citations, TeachBack } from "@/components/AnswerExtras";
+import { AdaptLine, CareQuestions, Citations, TeachBack } from "@/components/AnswerExtras";
 import MessageReport from "@/components/MessageReport";
 import MemoryPanel from "@/components/MemoryPanel";
 import { useSync } from "@/components/SyncProvider";
@@ -182,6 +182,7 @@ export default function Chat() {
             {m.reply && m.id !== live?.id && <>
               <AdaptLine events={m.reply.events ?? []} statusOf={statusOf} onUndo={id => undo(id, m.id)} />
               <TeachBack reply={m.reply} done={m.check} onAnswer={c => onCheck(m as Msg, c)} />
+              <CareQuestions reply={m.reply} />
               <Citations reply={m.reply} />
               {m.reply.topicId && <div className="src"><ShieldCheck size={13} />{m.reply.source}</div>}
               <details><summary>Why this explanation?</summary>

@@ -114,6 +114,8 @@ export default function MessageReport({ reply: r, msg, next, profile, question =
 
     {changedOps.length > 0 && <Section title="Memory changes"><ul className="rp-ops">{changedOps.map((o, i) => <li key={i}><span className="rp-scope persistent">{o.op.replace("_", " ")}</span><div><b>{o.content}</b><span className="muted">{o.reason} · <code>{o.id}</code></span></div></li>)}</ul></Section>}
 
+    {(r.careQuestions?.length ?? 0) > 0 && <Section title="Questions for the care team"><ul className="rp-careq">{r.careQuestions!.map(q => <li key={q}>{q}</li>)}</ul></Section>}
+
     <Section title="What happened next"><ol className="rp-next">{outcome.map(o => <li key={o.k} className={o.tone}><span>{o.k}</span><b>{o.v}</b></li>)}</ol>
       <p className="rp-note">What happened next is an association, not proof this answer caused it.</p></Section>
 

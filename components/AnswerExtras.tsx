@@ -1,9 +1,9 @@
 "use client";
 // Pieces shown under each answer: where the information comes from, what adapted (with undo), and a quick teach-back check.
 import { useState } from "react";
-import { ArrowUpRight, Check, RotateCcw, X } from "lucide-react";
+import { ArrowUpRight, BookmarkPlus, Check, MessageCircleQuestion, RotateCcw, X } from "lucide-react";
 import type { Reply } from "@/lib/engine";
-import type { CheckResult } from "@/lib/store";
+import { useQs, type CheckResult } from "@/lib/store";
 import { SOURCE_BY_ID, TYPE_LABEL } from "@/lib/sources";
 import { eventLabel, type AdaptEvent } from "@/lib/memory";
 
@@ -34,4 +34,12 @@ export function TeachBack({ reply, done, onAnswer }: { reply: Reply; done?: Chec
   if (done) return <div className={"tb done " + (done.correct ? "ok" : "miss")}>{done.correct ? <Check size={15} /> : <X size={15} />}{done.correct ? "Nice, that's right." : `Not quite. The answer is “${tb.q.options[tb.q.answer]}”. I'll explain it a different way next time.`}</div>;
   return (<div className="tb" role="group" aria-label="Quick check"><div className="tbh"><b>Quick check</b><span className="muted">Optional. It helps me explain things better.</span><button className="tbx" onClick={() => setSkip(true)} aria-label="Skip the quick check"><X size={14} /></button></div>
     <p>{tb.q.q}</p><div className="tbo">{tb.q.options.map((o, i) => <button key={o} onClick={() => onAnswer(i)}>{o}</button>)}</div></div>);
+}
+
+/** Questions this reader could take to their care team: the things general education cannot answer. Each can be saved to the Questions list. */
+export function CareQuestions({ reply }: { reply: Reply }) {
+  const [qs, setQs] = useQs(); const list = reply.careQuestions ?? []; if (!list.length) return null;
+  const saved = (t: string) => qs.some(q => q.text === t);
+  return (<div className="careq" role="group" aria-label="Questions to ask your care team"><div className="careqh"><MessageCircleQuestion size={16} aria-hidden /><b>Questions to ask your care team</b><span className="muted">Only they can answer these for you.</span></div>
+    <ul>{list.map(t => <li key={t}><span>{t}</span><button onClick={() => !saved(t) && setQs(x => [...x, { id: Math.random().toString(36).slice(2, 10), text: t, cat: reply.topicId ?? "general", answered: false }])} disabled={saved(t)} aria-label={saved(t) ? "Saved" : `Save: ${t}`}>{saved(t) ? <><Check size={14} />Saved</> : <><BookmarkPlus size={14} />Save</>}</button></li>)}</ul></div>);
 }

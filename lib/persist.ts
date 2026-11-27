@@ -8,7 +8,7 @@ const ID = /^[A-Za-z0-9-]{4,40}$/;
 const USER_TYPE: Record<string, string> = { child: "patient", caregiver: "caregiver", together: "together" };
 
 /** The message-level report kept with each assistant message (spec 9.1). The text and the full memory are stored elsewhere. */
-export const reportOf = (r: Reply) => ({ guidance: r.guidance, topic: r.topicId, signals: r.signals, config: r.config, configBefore: r.configBefore, plan: r.plan, events: (r.events ?? []).map(e => e.id), ops: r.ops, psych: r.psych, revise: r.revise,
+export const reportOf = (r: Reply) => ({ guidance: r.guidance, careQuestions: r.careQuestions, topic: r.topicId, signals: r.signals, config: r.config, configBefore: r.configBefore, plan: r.plan, events: (r.events ?? []).map(e => e.id), ops: r.ops, psych: r.psych, revise: r.revise,
   sources: r.sources, citations: r.citations, teachback: r.teachback ? { topic: r.teachback.topic, question: r.teachback.q.q } : null, trace: r.trace, metrics: r.metrics, coverage: r.coverage, adaptations: r.adaptations, safety: r.safety,
   model: r.model, versions: r.versions, latencyMs: r.latencyMs, lang: r.lang, mode: r.mode, resources: r.resources });
 

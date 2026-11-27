@@ -18,7 +18,7 @@ export const REGISTRY: ParamDef[] = [
   { id: "information_pacing", label: "Information pacing", component: "Developmental Adaptation Engine", values: ["Slower", "Standard"], describe: "Whether new information is held back until the current idea lands." },
   { id: "structure", label: "Response structure", component: "Linguistic Adaptation Engine", values: ["Paragraphs", "Step by step"], describe: "Prose or a numbered sequence." },
   { id: "visual_support", label: "Visual support", component: "Developmental Adaptation Engine", values: ["Standard", "High"], describe: "Whether to point to diagrams and picture-based explanations." },
-  { id: "teachback_frequency", label: "Teach-back frequency", component: "Comprehension and Learning Engine", values: ["Off", "Standard", "Increased"], describe: "How readily a quick comprehension check is offered." },
+  { id: "teachback_frequency", label: "Teach-back frequency", component: "Comprehension and Learning Engine", values: ["Off", "Standard", "Increased"], describe: "Whether a quick comprehension check follows each explanation (Standard: one per explanation, rotating through the topic's questions)." },
   { id: "emotional_followup", label: "Emotional follow-up", component: "Psychological Communication Engine", values: ["Paused", "Normal"], describe: "Whether the companion may gently ask about feelings. Paused when the reader asks not to talk about it." },
 ];
 export const PARAM = Object.fromEntries(REGISTRY.map(p => [p.id, p])) as Record<ParamId, ParamDef>;

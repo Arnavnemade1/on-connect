@@ -84,7 +84,7 @@ export interface Memory {
   persistent: Partial<Record<ParamId, { value: number; basis: "explicit" | "observed"; since: string; event: string }>>;
   session: { conv: string | null; values: Partial<Record<ParamId, number>>; started: string };
   counts: Partial<Record<Signal, number>>;      // how many turns contained each request, for the repeated-pattern rule
-  confusion: Record<string, number>; understood: Record<string, number>; failedChecks: Record<string, number>;
+  confusion: Record<string, number>; understood: Record<string, number>; failedChecks: Record<string, number>; asked?: Record<string, number>;
   records: MemoryRecord[]; events: AdaptEvent[]; turns: number;
 }
 export const DEFAULT_MEMORY: Memory = { schema: 3, persistent: {}, session: { conv: null, values: {}, started: "" }, counts: {}, confusion: {}, understood: {}, failedChecks: {}, records: [], events: [], turns: 0 };
@@ -214,6 +214,7 @@ export function recordCheck(mIn: Memory, inp: { topic: string; topicTitle: strin
   const ts = inp.ts ?? new Date().toISOString(); const m = clone(mIn); const ops: MemOp[] = []; const events: AdaptEvent[] = [];
   const before = effective(inp.initial, m, inp.conv);
   const push = (param: ParamId, next: number, rule: string) => { const prev = effective(inp.initial, m, inp.conv)[param]; const n = clampParam(param, next); if (prev === n) return; m.session.conv = inp.conv; m.session.values[param] = n; const ev: AdaptEvent = { id: id("AE"), ts, conv: inp.conv, msg: null, param, prev, next: n, scope: "session", trigger: "comprehension_check", evidence: `Teach-back: “${inp.question.slice(0, 90)}” → ${inp.correct ? "correct" : "incorrect"}`, rule, component: "Comprehension and Learning Engine", reviewRequired: false, status: "applied" }; events.push(ev); m.events.push(ev); };
+  m.asked = { ...(m.asked ?? {}), [inp.topic]: (m.asked?.[inp.topic] ?? 0) + 1 };
   if (inp.correct) {
     upsertRecord(m, ops, ts, inp.conv, `edu:demonstrated:${inp.topic}`, { kind: "educational_context", content: `${inp.topicTitle}: answered a teach-back question correctly`, source: "teach_back", confidence: "medium", status: "active", expiry: "reconfirm_30d" }, "Immediate check only. Does not establish long-term retention");
     const c = effective(inp.initial, m, inp.conv); if (c.teachback_frequency > inp.initial.teachback_frequency) push("teachback_frequency", inp.initial.teachback_frequency, "C1 check passed → return teach-back to default");

@@ -101,7 +101,7 @@ export async function run(inp: RunInput, emit: Emit = () => {}, signal?: AbortSi
     ].filter(Boolean).join(" ");
     const cite = sources.length ? `\n\nSources you may cite (numbered). After each sentence that states a medical fact, add the number of a source whose passages support it, like [1]. Never cite a number that is not listed. If a fact is not supported by these sources or the approved content, do not state it as fact; say the care team can explain.\n${sources.map((s, i) => `[${i + 1}] ${s.title}, ${s.org}. Passages: ${s.passages.map(p => `"${p}"`).join(" ")}`).join("\n")}` : "\n\nNo verified source matched this question. Keep to general education, say so briefly, and suggest the care team for specifics.";
     const convo = history.length ? " Use the earlier conversation for context, so follow-ups like “simpler” or “why?” refer to what was just discussed." : "";
-    const fmt = "Plain text with simple markdown only (**bold**, numbered or bulleted lists). No headings, no tables. Do not include a quiz; the app offers its own check.";
+    const fmt = "Plain text with simple markdown only (**bold**, numbered or bulleted lists). No headings, no tables. Do not include a quiz; the app offers its own check. After everything else, on one final line, write QUESTIONS: followed by 1 to 3 short questions this reader could ask their own care team about their situation, separated by \" | \". Use only questions general education cannot answer, in the reader's own voice.";
     const guide = guidancePrompt(applied);
     const approved = topic ? `\n\nApproved content for this profile:\n${JSON.stringify({ title: topic.title, explanation: topic.why[plan.level], steps: topic.steps, comparison: topic.example, terms: topic.terms })}` : "";
     const system = (topic
@@ -131,7 +131,9 @@ export async function run(inp: RunInput, emit: Emit = () => {}, signal?: AbortSi
       }
     }
     if (g.text && !g.error) {
-      reply.text = stripInvalid(g.text, sources.length); if (reply.text !== g.text) emit({ t: "replace", text: reply.text });
+      const qm = g.text.match(/\n*\**QUESTIONS:?\**\s*(.+?)\s*$/i);
+      if (qm) { reply.careQuestions = qm[1].split("|").map(s => s.trim().replace(/^[-*\d.)\s]+/, "")).filter(s => s.length > 8 && s.length < 160).slice(0, 3); const cut = g.text.slice(0, qm.index).trimEnd(); g = { ...g, text: cut }; emit({ t: "replace", text: cut }); }
+      reply.text = stripInvalid(g.text ?? "", sources.length); if (reply.text !== g.text) emit({ t: "replace", text: reply.text });
       model = MODEL; genResult = `${MODEL} answered in ${g.ms}ms${g.firstTokenMs != null ? ` (first token ${g.firstTokenMs}ms)` : ""}, ${attempts} attempt${attempts > 1 ? "s" : ""}${note}`;
       if (!topic) { reply.source = sources.length ? "Verified sources (see citations)" : "General model knowledge (no approved content or verified source matched)"; reply.adaptations = [...reply.adaptations.filter(a => !a.startsWith("SAFETY")), "GENERAL_KNOWLEDGE_ANSWER", ...reply.adaptations.filter(a => a.startsWith("SAFETY"))]; reply.changed.push("Answered from general model knowledge because no approved content matched."); }
       if (history.length) reply.used.push(`The last ${history.length} turns of this conversation.`);

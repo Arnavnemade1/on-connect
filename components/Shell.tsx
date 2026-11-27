@@ -2,13 +2,13 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Activity, Bone, BookOpen, Bookmark, Calculator, ChartLine, ChevronDown, ChevronsLeft, Cloud, History, Award, Grid3x3, ChevronsRight, CircleHelp, ClipboardCheck, FileText, FlaskConical, GitCompare, HeartPulse, LayoutDashboard, Library, Lock, Menu, MessageSquarePlus, Microscope, Moon, PenLine, Plus, ScrollText, Search, ShieldCheck, Stethoscope, Sun, UserRound, Users, X, Sigma, type LucideIcon } from "lucide-react";
+import { Activity, Bone, BookOpen, Bookmark, Calculator, ChartLine, ChevronDown, ChevronsLeft, Cloud, History, Award, Grid3x3, Layers, ChevronsRight, CircleHelp, ClipboardCheck, FileText, FlaskConical, GitCompare, HeartPulse, LayoutDashboard, Library, Lock, Menu, MessageSquarePlus, Microscope, Moon, PenLine, Plus, ScrollText, Search, ShieldCheck, Stethoscope, Sun, UserRound, Users, X, Sigma, type LucideIcon } from "lucide-react";
 import { useChat } from "@/lib/chat";
 
 const GROUPS: [string, [string, string, LucideIcon][]][] = [
   ["Learn", [["/dashboard", "Dashboard", LayoutDashboard], ["/procedures", "Procedure explorer", Stethoscope], ["/anatomy", "Anatomy", Bone], ["/words", "Medical words", BookOpen]]],
   ["Support", [["/feelings", "My feelings", HeartPulse], ["/questions", "My questions", CircleHelp], ["/family", "Family & school", Users]]],
-  ["Research", [["/study", "Comprehension study", FlaskConical], ["/protocol", "Protocol & power", Calculator], ["/eval", "Evaluation harness", Activity], ["/analysis", "Data analysis", Sigma], ["/research", "Research dashboard", ChartLine], ["/compare", "Compare ages", GitCompare], ["/literature", "Evidence", Library], ["/log", "Audit log", ScrollText], ["/clinician", "Clinician review", ClipboardCheck], ["/method", "Method", Microscope], ["/paper", "Paper draft", PenLine], ["/isef", "Science fair hub", Award], ["/guidelines", "Guideline matrix", Grid3x3], ["/admin", "Research admin", ShieldCheck]]],
+  ["Research", [["/study", "Comprehension study", FlaskConical], ["/protocol", "Protocol & power", Calculator], ["/eval", "Evaluation harness", Activity], ["/analysis", "Data analysis", Sigma], ["/research", "Research dashboard", ChartLine], ["/compare", "Compare ages", GitCompare], ["/literature", "Evidence", Library], ["/log", "Audit log", ScrollText], ["/clinician", "Clinician review", ClipboardCheck], ["/method", "Method", Microscope], ["/paper", "Paper draft", PenLine], ["/isef", "Science fair hub", Award], ["/guidelines", "Guideline matrix", Grid3x3], ["/algorithm", "Algorithm", Layers], ["/admin", "Research admin", ShieldCheck]]],
   ["You", [["/report", "Session report", FileText], ["/library", "Saved", Bookmark], ["/setup", "My profile", UserRound], ["/history", "Conversation history", History], ["/account", "Account & research", Cloud], ["/privacy", "Privacy & data", Lock]]],
 ];
 const PAGES = GROUPS.flatMap(([, l]) => l);

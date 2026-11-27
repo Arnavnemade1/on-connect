@@ -28,6 +28,7 @@ export interface Reply {
   // v0.6
   config?: Config; configBefore?: Config; events?: AdaptEvent[]; ops?: MemOp[]; psych?: Psych; revise?: string | null; sources?: string[]; citations?: import("./sources").CitationReport;
   teachback?: { topic: string; q: Q; index: number } | null; versions?: Record<string, string>; conv?: string | null; latencyMs?: number; resources?: { id: string; name: string; category: string; url: string }[];
+  careQuestions?: string[];
   guidance?: { applied: string[]; checked: string[]; hits: import("./guidelines").WordingHit[]; version: string };
 }
 
@@ -146,10 +147,11 @@ export function respond(question: string, p: Profile, lastTopic: string | null, 
 
   // Comprehension and Learning Engine: offer a teach-back question when the setting calls for it
   const quiz = QUIZ[topic.id] ?? []; const demonstrated = memory.records.some(r => r.key === `edu:demonstrated:${topic!.id}` && r.status === "active");
-  const want = cfg.teachback_frequency === 2 || (cfg.teachback_frequency === 1 && !demonstrated && !signals.includes("UNDERSTOOD"));
-  const idx = quiz.length ? (memory.failedChecks[topic.id] ?? 0) % quiz.length : -1;
+  const want = cfg.teachback_frequency >= 1;   // a quick check after every explanation; answering one moves to the next question in the bank
+  const idx = quiz.length ? (memory.asked?.[topic.id] ?? 0) % quiz.length : -1;
   const teachback = want && idx >= 0 && !strategy?.id.startsWith("SADNESS") ? { topic: topic.id, q: quiz[idx], index: idx } : null;
   add("COMPREHENSION_CHECK", "Comprehension and Learning Engine", `teach_back?(frequency=${label("teachback_frequency", cfg.teachback_frequency)}, demonstrated=${demonstrated})`, teachback ? `offer: “${teachback.q.q}”` : "not offered", teachback ? "adapted" : "ok");
 
-  return { ...base, ...common, text, topicId: topic.id, used, changed: changedL, adaptations, safety: advice ? "INDIVIDUAL_ADVICE_REDIRECT" : null, source: `Onconnect approved content (draft, pending clinician review): ${topic.title}`, teachback };
+  const careQuestions = advice ? ["What does this mean for me specifically?"] : topic.id === "diagnosis" ? ["What does my diagnosis mean for my treatment plan?", "What will happen next, and when?", "Who can I talk to when I feel worried?"] : [`When is my ${topic.title.replace(/^[A-Z][a-z]/, c => c.toLowerCase())}, and how long will it take?`, "What do I need to do to get ready?", "Can someone I trust stay with me?"];
+  return { ...base, ...common, careQuestions, text, topicId: topic.id, used, changed: changedL, adaptations, safety: advice ? "INDIVIDUAL_ADVICE_REDIRECT" : null, source: `Onconnect approved content (draft, pending clinician review): ${topic.title}`, teachback };
 }
