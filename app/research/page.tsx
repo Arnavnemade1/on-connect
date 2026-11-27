@@ -1,4 +1,5 @@
 "use client";
+import { eventLabel } from "@/lib/memory";
 import Link from "next/link";
 import { useLog, useMemory, useRatings, useStudy } from "@/lib/store";
 import { mean } from "@/lib/stats";
@@ -20,6 +21,6 @@ export default function Research() {
       <div className="card"><h2>Adaptation operations</h2>{ad.length ? <Bars data={ad.slice(0, 8)} /> : <p className="muted">No data yet.</p>}</div>
       <div className="card"><h2>User signals</h2>{sig.length ? <Bars data={sig} /> : <p className="muted">No signals yet. Try saying “simpler” or “I don&apos;t understand” in chat.</p>}</div>
       <div className="card"><h2>Feedback and models</h2>{fb.length ? <Bars data={fb} /> : <p className="muted">No feedback yet.</p>}<h3 style={{ marginTop: 14 }}>Answer source</h3><Bars data={models.length ? models : [["none", 0]]} /></div></div>
-    <div className="card"><h2>Memory drift</h2><p className="muted">Level shift after each learning event ({mem.events.length} events).</p>{mem.events.length ? <table><tbody>{[...mem.events].reverse().slice(0, 8).map(e => <tr key={e.ts}><td className="muted">{new Date(e.ts).toLocaleTimeString()}</td><td>{e.signals.map(s => <span key={s} className="tagl">{s}</span>)}</td><td>{e.before.levelShift} → {e.after.levelShift}</td></tr>)}</tbody></table> : <p className="muted">None yet.</p>}</div>
+    <div className="card"><h2>Recent adaptation events</h2><p className="muted">Every parameter change, with its rule and scope ({mem.events.length} recorded on this device). <Link href="/report">Session report</Link></p>{mem.events.length ? <div className="wrap"><table><thead><tr><th>Event</th><th>Change</th><th>Scope</th><th>Trigger</th><th>Status</th></tr></thead><tbody>{[...mem.events].reverse().slice(0, 12).map(e => <tr key={e.id}><td><code>{e.id}</code></td><td>{eventLabel(e)}</td><td>{e.scope}</td><td>{e.trigger.replaceAll("_", " ")}</td><td>{e.status}</td></tr>)}</tbody></table></div> : <p className="muted">No events yet.</p>}</div>
     <div className="card"><h2>Hypotheses</h2><ol><li><b>H1</b> Adapted explanations produce higher comprehension than generic ones. <Link href="/study">Run the study</Link></li><li><b>H2</b> Reading grade of replies tracks the target for each age profile (grade error stays small).</li><li><b>H3</b> After “confusing” signals, later replies for that topic are simpler and use more scaffolding.</li><li><b>H4</b> Clinician-rated accuracy of AI explanations is high and safety rules catch personal advice requests. <Link href="/clinician">Review content</Link></li></ol></div></>);
 }

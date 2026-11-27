@@ -1,0 +1,1114 @@
+{
+ "title": "Pediatric Oncology Communication & Preparation Evidence Matrix (Expanded)",
+ "imported": "2026-11-27",
+ "rows": [
+  {
+   "id": "G-3-5-diagnosis",
+   "age": "3-5",
+   "topic": "diagnosis",
+   "situation": "Understanding a diagnosis",
+   "crossCutting": false,
+   "rule": "Children ages 3–5 operate in Piaget's pre-operational stage and understand illness through 'phenomenism' and 'contagion' (Bibace & Walsh, 1980), frequently believing cancer was caused by bad behavior, angry thoughts, or catching a germ from someone else. Use short, concrete sentences (5–8 words), literal language, and simple visual metaphors such as 'good cells' and 'troublemaker cells,' while repeatedly reassuring the child that nothing they did, thought, or ate caused the illness and that nobody can catch it from them. Repeat explanations calmly across multiple brief conversations because preschoolers process information in small fragments and rely heavily on caregiver emotional cues.",
+   "dont": "Don't use abstract biological terms like 'malignancy, ' 'mutation, ' or 'metastasis, ' don't give long multi-paragraph lectures, and never leave magical thinking or self-blame unaddressed.",
+   "example": "Your body has lots of good cells that help you run and play, and right now some troublemaker cells are making you feel sick. Nothing you did or thought made this happen, and nobody can catch it from you. The doctors have special medicine to help your good cells win.",
+   "source": "Bibace & Walsh (1980), Pediatrics, 66(6), pp. 913–914; NCI Children with Cancer: A Guide for Parents; Thompson & Young-Saleme (2015), Pediatr Blood Cancer, 62(S5), p. S685",
+   "refs": [
+    "bibace80",
+    "thompson15",
+    "nci"
+   ],
+   "type": "Study / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "malignan\\w*",
+     "phrase": "malignancy"
+    },
+    {
+     "pattern": "mutation\\w*",
+     "phrase": "mutation"
+    },
+    {
+     "pattern": "metasta\\w*",
+     "phrase": "metastasis"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-mri",
+   "age": "3-5",
+   "topic": "mri",
+   "situation": "MRI",
+   "crossCutting": false,
+   "rule": "Prepare preschoolers on the same day or just 1–2 hours before the MRI to prevent prolonged anticipatory anxiety, using hands-on medical play, picture books, and a mock-scanner rehearsal so they can hear recorded knocking sounds and practice lying still like a statue. Emphasize concrete sensory details—seeing a big white donut-shaped camera, feeling a cool breeze inside the tunnel, hearing loud drumming or knocking noises through ear defenders, and lying on a moving bed—while clarifying that the camera never touches or hurts them. Allow a favorite metal-free comfort item (stuffed animal or blanket) and caregiver presence in the scan room when safe.",
+   "dont": "Don't prepare a 3-to-5-year-old days in advance (which fuels nighttime fears), don't say 'it won't be scary' or 'it's super quiet, ' and don't leave them surprised by the loud acoustic knocking or head coil.",
+   "example": "Today we are going to play a statue game inside a giant camera tunnel that takes pictures of your insides without ever touching you. It makes a loud knocking sound, like a drum or a woodpecker, so you'll wear special earmuffs and hold your teddy bear while we count to ten together.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); de Bie et al. (2010), Eur J Pediatr, 169, pp. 1079–1081; Flowers & Birnie (2015), Pediatr Blood Cancer, 62(S5), p. S696",
+   "refs": [
+    "aap21",
+    "debie10",
+    "flowers15"
+   ],
+   "type": "Guideline / Study",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "won'?t be scary",
+     "phrase": "it won't be scary"
+    },
+    {
+     "pattern": "super quiet|is (very )?quiet",
+     "phrase": "it's super quiet"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-ct",
+   "age": "3-5",
+   "topic": "ct",
+   "situation": "CT",
+   "crossCutting": false,
+   "rule": "Introduce the CT scan on the same day using a toy model or photograph, describing the scanner as a giant donut or spaceship ring that slides them smoothly through while taking fast pictures in just a few minutes. Explain every sensory step in order: lying flat on a padded table, hearing a soft whirring hum, and—if IV contrast is ordered—receiving 'special picture juice' through their existing line or port so the camera sees clearly. Keep a caregiver at the child's side or behind the glass window within direct line of sight, and emphasize that the machine never pinches or touches their skin.",
+   "dont": "Don't use the word 'dye' for contrast (which sounds identical to 'die' to literal preschoolers), don't say the machine will 'shoot' a picture, and don't separate the child from their caregiver without preparation.",
+   "example": "You get to ride on a smooth sliding bed right through the middle of a big donut camera. It makes a soft whirring noise and takes pictures in just a couple of minutes without touching you, and Mom will stay right beside you the whole time.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); Royal Children's Hospital Procedural Pain Management Guideline",
+   "refs": [
+    "aap21",
+    "rch"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "\\bdye\\b",
+     "phrase": "dye (sounds like die)"
+    },
+    {
+     "pattern": "\\bshoot\\w*",
+     "phrase": "shoot a picture"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-ultrasound",
+   "age": "3-5",
+   "topic": "ultrasound",
+   "situation": "Ultrasound",
+   "crossCutting": false,
+   "rule": "Prepare the child right before the exam by focusing on tactile and visual sensory expectations: a dimly lit room, lying on a crinkly paper bed, feeling warm 'jelly' squirted onto their tummy, and watching a smooth wand glide across their skin to make black-and-white pictures on a TV monitor. Let the child touch a drop of ultrasound gel on their finger or doll first so the squishy texture is familiar and non-threatening. Reassure them that the wand only presses gently and does not poke, cut, or hurt.",
+   "dont": "Don't dim the room lights abruptly without warning, don't apply cold gel without explaining what it is, and don't use unfamiliar terms like 'transducer' or 'sonogram' without plain-language translation.",
+   "example": "First the nurse is going to put some warm, squishy jelly on your belly—let's feel a little bit on your finger first! Then she'll glide a smooth flashlight wand over the jelly so we can see pictures of your insides on the TV screen.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); Flowers & Birnie (2015), Pediatr Blood Cancer, 62(S5), p. S696",
+   "refs": [
+    "aap21",
+    "flowers15"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "transducer",
+     "phrase": "transducer"
+    },
+    {
+     "pattern": "sonogram",
+     "phrase": "sonogram"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-bloodtest",
+   "age": "3-5",
+   "topic": "bloodtest",
+   "situation": "Blood test",
+   "crossCutting": false,
+   "rule": "Combine topical anesthetic cream (applied 30–60 minutes ahead) with upright comfort positioning (sitting chest-to-chest or side-by-side on a caregiver's lap rather than pinned supine) and active sensory distraction such as blowing bubbles, pinwheels, or interactive pop-up books. Give brief, honest sensory warnings right before the stick ('a quick pinch or push') and assign the child a concrete job like holding still or blowing away the feeling. Praise specific coping behaviors afterward rather than telling them not to cry.",
+   "dont": "Don't restrain preschoolers flat on their backs unnecessarily, don't say 'this won't hurt at all' or 'this may sting and burn' (nocebo language), and don't prepare them hours or days ahead for a routine blood draw.",
+   "example": "We put magic numbing cream on your arm so your skin feels sleepy. While you sit right on Dad's lap and blow these big bubbles for me, the nurse will do a quick poke to check your blood—your job is to keep blowing until the bandage goes on.",
+   "source": "Birnie et al. (2018), Cochrane Database Syst Rev, CD005179; Royal Children's Hospital Procedural Pain Management Guideline; AAP Child Life Services (2021)",
+   "refs": [
+    "aap21",
+    "birnie18",
+    "rch"
+   ],
+   "type": "Systematic Review / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "won'?t hurt",
+     "phrase": "this won't hurt"
+    },
+    {
+     "pattern": "\\bsting\\w*",
+     "phrase": "sting"
+    },
+    {
+     "pattern": "\\bburn\\w*",
+     "phrase": "burn"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-catheter",
+   "age": "3-5",
+   "topic": "catheter",
+   "situation": "Catheter/Port",
+   "crossCutting": false,
+   "rule": "Use hands-on medical play with a teaching doll that has an implanted port (such as a Medikin doll) immediately before access so the preschooler can feel the raised bump, apply pretend numbing cream, and place a bandage on the doll. Explain in simple, literal terms that the port is a 'special doorway' or 'button' under their skin that lets medicine go in without arm pokes, and describe the cold wet wipe, the quick push after numbing cream, and the clear tape covering. Keep the child in a caregiver's comfort hold with active visual or blowing distraction during needle insertion.",
+   "dont": "Don't surprise a preschooler with port access, don't call the Huber needle a 'big needle' or say 'we're going to stick your chest, ' and don't let unnecessary staff crowd the room.",
+   "example": "This special button under your skin is a doorway for your medicine so you don't need pokes in your arm. First let's put sleepy cream and a bandage on Teddy's button, and then we'll do yours while you watch your favorite show on the tablet.",
+   "source": "ACLP Bulletin (Fall 2024), Supporting Children Through a Port Access, p. 32; Flowers & Birnie (2015), Pediatr Blood Cancer, 62(S5), p. S696",
+   "refs": [
+    "flowers15",
+    "aclp24"
+   ],
+   "type": "Guideline / Expert Opinion",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "big needle",
+     "phrase": "big needle"
+    },
+    {
+     "pattern": "stick your chest",
+     "phrase": "stick your chest"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-biopsy",
+   "age": "3-5",
+   "topic": "biopsy",
+   "situation": "Biopsy",
+   "crossCutting": false,
+   "rule": "Prepare the child on the same day by focusing exclusively on what they will see, smell, and feel before falling asleep—wearing cozy pajamas, riding in a wagon or stretcher, smelling flavored air through a soft pilot mask, and waking up in the recovery room with their caregiver right beside them. Clarify that anesthesia is a 'special medicine sleep' that lasts only while the doctors work and differs completely from regular bedtime sleep, so the child will not feel, hear, or remember anything during the biopsy. Offer a realistic choice such as picking the mask scent (bubblegum or strawberry) or bringing a comfort toy into the induction room.",
+   "dont": "Don't say 'we are going to put you to sleep' (which preschoolers equate with pet euthanasia), don't say 'cut out a piece of you, ' and don't give graphic descriptions of needles or biopsy instruments used while they are asleep.",
+   "example": "You're going to breathe special sleepy air through a soft pilot mask—you can pick strawberry or bubblegum smell! While you take a special medicine nap, the doctor checks a tiny spot, and Mom will be sitting right next to your bed when you wake up.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); Mount Sinai Pediatric Surgery Preparation Guide; NCI Guide for Parents",
+   "refs": [
+    "aap21",
+    "mountsinai",
+    "nci"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "put (you )?to sleep",
+     "phrase": "put you to sleep"
+    },
+    {
+     "pattern": "cut (out|open)",
+     "phrase": "cut out a piece of you"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-embolization",
+   "age": "3-5",
+   "topic": "embolization",
+   "situation": "Embolization",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for children ages 3–5 undergoing tumor embolization; fall back on evidence-based preschool general anesthesia and interventional procedure preparation. Prepare on the same day using concrete sensory cues (the induction mask, the bright lights of the procedure room, waking up with a small bandage on the leg or groin) and emphasize that their caregiver stays close until they fall asleep and returns immediately in recovery. Keep explanations focused on the doctors 'helping the body' while the child takes a special medicine nap.",
+   "dont": "Don't attempt to explain vascular anatomy, catheters, or blood vessel occlusion to a pre-operational child, and don't use phrases like 'put to sleep' or 'cut open.'",
+   "example": "While you take your special medicine nap with your sleepy mask, the doctors will help your body so the troublemaker cells can't grow. Your teddy bear can stay with you, and Dad will be right there when you wake up with a small bandage.",
+   "source": "No specific evidence (fallback: AAP Policy Statement on Child Life Services, 2021; Bibace & Walsh, 1980)",
+   "refs": [
+    "bibace80",
+    "aap21"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": true,
+   "avoid": [
+    {
+     "pattern": "put (you )?to sleep",
+     "phrase": "put to sleep"
+    },
+    {
+     "pattern": "cut (out|open)",
+     "phrase": "cut open"
+    }
+   ]
+  },
+  {
+   "id": "G-3-5-ablation",
+   "age": "3-5",
+   "topic": "ablation",
+   "situation": "Tumor ablation",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for children ages 3–5 undergoing tumor ablation; fall back on general preschool anesthesia and sensory preparation protocols. Prepare on the same day, focusing on the mask induction, the special medicine sleep that prevents all pain, and waking up in recovery with a caregiver present and a small bandage over the probe site. Use reassuring, literal language about helping the body get rid of troublemaker cells without frightening physical imagery.",
+   "dont": "Don't use words like 'burn, ' 'freeze, ' 'heat up, ' or 'zap' inside the body, which provoke intense literal fear of bodily harm in ages 3–5.",
+   "example": "You will breathe sleepy air from the pilot mask to take a special medicine nap so you won't feel a thing. While you nap, the doctors will help get rid of the troublemaker cells, and Mom will be right beside you when you wake up.",
+   "source": "No specific evidence (fallback: AAP Policy Statement on Child Life Services, 2021; Flowers & Birnie, 2015)",
+   "refs": [
+    "aap21",
+    "flowers15"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": true,
+   "avoid": [
+    {
+     "pattern": "\\bburn\\w*",
+     "phrase": "burn"
+    },
+    {
+     "pattern": "\\bfreez\\w*",
+     "phrase": "freeze"
+    },
+    {
+     "pattern": "heat (it )?up",
+     "phrase": "heat up"
+    },
+    {
+     "pattern": "\\bzap\\w*",
+     "phrase": "zap"
+    }
+   ]
+  },
+  {
+   "id": "G-6-8-diagnosis",
+   "age": "6-8",
+   "topic": "diagnosis",
+   "situation": "Understanding a diagnosis",
+   "crossCutting": false,
+   "rule": "Children ages 6–8 are transitioning into Piaget's concrete operational stage and view illness through 'contamination' and early 'internalization' (Bibace & Walsh, 1980), often worrying that cancer spread because they touched something or misbehaved. Name the illness honestly as 'cancer' and define it in concrete, functional terms—tiny building blocks called cells that stopped following body rules and are crowding out healthy cells—while explicitly confirming it is not contagious and not caused by anything they did. Explain the immediate treatment plan step-by-step (medicine, scans, clinic visits) using picture books or simple diagrams, and check understanding by asking them to explain it back in their own words.",
+   "dont": "Don't withhold the word 'cancer' (school-age children overhear staff and parents and imagine catastrophic scenarios), don't rely on babyish fairy-tale metaphors alone, and don't assume one explanation is enough without checking what they understood.",
+   "example": "Your body is made of millions of tiny building blocks called cells. Cancer means some cells stopped following the rules and are crowding out the healthy cells, so the doctors are giving you strong medicine to stop them. You can't catch cancer from anyone, and nothing you did caused it.",
+   "source": "Bibace & Walsh (1980), Pediatrics, 66(6), pp. 914–915; NCI Children with Cancer: A Guide for Parents; Thompson & Young-Saleme (2015), Pediatr Blood Cancer, 62(S5), p. S685",
+   "refs": [
+    "bibace80",
+    "thompson15",
+    "nci"
+   ],
+   "type": "Study / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-6-8-mri",
+   "age": "6-8",
+   "topic": "mri",
+   "situation": "MRI",
+   "crossCutting": false,
+   "rule": "Prepare 1–3 days ahead using photographs of the scanner, audio samples of the knocking sounds, and practice holding still at home or in a mock scanner so the child builds concrete mastery. Explain why stillness matters in practical cause-and-effect terms (moving makes the camera pictures blurry, just like a wiggling phone camera) and break the scan time into manageable mental chunks (such as two or three favorite songs). Offer meaningful choices within boundaries—selecting a movie via mirror goggles or music through headphones—and reassure them they can talk to the technologist through the intercom at any moment.",
+   "dont": "Don't dismiss fears of the enclosed tunnel, don't tell them the scanner is silent, and don't threaten them that moving will 'ruin everything' or force them to start over as a punishment.",
+   "example": "The MRI camera is a big tunnel open at both ends, and you get headphones to listen to music or watch a movie while it takes pictures. Your important job is to hold super still like a statue for a few songs at a time so the pictures come out clear instead of blurry.",
+   "source": "de Bie et al. (2010), Eur J Pediatr, 169, pp. 1079–1082; AAP Policy Statement on Child Life Services (Pediatrics, 2021); Flowers & Birnie (2015), p. S696",
+   "refs": [
+    "aap21",
+    "debie10",
+    "flowers15"
+   ],
+   "type": "Study / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "ruin everything",
+     "phrase": "ruin everything"
+    },
+    {
+     "pattern": "(is|it's) silent",
+     "phrase": "the scanner is silent"
+    }
+   ]
+  },
+  {
+   "id": "G-6-8-ct",
+   "age": "6-8",
+   "topic": "ct",
+   "situation": "CT",
+   "crossCutting": false,
+   "rule": "Prepare 1–2 days in advance by walking through the exact sequence of events: changing into comfy clothes without metal, lying on the motorized table, sliding smoothly through the large donut-shaped ring, and holding their breath for a few seconds if asked. Explain clearly why IV contrast ('special picture liquid') is used to make blood vessels and organs light up clearly on the computer screen, and warn them briefly that it might feel cool going into their line. Reassure them that the machine rotates quietly around them without ever touching them and finishes in just a few minutes.",
+   "dont": "Don't call IV contrast 'dye' without explaining what it actually is, don't leave them unaware of breath-hold instructions, and don't use intimidating words like 'radiation beam' without explaining it is just like a fast X-ray picture.",
+   "example": "The CT scanner is a super-fast camera shaped like a big ring that slides you through and takes pictures without touching you. If you get special picture liquid through your IV, it helps the doctors see your insides clearly on their computer.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021); Royal Children's Hospital Procedural Pain Management Guideline",
+   "refs": [
+    "aap21",
+    "rch"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "\\bdye\\b",
+     "phrase": "dye (without explaining)"
+    },
+    {
+     "pattern": "radiation beam",
+     "phrase": "radiation beam"
+    }
+   ]
+  },
+  {
+   "id": "G-6-8-ultrasound",
+   "age": "6-8",
+   "topic": "ultrasound",
+   "situation": "Ultrasound",
+   "crossCutting": false,
+   "rule": "Explain 1 day ahead or on the day of the exam how ultrasound uses safe, high-frequency sound waves—too high for human ears to hear—that bounce off organs like an echo to draw a live picture on a monitor. Show the smooth transducer wand before touching their skin, explain that warm gel helps the sound waves travel without air bubbles getting in the way, and invite the child to watch the screen and ask questions during the scan. If a full bladder is required, explain in concrete terms that water in the bladder works like a clear window so the sound waves can see behind it.",
+   "dont": "Don't use unexplained jargon like 'sonogram, ' 'acoustic, ' or 'echogenic, ' and don't leave the child wondering why they have to drink extra water and hold their urine beforehand.",
+   "example": "This wand sends out sound waves—too high for our ears to hear—that bounce off your organs like an echo and draw a picture on the screen. The warm gel helps the wand glide smoothly, and you can watch the TV monitor with us the whole time.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021); AHRQ Health Literacy Universal Precautions Toolkit",
+   "refs": [
+    "aap21",
+    "ahrq"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "sonogram",
+     "phrase": "sonogram"
+    },
+    {
+     "pattern": "\\bacoustic",
+     "phrase": "acoustic"
+    },
+    {
+     "pattern": "echogenic",
+     "phrase": "echogenic"
+    }
+   ]
+  },
+  {
+   "id": "G-6-8-bloodtest",
+   "age": "6-8",
+   "topic": "bloodtest",
+   "situation": "Blood test",
+   "crossCutting": false,
+   "rule": "Apply topical anesthetic cream 30–60 minutes prior and partner with the child to build a personalized coping plan offering concrete choices: which arm or finger to use, sitting upright with a parent or lying back, watching the stick or looking away, and selecting an active distraction (tablet game, search-and-find book, or VR headset). Give an accurate, neutral sensory description ('a cold wipe, a tight rubber band squeeze, and a quick pinch or push') right before venipuncture, and validate their feelings honestly whether they stay calm or cry.",
+   "dont": "Don't force a school-age child to watch or force them to look away, don't use nocebo words like 'sting' or 'burn, ' and never shame them by saying 'big kids don't cry.'",
+   "example": "You get to choose which arm we check, whether you want to watch or play a game on the tablet, and we'll put numbing cream on first. You'll still feel a tight squeeze and a quick push, and it's completely okay to say 'ouch' or squeeze my hand.",
+   "source": "Birnie et al. (2018), Cochrane Database Syst Rev, CD005179; Inan & Inal (2019), Clin J Pain, 35, pp. 140–145; Royal Children's Hospital Guideline",
+   "refs": [
+    "birnie18",
+    "inan19",
+    "rch"
+   ],
+   "type": "Systematic Review / Study",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "\\bsting\\w*",
+     "phrase": "sting"
+    },
+    {
+     "pattern": "\\bburn\\w*",
+     "phrase": "burn"
+    },
+    {
+     "pattern": "big kids don'?t cry",
+     "phrase": "big kids don't cry"
+    }
+   ]
+  },
+  {
+   "id": "G-6-8-catheter",
+   "age": "6-8",
+   "topic": "catheter",
+   "situation": "Catheter/Port",
+   "crossCutting": false,
+   "rule": "Prepare using a port model or clear anatomical diagram showing how the small disc sits beneath the skin and connects to a soft tube leading into a large vein, giving the child concrete mastery over how their 'button' works. Narrate each step sequentially—applying numbing cream, cleaning the skin with cold circular soap wipes for 30 seconds to wash away germs, feeling a firm downward push as the small winged tube clicks into place, and securing it with a clear dressing—and let the child help with safe tasks like holding tape or counting down.",
+   "dont": "Don't rush the sterile skin-prep step without warning that it feels cold and wet, don't hide the access needle behind your back, and don't ignore anxiety about the needle staying in while accessed.",
+   "example": "First we wipe the skin with cold soap in circles to wash away germs, then after your numbing cream works, you'll feel a firm push as the tiny tube goes into your port button. Once the clear sticker goes over it, the needle comes right out and only a soft plastic straw stays inside.",
+   "source": "ACLP Bulletin (Fall 2024), Supporting Children Through a Port Access, p. 32; Flowers & Birnie (2015), Pediatr Blood Cancer, 62(S5), p. S696",
+   "refs": [
+    "flowers15",
+    "aclp24"
+   ],
+   "type": "Guideline / Expert Opinion",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-6-8-biopsy",
+   "age": "6-8",
+   "topic": "biopsy",
+   "situation": "Biopsy",
+   "crossCutting": false,
+   "rule": "Prepare 2–3 days in advance with clear, concrete cause-and-effect details: explain why doctors need a tiny tissue sample (smaller than a grain of rice) to look at under a microscope so they can pick the exact right medicine, how anesthesia keeps them completely asleep and pain-free, and what small bandage and mild soreness to expect when they wake up. Clarify that no body parts or organs are being removed and that they can choose between mask or IV anesthesia induction if medically appropriate. Encourage questions and have the child explain back the basic steps to catch hidden misconceptions.",
+   "dont": "Don't leave school-age children imagining major surgery or organ removal, don't use frightening terms like 'slice' or 'cut open, ' and don't omit mentioning mild post-procedure soreness or bruising.",
+   "example": "While you are completely asleep from anesthesia medicine, the doctor uses a tiny straw-like tool to take a speck of tissue—smaller than a grain of rice—to study under a microscope. You won't feel anything during it, and you'll wake up with a small bandage and maybe a little soreness for a day.",
+   "source": "UPMC Children's Hospital of Pittsburgh Image-Guided Biopsies; AAP Policy Statement on Child Life Services (Pediatrics, 2021)",
+   "refs": [
+    "aap21",
+    "upmc"
+   ],
+   "type": "Guideline / Patient Education",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "\\bslic\\w*",
+     "phrase": "slice"
+    },
+    {
+     "pattern": "cut open",
+     "phrase": "cut open"
+    }
+   ]
+  },
+  {
+   "id": "G-6-8-embolization",
+   "age": "6-8",
+   "topic": "embolization",
+   "situation": "Embolization",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for children ages 6–8 undergoing embolization; fall back on concrete operational developmental principles (Bibace & Walsh, 1980) and AAP procedural preparation standards. Prepare 2–3 days ahead using a simple drawing to show how doctors guide a tiny flexible tube through a blood vessel while the child is asleep under anesthesia to block blood flow feeding the lump so it shrinks. Focus on concrete sensory expectations before sleep (anesthesia mask or IV) and after waking up (lying flat for a few hours with a small bandage on the upper leg).",
+   "dont": "Don't use frightening imagery of blood vessels bursting or bleeding, and don't leave the child unprepared for having to lie still in recovery after femoral access.",
+   "example": "While you are completely asleep under anesthesia, the doctor guides a tiny soft thread through a blood tube to block the blood going to the lump so it shrinks. When you wake up, you'll have a small bandage on your leg and rest quietly in bed for a few hours.",
+   "source": "No specific evidence (fallback: Bibace & Walsh, 1980, Pediatrics, 66(6); AAP Child Life Services, 2021)",
+   "refs": [
+    "bibace80",
+    "aap21"
+   ],
+   "type": "Study / Guideline",
+   "noSpecificEvidence": true,
+   "avoid": [
+    {
+     "pattern": "\\bburst\\w*",
+     "phrase": "bursting"
+    }
+   ]
+  },
+  {
+   "id": "G-6-8-ablation",
+   "age": "6-8",
+   "topic": "ablation",
+   "situation": "Tumor ablation",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for children ages 6–8 undergoing tumor ablation; fall back on concrete operational procedural preparation guidelines. Prepare 2–3 days ahead by explaining in straightforward cause-and-effect terms that while the child is completely asleep under anesthesia, the doctor uses a special camera (CT or ultrasound) to guide a thin probe right to the tumor cells and stop them from growing. Emphasize that they will feel no pain during the procedure and will wake up with only a small bandage and mild temporary soreness.",
+   "dont": "Don't overwhelm a 6-to-8-year-old with technical physics of radiofrequency, microwave, or cryoablation, and avoid scary words like 'burning' or 'cooking' tissue.",
+   "example": "While you are asleep from anesthesia medicine, the doctor uses a camera to guide a thin probe right to the troublemaker cells to stop them from growing. You won't feel anything while you sleep, and afterward you'll just have a small bandage where the probe went in.",
+   "source": "No specific evidence (fallback: AAP Policy Statement on Child Life Services, 2021; Flowers & Birnie, 2015)",
+   "refs": [
+    "aap21",
+    "flowers15"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": true,
+   "avoid": [
+    {
+     "pattern": "\\bburning\\b",
+     "phrase": "burning"
+    },
+    {
+     "pattern": "\\bcook\\w*",
+     "phrase": "cooking"
+    }
+   ]
+  },
+  {
+   "id": "G-9-12-diagnosis",
+   "age": "9-12",
+   "topic": "diagnosis",
+   "situation": "Understanding a diagnosis",
+   "crossCutting": false,
+   "rule": "Children ages 9–12 are firmly in concrete operational thought moving toward early formal operations, understanding illness through 'internalization' and emerging 'physiologic' mechanisms (Bibace & Walsh, 1980). Provide a clear, logical biomedical explanation of how specific cells mutate, divide uncontrollably, and interfere with normal organ or blood function, and explain how each treatment modality (chemotherapy, surgery, radiation) targets those cells. Proactively ask what they have already heard from peers, social media, or the internet so you can correct frightening myths (such as assuming all cancers are fatal or contagious), and verify comprehension using teach-back.",
+   "dont": "Don't talk down to pre-teens with toddler metaphors ('boo-boos' or 'bad guys'), don't withhold diagnostic facts they are cognitively ready to grasp, and don't ignore peer or online misinformation.",
+   "example": "Cancer happens when certain cells change and multiply much faster than healthy cells, crowding the space your body needs to work properly. Chemotherapy travels through your bloodstream to stop those fast-growing cells. What have you heard about cancer from friends or online so we can sort out what's true?",
+   "source": "Bibace & Walsh (1980), Pediatrics, 66(6), pp. 915–916; NCI Children with Cancer: A Guide for Parents; Thompson & Young-Saleme (2015), p. S685",
+   "refs": [
+    "bibace80",
+    "thompson15",
+    "nci"
+   ],
+   "type": "Study / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "boo-?boo\\w*",
+     "phrase": "boo-boos"
+    },
+    {
+     "pattern": "bad guys",
+     "phrase": "bad guys"
+    }
+   ]
+  },
+  {
+   "id": "G-9-12-mri",
+   "age": "9-12",
+   "topic": "mri",
+   "situation": "MRI",
+   "crossCutting": false,
+   "rule": "Prepare several days to a week in advance with complete procedural and sensory details, explaining how the MRI uses a powerful magnet and radio waves—with zero radiation—to create detailed 3D cross-sectional pictures. Discuss the duration (typically 30–60 minutes broken into 3- to 5-minute scan sequences), the rhythmic knocking sounds, the importance of removing all metal, and how holding the pneumatic squeeze-ball alert button gives them direct two-way communication with the technologist at any moment. Offer control over music playlists, movie choices, and relaxation breathing or guided imagery rehearsal beforehand.",
+   "dont": "Don't underestimate a pre-teen's fear of claustrophobia or losing control inside the bore, and don't neglect explaining why IV contrast may be given partway through the scan.",
+   "example": "The MRI uses a large magnet and radio waves—no radiation—to take detailed 3D pictures in 3- to 5-minute sets. You'll hold a squeeze-ball call button the entire time so you can talk to the technologist whenever you need a break, and you can pick your own playlist for the headphones.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); de Bie et al. (2010), Eur J Pediatr, 169, pp. 1079–1083",
+   "refs": [
+    "aap21",
+    "debie10"
+   ],
+   "type": "Guideline / Study",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-9-12-ct",
+   "age": "9-12",
+   "topic": "ct",
+   "situation": "CT",
+   "crossCutting": false,
+   "rule": "Explain 3–5 days ahead how the CT scanner uses a fast rotating X-ray ring and computer to build detailed cross-sectional slices of the body in just a few minutes. Explicitly prepare them for the sensory effects of intravenous contrast—specifically a sudden, brief wave of warmth flushing down their body, a feeling like they might need to pee, and a temporary metallic taste in their mouth—reassuring them that these sensations last only 15–30 seconds and are completely normal. Review breath-hold cues and explain how drinking water afterward helps flush the contrast out through their kidneys.",
+   "dont": "Don't forget to warn pre-teens about the warm groin/bladder sensation from IV contrast, which frequently causes sudden embarrassment or panic that they are wetting the table or having an allergic reaction.",
+   "example": "The CT scan itself takes less than five minutes. When the IV contrast goes in, it's very common to feel a sudden warm wave through your body, a brief feeling like you have to pee, or a metallic taste for about twenty seconds—that's completely normal and fades right away.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); Royal Children's Hospital Procedural Pain Management Guideline",
+   "refs": [
+    "aap21",
+    "rch"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-9-12-ultrasound",
+   "age": "9-12",
+   "topic": "ultrasound",
+   "situation": "Ultrasound",
+   "crossCutting": false,
+   "rule": "Explain the physics and clinical purpose of ultrasound clearly—high-frequency sound waves bounce off tissues of different densities to produce real-time images without radiation—and clarify any prep requirements such as fasting (to keep the gallbladder full and reduce bowel gas) or drinking water for a full bladder. Encourage active engagement during the exam by inviting them to ask the sonographer to point out organs or blood flow on the screen, while ensuring proper draping and physical modesty.",
+   "dont": "Don't treat pre-teens passively without explaining fasting or full-bladder preparation, and don't leave their abdomen or pelvis exposed longer than necessary.",
+   "example": "Ultrasound bounces safe, painless sound waves off your organs to build a live image on the monitor. Drinking water beforehand fills your bladder so it acts like a clear window for the sound waves, and you can ask the tech to show you what's on the screen.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); AHRQ Health Literacy Universal Precautions Toolkit",
+   "refs": [
+    "aap21",
+    "ahrq"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-9-12-bloodtest",
+   "age": "9-12",
+   "topic": "bloodtest",
+   "situation": "Blood test",
+   "crossCutting": false,
+   "rule": "Collaborate with the pre-teen before the lab draw to design an individualized coping plan combining topical anesthetics (lidocaine/prilocaine cream or cold vibration/Buzzy device), cognitive distraction (VR headsets, mobile gaming, music, or conversation), and slow diaphragmatic breathing. Respect their growing need for autonomy by letting them direct the setup—choosing the arm, deciding whether to watch or look away, and selecting a countdown or no countdown—while validating frustration with repeated pokes.",
+   "dont": "Don't dismiss their pain threshold or impose a distraction strategy without their buy-in, and avoid nocebo phrasing like 'this is going to sting.'",
+   "example": "Since you're having labs done regularly, let's build your own routine—do you want numbing cream beforehand, VR or music during the draw, and do you prefer a three-second countdown or no countdown?",
+   "source": "Birnie et al. (2018), Cochrane Database Syst Rev, CD005179; Flowers & Birnie (2015), Pediatr Blood Cancer, 62(S5), p. S696",
+   "refs": [
+    "birnie18",
+    "flowers15"
+   ],
+   "type": "Systematic Review / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "going to sting",
+     "phrase": "this is going to sting"
+    }
+   ]
+  },
+  {
+   "id": "G-9-12-catheter",
+   "age": "9-12",
+   "topic": "catheter",
+   "situation": "Catheter/Port",
+   "crossCutting": false,
+   "rule": "Involve the pre-teen directly in understanding their port's anatomy, sterile access protocol, and daily care rules so they feel ownership rather than helplessness. Walk through each step transparently—topical numbing cream, 30-second chlorhexidine scrub and air-dry to prevent infection, a firm downward push with the Huber needle, flushing with saline/heparin, and dressing placement—and address practical lifestyle questions about showering, swimming, sports, and clothing coverage over the subcutaneous bump.",
+   "dont": "Don't exclude pre-teens from port education or ignore emerging self-consciousness about body image and visible medical devices at school or sports.",
+   "example": "Because your port sits completely under your skin, once the incision heals you can shower and swim normally whenever it's not accessed. Let's walk through the sterile cleaning and access steps together so you know exactly what happens and why each step prevents infection.",
+   "source": "ACLP Bulletin (Fall 2024), Supporting Children Through a Port Access, p. 32; Nationwide Children's Hospital Implanted Port Guide",
+   "refs": [
+    "aclp24",
+    "nationwide"
+   ],
+   "type": "Guideline / Expert Opinion",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-9-12-biopsy",
+   "age": "9-12",
+   "topic": "biopsy",
+   "situation": "Biopsy",
+   "crossCutting": false,
+   "rule": "Prepare 3–5 days ahead with a logical explanation of why a biopsy is essential—identifying the exact cellular and genetic profile of the tissue so the oncology team can tailor the most effective treatment plan—and clarify realistic pathology turnaround times (typically several days to a week). Discuss anesthesia induction options (inhaled mask vs. starting through an existing IV/port), what image guidance (ultrasound or CT) is used while they sleep, and what recovery expectations (mild local soreness, activity restrictions for 24–48 hours) look like.",
+   "dont": "Don't leave pre-teens thinking the biopsy itself removes the whole tumor, and don't leave them anxious waiting for results without explaining why pathology testing takes several days.",
+   "example": "Doctors need a tiny tissue sample to run specialized lab tests so they know the exact cell type and can choose the best treatment for you. You'll be completely asleep under anesthesia, you can weigh in on mask versus IV induction, and we'll let you know when the lab report will be ready.",
+   "source": "UPMC Children's Hospital of Pittsburgh Image-Guided Biopsies; Wiener et al. (2015), Pediatr Blood Cancer, 62(S5), p. S420",
+   "refs": [
+    "wiener15",
+    "upmc"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-9-12-embolization",
+   "age": "9-12",
+   "topic": "embolization",
+   "situation": "Embolization",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for children ages 9–12 undergoing embolization; fall back on concrete-to-formal operational guidance (Bibace & Walsh, 1980) and AAP procedural preparation standards. Prepare 3–5 days ahead by explaining that under general anesthesia and live X-ray guidance, an interventional radiologist threads a thin flexible catheter through a blood vessel in the upper leg to release tiny particles or coils that block the tumor's blood supply, causing it to shrink. Explain recovery details clearly, including lying flat for several hours afterward to let the vessel seal and expecting mild post-embolization soreness or fatigue.",
+   "dont": "Don't leave pre-teens imagining large open surgical incisions when the procedure is performed through a tiny pinhole puncture, and don't omit recovery expectations like lying flat afterward.",
+   "example": "While you are asleep under anesthesia, the interventional radiologist guides a tiny flexible tube through a blood vessel in your leg to block the blood supply feeding the tumor so it shrinks. Afterward, you'll have a small bandage and rest flat in bed for a few hours while the vessel seals.",
+   "source": "No specific evidence (fallback: Bibace & Walsh, 1980, Pediatrics, 66(6); AAP Child Life Services, 2021)",
+   "refs": [
+    "bibace80",
+    "aap21"
+   ],
+   "type": "Study / Guideline",
+   "noSpecificEvidence": true,
+   "avoid": []
+  },
+  {
+   "id": "G-9-12-ablation",
+   "age": "9-12",
+   "topic": "ablation",
+   "situation": "Tumor ablation",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for children ages 9–12 undergoing tumor ablation; fall back on logical physiological and procedural preparation guidelines. Prepare 3–5 days ahead by explaining that while the child is asleep under general anesthesia, the doctor uses CT or ultrasound imaging to guide a thin needle-like probe directly into the tumor and applies controlled thermal energy (heat or extreme cold) to destroy the abnormal cells without open surgery. Discuss post-procedure recovery honestly, including mild localized ache, a small adhesive bandage, and follow-up imaging.",
+   "dont": "Don't use vague babyish euphemisms that prevent pre-teens from understanding why they may experience mild post-procedure soreness or low-grade fever.",
+   "example": "While you're completely asleep under anesthesia, the doctor uses CT or ultrasound guidance to place a thin probe right into the tumor and uses controlled heat or cold energy to destroy those abnormal cells without needing a large incision. You'll wake up with a small bandage and may feel a dull ache for a day or two.",
+   "source": "No specific evidence (fallback: AAP Policy Statement on Child Life Services, 2021; Bibace & Walsh, 1980)",
+   "refs": [
+    "bibace80",
+    "aap21"
+   ],
+   "type": "Guideline / Study",
+   "noSpecificEvidence": true,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-diagnosis",
+   "age": "13-15",
+   "topic": "diagnosis",
+   "situation": "Understanding a diagnosis",
+   "crossCutting": false,
+   "rule": "Early-to-mid adolescents (ages 13–15) reason in formal operations ('physiologic' and 'psychophysiologic' illness concepts; Bibace & Walsh, 1980) and are acutely sensitive to peer belonging, body image, and autonomy. Speak directly to the teenager alongside caregivers, providing an honest, accurate biomedical explanation of their specific diagnosis, staging, and treatment roadmap, while explicitly checking their information preferences—some teens want comprehensive scientific detail immediately, whereas others prefer paced segments to avoid emotional overwhelm. Address immediate practical impacts on school attendance, sports, friendships, and appearance changes (such as hair loss), and validate anger, grief, or shock without toxic positivity.",
+   "dont": "Don't talk over the teen exclusively to their parents, don't withhold diagnostic truth that destroys trust when discovered online, and don't minimize how deeply missing school, sports, or peer milestones hurts at age 13–15.",
+   "example": "I want to go over your diagnosis and treatment plan directly with you so you're never left guessing. Some people your age want every medical detail right away, and others prefer taking it step by step—how much detail feels right for you today, and what questions are top of mind about school or life outside the hospital?",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8), pp. 851–853); Bibace & Walsh (1980), Pediatrics, 66(6), p. 916; Wiener et al. (2015),,p. S420",
+   "refs": [
+    "bibace80",
+    "wiener15",
+    "nccn23"
+   ],
+   "type": "Guideline / Study",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-mri",
+   "age": "13-15",
+   "topic": "mri",
+   "situation": "MRI",
+   "crossCutting": false,
+   "rule": "Provide advance notice (several days to a week), explain the clinical purpose of the MRI in tracking disease or treatment response, and review exact scan duration, breath-hold sequences, and whether IV gadolinium contrast will be administered. Treat the early adolescent as an active collaborator by offering control over sensory elements—custom music playlists, eye masks or mirror glasses, blanket warmth, and using the squeeze-ball intercom to pause between scan blocks—while normalizing claustrophobia or restlessness during long scans.",
+   "dont": "Don't use childish reward charts or talk down to a 13-to-15-year-old, and don't leave them uninformed about how long the scan lasts or why IV contrast is needed.",
+   "example": "This MRI takes about 35 to 45 minutes broken into shorter 3- to 5-minute picture sets so we can see exact detail without any radiation. You'll have headphones for your own playlist and a call button to pause between sets if you need to adjust or take a breath.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8))",
+   "refs": [
+    "aap21",
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-ct",
+   "age": "13-15",
+   "topic": "ct",
+   "situation": "CT",
+   "crossCutting": false,
+   "rule": "Give a straightforward, respectful explanation of the CT scan's diagnostic purpose, rapid scan duration (usually under 5 minutes), and the normal physiological sensations of IV contrast (transient full-body warmth and metallic taste). Protect adolescent modesty and confidentiality by providing proper gowning/draping and conducting mandatory pre-imaging safety questions—including menstruation and pregnancy screening for assigned-female patients—privately without parents present.",
+   "dont": "Don't ask sensitive reproductive or pregnancy screening questions in front of parents, and don't leave the teen feeling exposed in an open hospital gown.",
+   "example": "The CT scan itself takes less than five minutes, and if we use IV contrast, you'll feel a quick warm flush and metallic taste for about twenty seconds. Before we head into the scanner room, I'll step aside with you privately to run through our standard pre-scan safety checklist.",
+   "source": "NCCN Guidelines for AYA Oncology (AYAO-3); AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1))",
+   "refs": [
+    "aap21",
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-ultrasound",
+   "age": "13-15",
+   "topic": "ultrasound",
+   "situation": "Ultrasound",
+   "crossCutting": false,
+   "rule": "Protect bodily privacy meticulously with secure draping, explain clearly why the specific anatomical area is being imaged, and obtain verbal permission before lifting gowns or applying gel. Invite the adolescent to watch the real-time monitor and ask questions about the anatomy or blood flow being evaluated, treating them with dignity and clinical respect.",
+   "dont": "Don't uncover an adolescent's torso or pelvis unnecessarily, and don't perform the exam in silence without explaining what you are doing step-by-step.",
+   "example": "We'll keep you fully covered with towels except for the exact spot we're scanning, and I'll let you know before each step. Ultrasound uses safe sound waves to look at the tissue in real time, and you're welcome to watch the monitor and ask questions as we go.",
+   "source": "AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); NCCN Guidelines for AYA Oncology",
+   "refs": [
+    "aap21",
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-bloodtest",
+   "age": "13-15",
+   "topic": "bloodtest",
+   "situation": "Blood test",
+   "crossCutting": false,
+   "rule": "Support autonomous, self-directed pain and anxiety management—offering topical anesthetics, vapocoolant cold spray, self-selected music/phone distraction, or watching—while validating cumulative 'needle fatigue' from repeated oncology labs. Encourage the teen to communicate their preferences directly to the phlebotomist or nurse (preferred vein, butterfly needle, lying back if prone to vasovagal lightheadedness) to build clinical self-advocacy.",
+   "dont": "Don't force pediatric distraction tools on an adolescent who prefers quiet focus, and don't dismiss lightheadedness or needle fatigue as overreacting.",
+   "example": "Since you have labs drawn so often, you're the expert on what works best for your body—tell us whether you want numbing cream, cold spray, your own headphones, or if you'd rather lie back so you don't feel lightheaded.",
+   "source": "Birnie et al. (2018), Cochrane Database Syst Rev, CD005179; NCCN Guidelines for AYA Oncology",
+   "refs": [
+    "birnie18",
+    "nccn23"
+   ],
+   "type": "Systematic Review / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-catheter",
+   "age": "13-15",
+   "topic": "catheter",
+   "situation": "Catheter/Port",
+   "crossCutting": false,
+   "rule": "Address body image, clothing visibility, scar appearance, and athletic/social restrictions directly alongside clinical instructions for port placement and access. Explain honestly how the subcutaneous port looks once healed, how clothing covers it, what sports or swimming adjustments apply while accessed versus unaccessed, and involve the teen in sterile access preferences (topical numbing cream, deep breathing, watching vs. looking away).",
+   "dont": "Don't dismiss concerns about chest scars, visible bumps under shirts, or missing sports/swimming, and don't talk only to parents about central line care.",
+   "example": "Getting a port is a big adjustment, especially when it comes to clothes, sports, and having a scar. Let's talk honestly about what it looks like once healed, when you can swim or play sports safely, and how you want to handle numbing cream on access days.",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8), p. 852); Nationwide Children's Hospital Implanted Port Guide",
+   "refs": [
+    "nccn23",
+    "nationwide"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-biopsy",
+   "age": "13-15",
+   "topic": "biopsy",
+   "situation": "Biopsy",
+   "crossCutting": false,
+   "rule": "Engage the early adolescent actively in shared decision-making and assent discussions around the biopsy: explain the diagnostic rationale (molecular and pathology testing to guide targeted therapy), review anesthesia options (IV vs. mask induction), clarify caregiver presence preferences, and give an exact date/timeline for pathology results. Discuss post-procedure recovery, pain control, and short-term activity limits transparently.",
+   "dont": "Don't exclude a 13-to-15-year-old from pre-anesthesia planning or give vague 'we'll call you sometime' timelines for biopsy results that fuel agonizing uncertainty.",
+   "example": "Before your biopsy, we'll meet with the anesthesiologist so you can share your preferences on going to sleep, review what soreness or activity limits to expect for a couple of days, and set a specific date when we'll go over the pathology results together.",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8)); Wiener et al. (2015), Pediatr Blood Cancer, 62(S5), p. S420",
+   "refs": [
+    "wiener15",
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-embolization",
+   "age": "13-15",
+   "topic": "embolization",
+   "situation": "Embolization",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for adolescents ages 13–15 undergoing embolization; fall back on NCCN AYA oncology communication and shared decision-making guidelines. Provide a clear biomedical explanation of how catheter embolization blocks tumor blood supply under image guidance and anesthesia, discuss post-embolization recovery symptoms (cramping, fatigue, low-grade fever, school absence) transparently, and offer private one-on-one time for questions.",
+   "dont": "Don't gloss over post-embolization recovery discomfort or exclude the teen from interventional radiology consultations.",
+   "example": "While you're under anesthesia, interventional radiology threads a tiny catheter through a blood vessel to block the blood flow feeding the tumor. Afterward, you may have some cramping or fatigue for a few days, so let's talk privately about recovery and how we'll plan around school.",
+   "source": "No specific evidence (fallback: NCCN Guidelines for AYA Oncology, JNCCN, 2023, 21(8))",
+   "refs": [
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": true,
+   "avoid": []
+  },
+  {
+   "id": "G-13-15-ablation",
+   "age": "13-15",
+   "topic": "ablation",
+   "situation": "Tumor ablation",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for adolescents ages 13–15 undergoing tumor ablation; fall back on NCCN AYA shared decision-making standards. Explain clearly how image-guided thermal or cryoablation destroys targeted tumor tissue through a thin probe under anesthesia without open surgery, and review recovery soreness, bandage care, and follow-up scan timing directly with the teen.",
+   "dont": "Don't use oversimplified child metaphors or omit realistic discussion of post-ablation discomfort and follow-up imaging.",
+   "example": "Using CT or ultrasound guidance while you're under anesthesia, doctors guide a thin probe directly into the tumor to destroy the abnormal cells with controlled heat or cold, avoiding open surgery. Let's review what soreness to expect afterward and when we'll check the follow-up scan.",
+   "source": "No specific evidence (fallback: NCCN Guidelines for AYA Oncology, JNCCN, 2023, 21(8))",
+   "refs": [
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": true,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-diagnosis",
+   "age": "16-18",
+   "topic": "diagnosis",
+   "situation": "Understanding a diagnosis",
+   "crossCutting": false,
+   "rule": "Treat older adolescents (ages 16–18) as primary partners in their oncology care: direct diagnostic, staging, and treatment explanations to them first, offer routine private one-on-one time without caregivers in the room, and proactively address fertility preservation, sexual health, school/college/work plans, and long-term survivorship impacts before treatment begins. Respect their legal and ethical right to confidential discussions while helping them navigate how they want information shared with parents, partners, and peers.",
+   "dont": "Don't bypass a 16-to-18-year-old to speak primarily to parents, don't delay fertility preservation counseling until after chemotherapy starts, and don't make assumptions about their emotional readiness or life goals.",
+   "example": "I want to speak with you directly as the central partner in your care and set aside private one-on-one time without your parents in the room so you can ask anything openly—including how treatment affects school or work, relationships, and fertility preservation options before we start therapy.",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8), pp. 851–854; AYAO-3); Wiener et al. (2015), Pediatr Blood Cancer, 62(S5), p. S420",
+   "refs": [
+    "wiener15",
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-mri",
+   "age": "16-18",
+   "topic": "mri",
+   "situation": "MRI",
+   "crossCutting": false,
+   "rule": "Provide adult-level clinical rationale for how the MRI informs staging, surgical planning, or treatment response, schedule appointments around school, exams, or work commitments whenever feasible, and respect their autonomy over sensory comfort (music, positioning, contrast explanations). Clarify scan duration and result turnaround times so they can plan their week.",
+   "dont": "Don't treat older teens as passive pediatric patients or withhold how scan findings influence upcoming treatment decisions.",
+   "example": "This MRI gives us high-resolution images to map how well treatment is working and plan our next steps. It takes about 40 minutes; let us know what time of day works best around your school or work schedule and what comfort setup you prefer.",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8)); AAP Policy Statement on Child Life Services (Pediatrics, 2021)",
+   "refs": [
+    "aap21",
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-ct",
+   "age": "16-18",
+   "topic": "ct",
+   "situation": "CT",
+   "crossCutting": false,
+   "rule": "Explain the diagnostic objective of the CT scan clearly, review IV contrast sensations (brief warmth and metallic taste) and post-scan hydration, and conduct mandatory safety and pregnancy screening questions strictly in private without parents present. Share clear expectations on when and how results will be communicated.",
+   "dont": "Don't ask confidential medical, substance, or reproductive screening questions in front of caregivers, and don't leave the patient waiting anxiously without a clear result-review plan.",
+   "example": "The CT scan takes just a few minutes and uses IV contrast to highlight blood vessels and tissues clearly. Before we start, I'll step aside with you privately to go over our standard pre-scan safety screening, and we'll review your results together on Thursday.",
+   "source": "NCCN Guidelines for AYA Oncology (AYAO-3)",
+   "refs": [
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-ultrasound",
+   "age": "16-18",
+   "topic": "ultrasound",
+   "situation": "Ultrasound",
+   "crossCutting": false,
+   "rule": "Ensure strict visual and physical privacy with thorough draping, explain the clinical question being evaluated in clear medical-lay language, and invite direct dialogue with the sonographer or radiologist during and after the scan. Respect their autonomy and comfort throughout positioning.",
+   "dont": "Don't leave an older adolescent feeling physically exposed or uninformed about why the ultrasound is being performed.",
+   "example": "We're using ultrasound to get a real-time, radiation-free look at the tissue. We'll keep you covered throughout the exam, explain what we're looking at as we go, and answer any questions you have right away.",
+   "source": "NCCN Guidelines for AYA Oncology; AHRQ Health Literacy Universal Precautions Toolkit",
+   "refs": [
+    "nccn23",
+    "ahrq"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-bloodtest",
+   "age": "16-18",
+   "topic": "bloodtest",
+   "situation": "Blood test",
+   "crossCutting": false,
+   "rule": "Respect fully self-directed coping strategies—whether pharmacologic numbing, mindfulness, music, or brief clinical efficiency—and coach them in medical self-advocacy (communicating vein preferences, hydration, or vasovagal history) to support seamless transition toward adult healthcare.",
+   "dont": "Don't impose pediatric distraction techniques unless asked, and don't dismiss needle anxiety or vasovagal symptoms in older teens.",
+   "example": "You know your veins and what setup works best for you—feel free to tell the phlebotomist directly if you want numbing spray, a specific arm, or to lie back so you stay comfortable.",
+   "source": "Birnie et al. (2018), Cochrane Database Syst Rev, CD005179; NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8))",
+   "refs": [
+    "birnie18",
+    "nccn23"
+   ],
+   "type": "Systematic Review / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-catheter",
+   "age": "16-18",
+   "topic": "catheter",
+   "situation": "Catheter/Port",
+   "crossCutting": false,
+   "rule": "Involve the 16-to-18-year-old directly in shared decision-making regarding vascular access options (implanted chest port vs. PICC line), weighing lifestyle, athletics, clothing/body image, intimacy, and self-monitoring responsibilities. Provide clear written and verbal instructions on recognizing early signs of infection, thrombosis, or dislodgement.",
+   "dont": "Don't make vascular access choices solely with parents without centering the young adult's daily lifestyle, privacy, and body-image priorities.",
+   "example": "We want your direct input on vascular access since it impacts your daily routine, sports, clothes, and body image. Let's compare an implanted port versus a PICC line—how each is placed, cared for, and protected—so you can weigh in on what fits your life best.",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8), p. 852); Nationwide Children's Hospital Implanted Port Guide",
+   "refs": [
+    "nccn23",
+    "nationwide"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-biopsy",
+   "age": "16-18",
+   "topic": "biopsy",
+   "situation": "Biopsy",
+   "crossCutting": false,
+   "rule": "Include the older adolescent fully in informed assent/consent discussions alongside parents, detailing the image-guided biopsy technique, anesthesia risks and recovery, pathology turnaround time, and how molecular findings guide therapy. Offer private space to ask sensitive questions about pain, scarring, or diagnostic uncertainty.",
+   "dont": "Don't direct informed consent conversations solely at parents or withhold honest acknowledgment of diagnostic uncertainty while awaiting pathology.",
+   "example": "Let's walk through the biopsy details together so you can give fully informed assent—how the tissue sample is obtained under imaging, what anesthesia and recovery involve, and the exact timeline for reviewing pathology results together.",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8)); Wiener et al. (2015), Pediatr Blood Cancer, 62(S5)",
+   "refs": [
+    "wiener15",
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-embolization",
+   "age": "16-18",
+   "topic": "embolization",
+   "situation": "Embolization",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for older adolescents ages 16–18 undergoing embolization; fall back on NCCN AYA collaborative care and informed assent/consent standards. Provide complete procedural transparency during interventional radiology consultations, discuss post-embolization syndrome (pain, fatigue, low-grade fever) and academic/work recovery timelines, and offer private Q&A.",
+   "dont": "Don't minimize post-embolization recovery symptoms or treat an older teen as a bystander during interventional radiology planning.",
+   "example": "During our interventional radiology consult, we'll review directly with you how catheter embolization blocks tumor blood supply, what post-procedure symptoms like soreness or fatigue to expect for several days, and how to plan recovery around school or work.",
+   "source": "No specific evidence (fallback: NCCN Guidelines for AYA Oncology, JNCCN, 2023, 21(8))",
+   "refs": [
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": true,
+   "avoid": []
+  },
+  {
+   "id": "G-16-18-ablation",
+   "age": "16-18",
+   "topic": "ablation",
+   "situation": "Tumor ablation",
+   "crossCutting": false,
+   "rule": "No specific clinical communication studies exist for older adolescents ages 16–18 undergoing tumor ablation; fall back on NCCN AYA shared decision-making and informed assent standards. Explain the specific ablation modality (radiofrequency, microwave, or cryoablation), anesthesia plan, recovery soreness, and follow-up imaging schedule directly to the patient with private time for questions.",
+   "dont": "Don't bypass the older adolescent in procedural consent discussions or omit realistic recovery and follow-up details.",
+   "example": "We'll review together how image-guided ablation targets the tumor directly under anesthesia without open surgery, what discomfort or activity limits to expect over the first few days, and how follow-up imaging tracks healing.",
+   "source": "No specific evidence (fallback: NCCN Guidelines for AYA Oncology, JNCCN, 2023, 21(8))",
+   "refs": [
+    "nccn23"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": true,
+   "avoid": []
+  },
+  {
+   "id": "G-all-emotions",
+   "age": "all",
+   "topic": "emotions",
+   "situation": "Emotions & reassurance",
+   "crossCutting": true,
+   "rule": "Acknowledge and validate difficult emotions—fear, anger, sadness, grief, and frustration—through active listening and empathetic reflection across every age and procedure. Never offer false reassurance ('everything will be fine,' 'it won't hurt'), which destroys credibility and isolates the child when difficult moments occur; instead, pair honest validation with concrete coping support and suggest talking with a trusted parent, caregiver, nurse, child life specialist, or psychosocial clinician when emotional distress feels overwhelming.",
+   "dont": "Don't dismiss feelings with toxic positivity ('be brave, ' 'it's no big deal'), don't make promises you cannot control, and don't leave intense anxiety or sadness unaddressed without connecting the child to supportive adults.",
+   "example": "It makes complete sense that you feel scared and angry right now—going through cancer treatment is really hard, and you don't have to pretend it's easy. When those feelings get heavy, talking with your parents, nurse, child life specialist, or social worker can help carry them with you.",
+   "source": "Wiener et al. (2015), Pediatr Blood Cancer, 62(S5), p. S420; AAP Policy Statement on Child Life Services (Pediatrics, 2021, 147(1)); Royal Children's Hospital Guideline",
+   "refs": [
+    "aap21",
+    "wiener15",
+    "rch"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "\\bbe brave\\b",
+     "phrase": "be brave"
+    },
+    {
+     "pattern": "no big deal",
+     "phrase": "it's no big deal"
+    },
+    {
+     "pattern": "everything will be (fine|okay|ok|alright)",
+     "phrase": "promises you cannot control"
+    }
+   ]
+  },
+  {
+   "id": "G-all-teachback",
+   "age": "all",
+   "topic": "teachback",
+   "situation": "Health literacy & teach-back",
+   "crossCutting": true,
+   "rule": "Communicate all medical and procedural information in plain, concrete language—translating jargon into everyday words, breaking instructions into small digestible chunks, and reinforcing verbal explanations with visual aids or models. Routinely apply the 'teach-back' method by placing responsibility for clarity on yourself and asking the child or caregiver to explain the plan in their own words so misunderstandings can be corrected immediately without shame.",
+   "dont": "Don't ask closed-ended questions like 'Do you understand?' or 'Any questions?' (which prompt polite agreement even when confused), and don't overload families with dense clinical terminology during high-stress moments.",
+   "example": "I want to make sure I explained that clearly and didn't skip anything important—can you tell me in your own words what will happen tomorrow morning before your scan so we know we're on the same page?",
+   "source": "AHRQ Health Literacy Universal Precautions Toolkit (Tool 5: Teach-Back); AHRQ PEMAT; CDC Clear Communication Index",
+   "refs": [
+    "pemat",
+    "ahrq",
+    "cdc"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": [
+    {
+     "pattern": "do you understand\\?",
+     "phrase": "Do you understand?"
+    },
+    {
+     "pattern": "any questions\\?",
+     "phrase": "Any questions?"
+    }
+   ]
+  },
+  {
+   "id": "G-all-caregivers",
+   "age": "all",
+   "topic": "caregivers",
+   "situation": "Caregivers & siblings",
+   "crossCutting": true,
+   "rule": "Coach parents and caregivers on delivering calm, honest, developmentally tailored explanations because caregiver anxiety directly shapes child distress during procedures. Encourage maintaining predictable daily routines and boundaries at home, and ensure siblings receive age-appropriate updates, hospital orientation when appropriate, and dedicated one-on-one attention so they do not feel abandoned, resentful, or falsely responsible for causing or catching the illness.",
+   "dont": "Don't exclude siblings from family explanations (which drives silent anxiety, behavioral acting out, and magical self-blame), and don't expect caregivers to coach their child without first supporting the caregivers' own emotional needs.",
+   "example": "Siblings often worry quietly about what's happening at the hospital and whether they somehow caused it—sharing simple, honest updates and carving out protected one-on-one time helps them feel safe, included, and loved.",
+   "source": "Wiener et al. (2015), Pediatr Blood Cancer, 62(S5), p. S420; Gerhardt et al. (2015), Pediatr Blood Cancer, 62(S5), pp. S678–S682; NCI Sibling Booklets",
+   "refs": [
+    "wiener15",
+    "gerhardt15",
+    "nci"
+   ],
+   "type": "Systematic Review / Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-all-language",
+   "age": "all",
+   "topic": "language",
+   "situation": "Cultural & linguistic differences",
+   "crossCutting": true,
+   "rule": "Engage qualified medical interpreters (in person or via video) for every clinical and procedural conversation whenever a family prefers a language other than English, and explore cultural beliefs, spiritual frameworks, and family norms around illness disclosure and decision-making with humility. Provide translated written and visual educational materials and adapt communication collaboratively rather than imposing a single cultural script.",
+   "dont": "Don't use minor children, siblings, or untrained family members to interpret medical conversations, and don't stereotype families or bypass cultural preferences around truth-telling without respectful dialogue.",
+   "example": "We want to make sure everyone in your family gets clear information in your preferred language and that we respect how your family talks about health and illness—let's bring in a qualified medical interpreter so we can share questions and plan together comfortably.",
+   "source": "Wiener et al. (2015), Pediatr Blood Cancer, 62(S5), p. S420; AHRQ Health Literacy Universal Precautions Toolkit (Tool 9: Address Language Differences)",
+   "refs": [
+    "wiener15",
+    "ahrq"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  },
+  {
+   "id": "G-all-scope",
+   "age": "all",
+   "topic": "scope",
+   "situation": "Scope boundaries",
+   "crossCutting": true,
+   "rule": "Keep all educational and supportive communication strictly anchored within psychosocial support, developmental preparation, plain-language procedural explanations, and coping strategies. Explicitly defer individualized prognosis, survival statistics, cure rates, and specific medication dosing or protocol changes to the patient's primary pediatric oncologist, offering to help the child or family write down their questions for the medical team.",
+   "dont": "Don't speculate on survival odds, relapse probabilities, staging outcomes, or specific drug dosages, and don't interpret individual pathology or scan results outside the oncology team's counseling.",
+   "example": "Questions about exact medication doses, scan interpretations, or long-term prognosis are best answered directly by your oncologist who knows your exact treatment plan—let's write those questions down together right now so you can ask at your next visit.",
+   "source": "NCCN Guidelines for AYA Oncology (JNCCN, 2023, 21(8)); COG Family Handbook; Thompson & Young-Saleme (2015), Pediatr Blood Cancer, 62(S5)",
+   "refs": [
+    "thompson15",
+    "nccn23",
+    "cog"
+   ],
+   "type": "Guideline",
+   "noSpecificEvidence": false,
+   "avoid": []
+  }
+ ]
+}

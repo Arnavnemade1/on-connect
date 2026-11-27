@@ -4,7 +4,10 @@ import { useMemo, useState } from "react";
 import { ArrowRight, Check, CircleCheck, Copy, Download, Info, Minus, Printer, TriangleAlert, X } from "lucide-react";
 import { useLog, useProfile } from "@/lib/store";
 import { useChat } from "@/lib/chat";
-import { SIGNAL_LABEL, adaptLabel, aggregateLog, buildReport, checks, fmt, heat, reportMarkdown, type AllData, type CheckState, type ReportData, type Turn } from "@/lib/report";
+import { KEY_PARAMS, SIGNAL_LABEL, adaptLabel, aggregateLog, buildReport, checks, heat, paramSeries, reportMarkdown, type AllData, type CheckState, type ReportData, type Turn } from "@/lib/report";
+import { PARAM, label as plabel } from "@/lib/params";
+import { eventLabel } from "@/lib/memory";
+import { SOURCE_BY_ID, TYPE_LABEL } from "@/lib/sources";
 
 const download = (name: string, body: string, type: string) => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type })); a.download = name; a.click(); };
 const BADGE: Record<string, string> = { adapted: "adapted", triggered: "rule fired", skipped: "skipped", ok: "ran" };
@@ -51,9 +54,9 @@ function LevelChart({ turns }: { turns: Turn[] }) {
   </svg><figcaption><span className="k"><i className="sw dot" />Measured grade</span><span className="k"><i className="sw sq" />Outside the band</span><span className="k"><i className="sw bandsw" />Target ±2 grades</span><span className="k"><i className="sw dash" />Target</span></figcaption></figure>);
 }
 
-function Mini({ label, hint, values, min, max }: { label: string; hint: string; values: number[]; min: number; max: number }) {
+function Mini({ label, hint, values, min, max, show = v => String(v) }: { label: string; hint: string; values: number[]; min: number; max: number; show?: (v: number) => string }) {
   const W = 220, H = 84, P = 12; const x = (i: number) => (values.length === 1 ? W / 2 : P + (i / (values.length - 1)) * (W - 2 * P)); const y = (v: number) => H - P - ((v - min) / (max - min)) * (H - 2 * P); const last = values.at(-1) ?? 0;
-  return (<div className="mini"><div className="mh"><span>{label}</span><b>{fmt(last)}</b></div>
+  return (<div className="mini"><div className="mh"><span>{label}</span><b className="mv">{show(last)}</b></div>
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${label} across ${values.length} replies, ending at ${last}`}><line x1={P} x2={W - P} y1={y(0)} y2={y(0)} className="gl" />
       {values.length > 1 && <polyline points={values.map((v, i) => `${x(i)},${y(v)}`).join(" ")} className="meas" />}{values.map((v, i) => <circle key={i} cx={x(i)} cy={y(v)} r={i === values.length - 1 ? 4.5 : 3} className="dot" />)}</svg>
     <p className="muted">{hint}</p></div>);
@@ -101,19 +104,19 @@ function Actions({ d, title, json }: { d: ReportData; title: string; json: () =>
 function Conversation({ d, title }: { d: ReportData; title: string }) {
   const [open, setOpen] = useState<string | null>(d.turns.at(-1)?.id ?? null); const [trace, setTrace] = useState<string | null>(null); const stamp = useMemo(() => new Date().toLocaleString(), []);
   const json = () => download("onconnect-session-report.json", JSON.stringify({ generated: new Date().toISOString(), profile: d.profile, headline: d.headline, findings: d.insights, turns: d.turns.map(t => ({ n: t.n, question: t.question, topic: t.reply.topicId, model: t.reply.model, promptVersion: t.reply.promptVersion, mode: t.reply.mode, lang: t.reply.lang,
-    targetGrade: t.target, measuredGrade: t.grade, words: t.words, maxWords: t.maxWords, coverage: t.reply.coverage, signals: t.signals, memory: t.mem, adaptations: t.reply.adaptations, safety: t.reply.safety, source: t.reply.source, checks: checks(t), trace: t.reply.trace })) }, null, 2), "application/json");
+    targetGrade: t.target, measuredGrade: t.grade, words: t.words, maxWords: t.maxWords, coverage: t.reply.coverage, signals: t.signals, config: t.cfg, events: t.events, memoryOps: t.ops, psych: t.psych, citations: t.citations, check: t.check, adaptations: t.reply.adaptations, safety: t.reply.safety, source: t.reply.source, checks: checks(t), trace: t.reply.trace })) }, null, 2), "application/json");
   const pct = d.graded ? Math.round((d.within / d.graded) * 100) : null; const fb = Object.entries(d.feedback);
   return (<>
     <header className="rhead"><div className="eyebrow">Session report</div><h1>{title}</h1><p className="lede">{d.headline}</p>
       <div className="meta"><span>{stamp}</span><span>Ages {d.profile.age}, {d.profile.detail} detail</span><span>{d.models.map(m => m === "onconnect-templates" ? "built-in templates" : m).join(", ")}</span></div>
       <Actions d={d} title={title} json={json} />
-      <nav className="toc2" aria-label="On this page">{[["#numbers", "Numbers"], ["#findings", "Findings"], ["#level", "Reading level"], ["#answers", "Each answer"], ["#memory", "Memory"], ["#algo", "Algorithm"], ["#checks", "Checks"], ["#prov", "Provenance"], ["#learn", "Learning"], ["#limits", "Limits"]].map(([h, l]) => <a key={h} href={h}>{l}</a>)}</nav></header>
+      <nav className="toc2" aria-label="On this page">{[["#numbers", "Numbers"], ["#findings", "Findings"], ["#level", "Reading level"], ["#answers", "Each answer"], ["#memory", "Settings"], ["#timeline", "Timeline"], ["#sources", "Sources"], ["#algo", "Algorithm"], ["#checks", "Checks"], ["#prov", "Provenance"], ["#learn", "Learning"], ["#limits", "Limits"]].map(([h, l]) => <a key={h} href={h}>{l}</a>)}</nav></header>
 
     {d.offlineTurns > 0 && <div className="callout"><b>{d.offlineTurns === d.turns.length ? "These answers came from the built-in template engine, not the AI model." : `${d.offlineTurns} of ${d.turns.length} answers came from the built-in template engine, not the AI model.`}</b> The model was unavailable at the time, so wording is less flexible and reading levels are less precise.</div>}
 
     <section id="numbers" className="rsec"><div className="nums">
       <div><b>{d.turns.length}</b><span>Answers</span></div><div><b>{pct == null ? "n/a" : `${pct}%`}</b><span>Within 2 grades of target{d.graded ? ` (${d.within} of ${d.graded})` : ""}</span></div><div><b>{d.meanGap ?? "n/a"}</b><span>Average grade gap</span></div>
-      <div><b>{d.adaptations.length}</b><span>Kinds of adaptation</span></div><div><b>{fmt(d.end.levelShift)}</b><span>Level shift now (start {fmt(d.start.levelShift)})</span></div><div><b>{d.meanWords ?? "n/a"}</b><span>Average words per answer</span></div></div></section>
+      <div><b>{d.events.length}</b><span>Adaptation events ({d.events.filter(e => e.scope === "persistent").length} saved as preferences)</span></div><div><b>{d.checks.n ? `${d.checks.correct}/${d.checks.n}` : "none"}</b><span>Comprehension checks correct</span></div><div><b>{d.meanWords ?? "n/a"}</b><span>Average words per answer</span></div></div></section>
 
     <section id="findings" className="rsec"><h2>Key findings</h2><p className="sub">Written from the measurements below. Nothing here is estimated or assumed.</p><Findings d={d} /></section>
 
@@ -129,19 +132,30 @@ function Conversation({ d, title }: { d: ReportData; title: string }) {
         <button className="acch" aria-expanded={open === t.id} onClick={() => setOpen(o => (o === t.id ? null : t.id))}><span className="tn">{t.n}</span><span className="accq">{t.question || "Reply " + t.n}</span><span className="muted">{t.grade != null && t.target != null ? `grade ${t.grade} / target ${t.target}` : "not graded"}</span></button>
         {open === t.id && <div className="accbody">
           <div className="chips2">{t.signals.length ? t.signals.map(s => <span key={s} className="sig">{SIGNAL_LABEL[s]}</span>) : <span className="muted">No feedback signal</span>}
-            {(["levelShift", "lengthBias", "scaffold"] as const).map(k => t.delta[k] !== 0 && <span key={k} className="dl">{k === "levelShift" ? "Level" : k === "lengthBias" ? "Length" : "Support"} {fmt(t.delta[k])} <i>now {fmt(t.mem[k])}</i></span>)}</div>
+            {t.events.map(e => <span key={e.id} className="dl">{eventLabel(e)} <i>{e.scope === "session" ? "this chat" : "saved"}</i></span>)}{t.psych?.expressed && <span className="dl">Feeling: {t.psych.type} <i>{t.psych.acknowledged ? "acknowledged" : "not acknowledged"}</i></span>}{t.check && <span className="dl">Check: {t.check.correct ? "correct" : "missed"}</span>}</div>
           <div className="two"><div><div className="rh">The answer, sentence by sentence</div><Heat t={t} /></div><div><Readers t={t} /></div></div>
           <div className="rh">Adaptations applied</div><ul className="plain">{t.reply.adaptations.length ? t.reply.adaptations.map(a => <li key={a}>{adaptLabel(a)}</li>) : <li className="muted">No adaptations applied</li>}</ul></div>}</div>)}</div></section>
 
-    <section id="memory" className="rsec"><h2>How the memory moved</h2><p className="sub">A small model of how this reader responds. Saying “simpler” or “I don&apos;t get it” moves it, and it carries into later answers.</p>
-      <div className="minis"><Mini label="Level shift" hint="Reading level up (+) or down (−) from the age band." values={d.turns.map(t => t.mem.levelShift)} min={-2} max={2} /><Mini label="Length bias" hint="Longer (+) or shorter (−) answers." values={d.turns.map(t => t.mem.lengthBias)} min={-2} max={2} />
-        <Mini label="Scaffolding" hint="Extra support: short sentences, examples, steps." values={d.turns.map(t => t.mem.scaffold)} min={0} max={3} /></div></section>
+    <section id="memory" className="rsec"><h2>How the settings moved</h2><p className="sub">The adaptation parameters used for each answer. They are named engineering settings, not validated scales.</p>
+      <div className="minis">{KEY_PARAMS.map(id => <Mini key={id} label={PARAM[id].label} hint={PARAM[id].describe} values={paramSeries(d.turns, id)} min={0} max={PARAM[id].values.length - 1} show={v => plabel(id, v)} />)}</div></section>
+
+    <section id="timeline" className="rsec"><h2>Adaptation timeline</h2><p className="sub">Every change, with what triggered it, the rule that made it, whether it lasts, and what happened next. “Outcome” describes what followed in this conversation; it is not proof of cause.</p>
+      {d.events.length ? <div className="wrap"><table className="tl"><thead><tr><th>Event</th><th>Reply</th><th>Change</th><th>Scope</th><th>Trigger and evidence</th><th>Rule</th><th>Outcome</th></tr></thead><tbody>
+        {d.events.map(e => <tr key={e.id}><td><code>{e.id}</code></td><td>{e.turn}</td><td>{eventLabel(e)}</td><td>{e.scope === "session" ? "This conversation" : "Saved preference"}</td><td>{e.trigger.replaceAll("_", " ")}<div className="muted">“{e.evidence}”</div></td><td className="muted">{e.rule}</td><td>{e.effect}</td></tr>)}</tbody></table></div>
+        : <p className="muted">No adaptation events in this conversation.</p>}</section>
+
+    {d.emotions.length > 0 && <section id="feelings" className="rsec"><h2>Feelings the reader stated</h2><p className="sub">Only feelings said out loud are recorded, for this conversation only, and never as a diagnosis.</p>
+      <div className="wrap"><table><thead><tr><th>Reply</th><th>Stated</th><th>Strategy</th><th>Acknowledged (heuristic)</th></tr></thead><tbody>{d.emotions.map(e => <tr key={e.turn}><td>{e.turn}</td><td>{e.type}</td><td>{e.strategy?.toLowerCase().replaceAll("_", " ") ?? "none"}</td><td>{e.acknowledged == null ? "n/a" : e.acknowledged ? "yes" : "no"}</td></tr>)}</tbody></table></div></section>}
+
+    <section id="sources" className="rsec"><h2>Sources and citations</h2><p className="sub">Retrieved sources were link-checked and store short passages from the page, so each citation can be matched to text that is really there.</p>
+      {d.citation.factual ? <p>{d.citation.cited} of {d.citation.factual} factual sentences carried a citation ({Math.round((d.citation.cited / d.citation.factual) * 100)}%). {d.citation.weak} matched their source weakly and {d.citation.invalid} pointed at no source.</p> : <p className="muted">No sentence-level citation data (template answers list sources by topic).</p>}
+      {d.sources.length ? <ol className="plain">{d.sources.map(id => { const s = SOURCE_BY_ID[id]; return s ? <li key={id}><a href={s.url} target="_blank" rel="noreferrer">{s.title}</a>, {s.org}. <span className="muted">{TYPE_LABEL[s.type]} · link checked {s.verified}</span></li> : null; })}</ol> : <p className="muted">No verified source was retrieved.</p>}</section>
 
     <section id="algo" className="rsec"><h2>The algorithm, step by step</h2><p className="sub">What actually ran for each answer, with its real inputs and results. “Adapted” steps changed the answer. “Rule fired” steps are safety or validation rules that triggered.</p>
       <div className="acc">{d.turns.map(t => <div key={t.id} className={"accitem" + (trace === t.id ? " open" : "")}><button className="acch" aria-expanded={trace === t.id} onClick={() => setTrace(o => (o === t.id ? null : t.id))}>
         <span className="tn">{t.n}</span><span className="accq">{t.question || "Reply " + t.n}</span><span className="muted">{(t.reply.trace ?? []).length} steps · {t.reply.model === "onconnect-templates" || !t.reply.model ? "templates" : t.reply.model}</span></button>{trace === t.id && <Stepper t={t} />}</div>)}</div></section>
 
-    <section id="checks" className="rsec"><h2>Quality checks</h2><p className="sub">Seven automatic checks per answer. “n/a” means the check did not apply, and “noted” means a rule fired and handled the answer. Hover a cell for the detail.</p><ChecksMatrix turns={d.turns} />
+    <section id="checks" className="rsec"><h2>Quality checks</h2><p className="sub">Ten automatic checks per answer. “n/a” means the check did not apply, and “noted” means a rule fired and handled the answer. Hover a cell for the detail.</p><ChecksMatrix turns={d.turns} />
       {d.safeguards.length > 0 && <><h3 className="h3">Rules that fired</h3><ul className="plain">{d.safeguards.map((s, i) => <li key={i}><b>Reply {s.turn}, {s.name.replaceAll("_", " ").toLowerCase()}.</b> {s.result}</li>)}</ul></>}
       {d.regenerated > 0 && <p className="muted">{d.regenerated} {d.regenerated === 1 ? "answer was" : "answers were"} regenerated once because the first attempt was off target.</p>}</section>
 

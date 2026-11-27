@@ -12,7 +12,7 @@ export default function Compare() {
   const rows = levels.map(l => ({ l, text: t.why[l], m: metrics(t.why[l]) }));
   const max = Math.max(...rows.map(r => r.m.grade), 1);
   return (<>
-    <div className="eyebrow">Adaptation study</div><h1>One topic, four developmental profiles</h1>
+    <div className="eyebrow">Adaptation study</div><h1>One topic, five developmental profiles</h1>
     <p className="muted" style={{ maxWidth: 680 }}>Each version preserves the same essential facts but changes vocabulary, sentence structure and depth. Readability is estimated with the Flesch–Kincaid grade formula.</p>
     <div className="chips" style={{ margin: "16px 0 24px" }}>{TOPICS.map(x => <button key={x.id} className={"chip" + (x.id === id ? " on" : "")} onClick={() => setId(x.id)}>{x.title}</button>)}</div>
     <div className="cols4">{rows.map(r => (<div key={r.l} className="col" style={r.l === profile.age ? { borderColor: "var(--blue)" } : undefined}>

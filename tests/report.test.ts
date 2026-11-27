@@ -15,7 +15,7 @@ describe("buildReport", () => {
   const d = buildReport(convo(), DEFAULT_PROFILE);
   it("pairs each answer with the question that prompted it", () => { expect(d.turns.map(t => t.question)).toEqual(["what is an mri", "I don't get it, explain simpler"]); });
   it("counts only what was measured", () => { expect(d.turns).toHaveLength(2); expect(d.graded).toBe(2); expect(d.within).toBeLessThanOrEqual(d.graded); expect(d.asked).toBe(2); });
-  it("records the memory moving after a confusion signal", () => { expect(d.turns[1].signals.length).toBeGreaterThan(0); expect(d.end.levelShift).toBeLessThanOrEqual(d.start.levelShift); });
+  it("records the settings moving after a confusion signal", () => { expect(d.turns[1].signals.length).toBeGreaterThan(0); expect(d.end.reading_level).toBeLessThanOrEqual(d.start.reading_level); expect(d.events.length).toBeGreaterThan(0); expect(d.events.every(e => e.effect)).toBe(true); });
   it("flags template-engine answers honestly", () => { expect(d.offlineTurns).toBe(2); expect(d.models).toEqual(["onconnect-templates"]); });
   it("writes a headline from measured facts only", () => { expect(d.headline).toMatch(/2 answers on mri/i); expect(d.headline).toMatch(/of 2 landed within two grades/); });
   it("keeps feedback counts", () => { expect(d.feedback).toEqual({ simpler: 1 }); });
@@ -26,7 +26,7 @@ describe("buildReport", () => {
 });
 describe("formatting and export", () => {
   it("formats signed numbers", () => { expect(fmt(2)).toBe("+2"); expect(fmt(-1)).toBe("−1"); expect(fmt(0)).toBe("0"); });
-  it("exports a markdown table with limits stated", () => { const md = reportMarkdown(buildReport(convo(), DEFAULT_PROFILE), "t"); expect(md).toMatch(/\| Reply \| Topic/); expect(md).toMatch(/not a clinical measure|Neither is a clinical measure/); expect(md).toMatch(/template engine/); });
+  it("exports a markdown table with limits stated", () => { const md = reportMarkdown(buildReport(convo(), DEFAULT_PROFILE), "t"); expect(md).toMatch(/\| Reply \| Topic/); expect(md).toMatch(/None is a clinical measure/); expect(md).toMatch(/template engine/); });
 });
 
 import { aggregateLog, checks, heat, insights } from "@/lib/report";
@@ -51,10 +51,10 @@ describe("sentence heat map", () => {
 
 describe("checks, comparisons and findings", () => {
   const d = buildReport(convo(), DEFAULT_PROFILE);
-  it("gives seven checks per answer with a state each", () => { const c = checks(d.turns[0]); expect(c).toHaveLength(7); c.forEach(x => expect(["yes", "no", "na", "note"]).toContain(x.state)); expect(c.find(x => x.id === "model")?.state).toBe("no"); });
-  it("compares the same question at all four age bands, marking the one used", () => {
-    const cmp = d.turns[0].compare!; expect(cmp.readers.map(r => r.age)).toEqual(["6-8", "9-11", "12-14", "15-17"]); expect(cmp.readers.filter(r => r.actual)).toHaveLength(1);
-    const g = cmp.readers.map(r => r.grade); expect(g[0]).toBeLessThan(g[3]);                    // older bands read at a higher grade
+  it("gives nine checks per answer with a state each", () => { const c = checks(d.turns[0]); expect(c).toHaveLength(10); c.forEach(x => expect(["yes", "no", "na", "note"]).toContain(x.state)); expect(c.find(x => x.id === "model")?.state).toBe("no"); });
+  it("compares the same question at all five profiles, marking the one used", () => {
+    const cmp = d.turns[0].compare!; expect(cmp.readers.map(r => r.age)).toEqual(["3-5", "6-8", "9-12", "13-15", "16-18"]); expect(cmp.readers.filter(r => r.actual)).toHaveLength(1);
+    const g = cmp.readers.map(r => r.grade); expect(g[0]).toBeLessThan(g[4]);                    // older bands read at a higher grade
   });
   it("shows what memory changed once it has moved", () => { expect(d.turns[1].compare?.noMemory).not.toBeNull(); expect(d.insights.some(i => /Memory changed/.test(i.text)) || d.insights.length > 0).toBe(true); });
   it("states small samples plainly and flags template answers", () => { const t = insights(d).map(i => i.text).join(" "); expect(t).toMatch(/2 answers/); expect(t).toMatch(/template engine/); });
@@ -62,10 +62,10 @@ describe("checks, comparisons and findings", () => {
 });
 
 describe("aggregateLog", () => {
-  const ev = (o: Partial<LogEvent>): LogEvent => ({ id: Math.random().toString(36), session: "s", ts: "2026-01-01T00:00:00Z", age: "9-11", detail: "balanced", format: [], topic: "mri", adaptations: ["EXAMPLE_ADDED"], source: null, coverage: 0.5, grade: 5.5, words: 100, model: "m", promptVersion: "v", safety: null, clarification: null, feedback: null, targetGrade: 5.5, mode: "adaptive", ...o });
+  const ev = (o: Partial<LogEvent>): LogEvent => ({ id: Math.random().toString(36), session: "s", ts: "2026-01-01T00:00:00Z", age: "9-12", detail: "balanced", format: [], topic: "mri", adaptations: ["EXAMPLE_ADDED"], source: null, coverage: 0.5, grade: 5.5, words: 100, model: "m", promptVersion: "v", safety: null, clarification: null, feedback: null, targetGrade: 5.5, mode: "adaptive", ...o });
   it("counts, groups by age band and tallies adaptations and signals", () => {
     const a = aggregateLog([ev({ ts: "2026-01-01T00:00:00Z" }), ev({ ts: "2026-01-02T00:00:00Z", grade: 9.5, signals: ["CONFUSED"] }), ev({ ts: "2026-01-03T00:00:00Z", age: "6-8", grade: 3.2, targetGrade: 3 })]);
-    expect(a.n).toBe(3); expect(a.graded).toBe(3); expect(a.within).toBe(2); expect(a.byAge.map(r => r.age)).toEqual(["6-8", "9-11"]); expect(a.signals).toEqual([["CONFUSED", 1]]); expect(a.adapt[0]).toEqual(["EXAMPLE_ADDED", 3]);
+    expect(a.n).toBe(3); expect(a.graded).toBe(3); expect(a.within).toBe(2); expect(a.byAge.map(r => r.age)).toEqual(["6-8", "9-12"]); expect(a.signals).toEqual([["CONFUSED", 1]]); expect(a.adapt[0]).toEqual(["EXAMPLE_ADDED", 3]);
     expect(a.rolling).toHaveLength(3); expect(a.rolling[2].rate).toBeCloseTo(2 / 3);
   });
   it("ignores non-English answers for grading and handles an empty log", () => { expect(aggregateLog([ev({ lang: "es" })]).graded).toBe(0); const e = aggregateLog([]); expect(e.n).toBe(0); expect(e.meanGap).toBeNull(); });

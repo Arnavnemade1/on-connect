@@ -1,11 +1,12 @@
 import React from "react";
 // Minimal, safe markdown: paragraphs, bullet/numbered lists, **bold**, *italic*, `code`. Everything is rendered as React nodes (never as HTML).
 function inline(s: string, k: string): React.ReactNode[] {
-  const out: React.ReactNode[] = []; const re = /(\*\*[^*\n]+\*\*|\*[^*\n]+\*|_[^_\n]+_|`[^`\n]+`)/g; let last = 0, i = 0, m: RegExpExecArray | null;
+  const out: React.ReactNode[] = []; const re = /(\*\*[^*\n]+\*\*|\*[^*\n]+\*|_[^_\n]+_|`[^`\n]+`|\s?\[\d{1,2}\])/g; let last = 0, i = 0, m: RegExpExecArray | null;
   while ((m = re.exec(s))) {
     if (m.index > last) out.push(s.slice(last, m.index)); const t = m[0];
     if (t.startsWith("**")) out.push(<strong key={`${k}b${i++}`}>{t.slice(2, -2)}</strong>);
     else if (t.startsWith("`")) out.push(<code key={`${k}c${i++}`}>{t.slice(1, -1)}</code>);
+    else if (/\[\d/.test(t)) out.push(<sup key={`${k}s${i++}`} className="cite" title={`Source ${t.trim().slice(1, -1)}`}>{t.trim().slice(1, -1)}</sup>);
     else out.push(<em key={`${k}e${i++}`}>{t.slice(1, -1)}</em>);
     last = m.index + t.length;
   }

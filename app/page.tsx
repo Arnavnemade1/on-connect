@@ -7,8 +7,9 @@ import Md from "@/components/Md";
 import { DEFAULT_PROFILE, respond } from "@/lib/engine";
 import { DEFAULT_MEMORY } from "@/lib/memory";
 import { metrics } from "@/lib/metrics";
+import { eventLabel } from "@/lib/memory";
 
-const AGES = [["6-8", "6 to 8"], ["9-11", "9 to 11"], ["12-14", "12 to 14"], ["15-17", "15 to 17"]] as const;
+const AGES = [["3-5", "3 to 5"], ["6-8", "6 to 8"], ["9-12", "9 to 12"], ["13-15", "13 to 15"], ["16-18", "16 to 18"]] as const;
 const ASKS = ["What is an MRI?", "What happens during a biopsy?", "What is a CT scan?", "What is a blood test for?"];
 const STEPS: [string, string][] = [
   ["Profile", "Age band, preferred detail, language and notes set the starting reading level."],
@@ -26,7 +27,7 @@ const RESEARCH: [string, string, string][] = [
 
 /** The real engine running in the browser: same question, four readers, then what happens after “I don't get it”. */
 function Demo() {
-  const [age, setAge] = useState<(typeof AGES)[number][0]>("9-11"); const [q, setQ] = useState(ASKS[0]); const [after, setAfter] = useState(false);
+  const [age, setAge] = useState<(typeof AGES)[number][0]>("9-12"); const [q, setQ] = useState(ASKS[0]); const [after, setAfter] = useState(false);
   const { first, second } = useMemo(() => {
     const profile = { ...DEFAULT_PROFILE, age };
     const first = respond(q, profile, null, DEFAULT_MEMORY);
@@ -54,7 +55,7 @@ function Demo() {
           <div><dt>Measured grade</dt><dd>{m.grade}</dd></div>
           <div><dt>Words</dt><dd>{m.words}</dd></div>
           <div><dt>Adaptations</dt><dd className="small">{r.adaptations.length ? r.adaptations.map(a => a.replaceAll("_", " ").toLowerCase()).join(", ") : "none"}</dd></div>
-          {after && <div><dt>After “I don&apos;t get it”</dt><dd className="small">Grade {m1.grade} to {m2.grade}. Memory carried: level shift {second.memory.levelShift}, scaffolding {second.memory.scaffold}.</dd></div>}
+          {after && <div><dt>After “I don&apos;t get it”</dt><dd className="small">Grade {m1.grade} to {m2.grade}. {second.events?.length ?? 0} adaptation events recorded: {(second.events ?? []).slice(0, 3).map(e => eventLabel(e)).join("; ")}.</dd></div>}
         </dl>
       </div>
       <div className="framefoot">Runs in your browser on the built-in approved-content engine, so you are seeing real numbers, not a mock-up. The live chat uses a language model and the same checks.</div>

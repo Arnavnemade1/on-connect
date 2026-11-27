@@ -1,12 +1,17 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, BookOpen, Bookmark, BookmarkCheck, Check, Copy, CornerDownRight, Download, Info, Magnet, Mic, PanelRight, Printer, RotateCw, Scan, ShieldCheck, Square, Stethoscope, ThumbsDown, ThumbsUp, Volume2, X, type LucideIcon } from "lucide-react";
-import { useBookmarks, useLog, useMemory, useProfile, useViewed, type LogEvent, type Msg } from "@/lib/store";
+import { ArrowDown, ArrowUp, BookOpen, Bookmark, BookmarkCheck, Check, Cloud, CloudOff, Copy, CornerDownRight, Download, Info, Magnet, Mic, PanelRight, Printer, RotateCw, Scan, ShieldCheck, Square, Stethoscope, ThumbsDown, ThumbsUp, Volume2, X, type LucideIcon } from "lucide-react";
+import { useBookmarks, useChecks, useLog, useMemory, useProfile, useViewed, type LogEvent, type Msg } from "@/lib/store";
 import { WORDS } from "@/lib/more";
 import { useChat } from "@/lib/chat";
 import type { Reply } from "@/lib/engine";
-import { DEFAULT_MEMORY } from "@/lib/memory";
+import { DEFAULT_MEMORY, recordCheck, reverseEvent } from "@/lib/memory";
+import { initialConfig } from "@/lib/params";
+import { AdaptLine, Citations, TeachBack } from "@/components/AnswerExtras";
+import MessageReport from "@/components/MessageReport";
+import MemoryPanel from "@/components/MemoryPanel";
+import { useSync } from "@/components/SyncProvider";
 import { TOPICS } from "@/lib/content";
 import { LANGS, langOf } from "@/lib/langs";
 import { useSmooth } from "@/lib/useSmooth";
@@ -29,7 +34,9 @@ export default function Chat() {
   const [profile, setProfile, pready] = useProfile();
   const { active, activeId, ready, addMsg, patchMsg, removeMsg, newChat } = useChat();
   const msgs = active?.msgs ?? [];
-  const [, setLog] = useLog(); const [marks, setMarks] = useBookmarks(); const [memory, setMemory] = useMemory(); const [, setViewed] = useViewed();
+  const [, setLog] = useLog(); const [marks, setMarks] = useBookmarks(); const [memory, setMemory] = useMemory(); const [, setViewed] = useViewed(); const [, setChecks] = useChecks(); const sync = useSync();
+  /** Saves structured events to the account when signed in (spec 21.2). Local storage is always written first. */
+  const record = (kind: string, payload: Record<string, unknown>) => { if (sync.user) fetch("/api/record", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ kind, ...payload }) }).catch(() => {}); };
   const [pick, setPick] = useState<{ text: string; x: number; y: number } | null>(null);
   const [input, setInput] = useState(""); const [live, setLive] = useState<Live | null>(null); const busy = live !== null;
   const [sel, setSel] = useState<string | null>(null); const [drawer, setDrawer] = useState(false);
@@ -64,12 +71,13 @@ export default function Chat() {
     const last = [...base].reverse().find(m => m.reply?.topicId)?.reply?.topicId ?? null;
     const memIn = regenOf ? ([...base].reverse().find(m => m.reply)?.reply?.memory ?? DEFAULT_MEMORY) : memory;   // regenerate must not double-count signals
     const history = base.slice(-8).map(m => ({ role: m.role, text: m.text }));
-    const sid = regenOf ? (active?.id ?? uid()) : addMsg({ id: uid(), role: "user", text: q });
+    const userMsgId = regenOf ? ([...base].reverse().find(m => m.role === "user")?.id ?? uid()) : uid();
+    const sid = regenOf ? (active?.id ?? uid()) : addMsg({ id: userMsgId, role: "user", text: q });
     liveConvo.current = sid; setInput(""); if (ta.current) ta.current.style.height = "auto"; stick.current = true; setFu(null);
     const id = uid(); const ac = new AbortController(); abort.current = ac; let text = "";
     setLive({ id, text: "", status: "Thinking", committed: false });
     try {
-      const r = await fetch("/api/chat", { method: "POST", signal: ac.signal, headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, profile, lastTopic: last, memory: memIn, history, stream: true }) });
+      const r = await fetch("/api/chat", { method: "POST", signal: ac.signal, headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, profile, lastTopic: last, memory: memIn, history, stream: true, conversationId: sid, messageId: id, userMessageId: userMsgId, title: active?.title ?? q.slice(0, 48) }) });
       if (!r.ok || !r.body) throw new Error(r.status === 429 ? "rate" : "http");
       const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = ""; let final: Reply | null = null;
       for (;;) {
@@ -89,7 +97,7 @@ export default function Chat() {
       if (regenOf) removeMsg(regenOf.id);
       setMemory(reply.memory); if (reply.topicId) setViewed(v => [reply.topicId!, ...v.filter(x => x !== reply.topicId)].slice(0, 20));
       addMsg({ id, role: "bot", text: reply.text, reply }); setSel(id); setLive(l => l && { ...l, text: reply.text, committed: true });
-      const ev: LogEvent = { id, session: sid, signals: reply.signals, levelShift: reply.memory?.levelShift, targetGrade: reply.plan?.targetGrade ?? null, ts: reply.ts ?? new Date().toISOString(), age: profile.age, detail: profile.detail, format: profile.format, topic: reply.topicId, adaptations: reply.adaptations, source: reply.source,
+      const ev: LogEvent = { id, session: sid, signals: reply.signals, level: reply.plan?.level, events: reply.events?.length ?? 0, reversals: 0, emotion: reply.psych?.declined ? "declined" : reply.psych?.type ?? null, acknowledged: reply.psych?.expressed ? reply.psych.acknowledged : null, citeCoverage: reply.citations?.coverage ?? null, citeWeak: reply.citations?.weak ?? 0, checks: 0, checksCorrect: 0, latency: reply.latencyMs, memoryOps: (reply.ops ?? []).filter(o => o.op !== "accessed" && o.op !== "confirmed").length, stage: profile.stage || "", role: profile.role, resources: reply.resources?.length ?? 0, targetGrade: reply.plan?.targetGrade ?? null, ts: reply.ts ?? new Date().toISOString(), age: profile.age, detail: profile.detail, format: profile.format, topic: reply.topicId, adaptations: reply.adaptations, source: reply.source,
         coverage: reply.coverage ?? null, grade: reply.metrics?.grade ?? null, words: reply.metrics?.words ?? null, model: reply.model ?? "unknown", promptVersion: reply.promptVersion ?? "", safety: reply.safety, clarification: regenOf ? "REGENERATE" : clar, feedback: null, lang: reply.lang, mode: reply.mode };
       setLog(l => [...l, ev]); void shareAnswer(ev);
     } catch (e) {
@@ -104,6 +112,14 @@ export default function Chat() {
     const q = [...msgs].reverse().find(x => x.role === "user")?.text ?? "";
     fetch("/api/followups", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, answer: m.text, topicId: reply.topicId, profile }) }).then(r => r.json()).then(j => { if (j.questions?.length) setFu(f => (f?.id === m.id ? { id: m.id, qs: j.questions } : f)); }).catch(() => {}); };
 
+  const init = initialConfig(profile);
+  const onCheck = (m: Msg, choice: number) => { const tb = m.reply?.teachback; if (!tb || m.check) return; const correct = choice === tb.q.answer; const ts = new Date().toISOString();
+    const out = recordCheck(memory, { topic: tb.topic, topicTitle: TOPICS.find(t => t.id === tb.topic)?.title ?? tb.topic, correct, question: tb.q.q, conv: active?.id ?? null, initial: init, ts });
+    setMemory(out.memory); const check = { topic: tb.topic, q: tb.q.q, choice, correct, ts }; patchMsg(m.id, { check }); setChecks(c => [...c, check]);
+    setLog(l => l.map(e => (e.id === m.id ? { ...e, checks: (e.checks ?? 0) + 1, checksCorrect: (e.checksCorrect ?? 0) + (correct ? 1 : 0), events: (e.events ?? 0) + out.events.length } : e)));
+    record("check", { conversationId: active?.id, messageId: m.id, check, events: out.events, ops: out.ops, memory: out.memory }); setAnnounce(correct ? "Correct." : "Not quite. The next explanation will change approach."); };
+  const undo = (eventId: string, msgId?: string) => { setMemory(reverseEvent(memory, eventId, init)); if (msgId) setLog(l => l.map(e => (e.id === msgId ? { ...e, reversals: (e.reversals ?? 0) + 1 } : e))); record("reversal", { conversationId: active?.id, event: eventId }); say("Undone. The next answer uses the previous setting."); };
+  const statusOf = (id: string) => memory.events.find(e => e.id === id)?.status;
   const stop = () => abort.current?.abort();
   const regen = (m: Msg) => { const u = [...msgs].reverse().find(x => x.role === "user"); if (u) send(u.text, "REGENERATE", m); };
   const fb = (id: string, f: Msg["feedback"]) => { patchMsg(id, { feedback: f }); setLog(l => l.map(e => e.id === id ? { ...e, feedback: f ?? null } : e)); };
@@ -142,6 +158,7 @@ export default function Chat() {
     <div className="chathead">
       <Link href="/setup" className="profpill" title="Edit your profile">Onconnect <span>{profile.updatedAt ? `Ages ${profile.age} · ${profile.detail}` : "Set up your profile"}</span></Link>
       <span className="grow" />
+      {sync.configured && <Link href="/account" className="savedpill" title={sync.user ? "Conversations and adaptation history are saved to your account" : "Not signed in: this conversation is kept only in this browser"}>{sync.user ? <><Cloud size={14} />Saved</> : <><CloudOff size={14} />Not saved</>}</Link>}
       <button className={"statuspill " + (health ? (health.ok ? "ok" : "warn") : "")} onClick={checkHealth} title={health ? `${health.model || "model"}: ${health.status}. Click to re-check.` : "Checking…"}><i className="dot" />{health ? (health.ok ? "Model online" : "Offline mode") : "Checking"}</button>
       <select className="langsel" value={lang.code} onChange={e => setProfile({ ...profile, lang: e.target.value })} aria-label="Answer language">{LANGS.map(l => <option key={l.code} value={l.code}>{l.native}</option>)}</select>
       <button className="hbtn" onClick={exportMd} disabled={!msgs.length} title="Download this conversation" aria-label="Download conversation"><Download size={18} /></button>
@@ -163,7 +180,10 @@ export default function Chat() {
               : <Bubble text={m.id === live?.id ? live.text : m.text} animate={m.id === live?.id} rtl={langOf(m.reply?.lang).rtl ?? false} onTick={toBottom} onCaughtUp={() => { if (!live?.committed) return false; finished(m as Msg); return true; }} />}
             {m.stopped && <div className="muted" style={{ marginTop: 6, fontSize: "var(--t1)" }}>Stopped</div>}
             {m.reply && m.id !== live?.id && <>
-              {m.reply.source && <div className="src"><ShieldCheck size={13} />{m.reply.source}</div>}
+              <AdaptLine events={m.reply.events ?? []} statusOf={statusOf} onUndo={id => undo(id, m.id)} />
+              <TeachBack reply={m.reply} done={m.check} onAnswer={c => onCheck(m as Msg, c)} />
+              <Citations reply={m.reply} />
+              {m.reply.topicId && <div className="src"><ShieldCheck size={13} />{m.reply.source}</div>}
               <details><summary>Why this explanation?</summary>
                 {m.reply.safety?.startsWith("SUPPORT") ? <p>This was a safety message. Nothing was personalized.</p> : <>
                   <b>What Onconnect used</b><ul>{m.reply.used.map(u => <li key={u}>{u}</li>)}</ul>
@@ -194,30 +214,13 @@ export default function Chat() {
       {def ? <><b>{def.term}</b><p>{def.simple}</p><div className="muted">{def.example}</div></> : <p style={{ margin: 0 }}>“{pick.text}” isn't in the word list.</p>}
       <div className="row"><button className="btn sm" onClick={() => { send(`What does ${pick.text} mean?`); setPick(null); }}>Ask Onconnect</button><button className="btn alt sm" onClick={() => setPick(null)}>Close</button></div></div>}
     <aside className={"drawer" + (drawer ? " open" : "")} aria-label="Research panel">
-      <div className="drawerhead"><div><div className="eyebrow" style={{ marginBottom: 4 }}>Research panel</div><h2 style={{ margin: 0 }}>Live adaptation</h2></div><button className="ib" onClick={() => setDrawer(false)} aria-label="Close"><X size={16} /></button></div>
-      <div className="tabs" role="tablist">{([["answer", "This answer"], ["memory", "Memory"], ["trace", "Algorithm"]] as const).map(([k, l]) => <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{l}</button>)}</div>
-      {!rep ? <p className="muted">Ask a question to see how the answer was adapted, measured and grounded.</p> : <>
-        {tab === "answer" && <>
-          <div className="stat"><div><b>{en ? rep.metrics?.grade ?? "–" : "n/a"}</b><span>Reading grade</span></div><div><b>{en ? rep.metrics?.avgSentence ?? "–" : "n/a"}</b><span>Words / sentence</span></div><div><b>{rep.metrics?.terms ?? 0}</b><span>Med terms</span></div></div>
-          {rep.plan && en && <p className="muted" style={{ marginTop: 0 }}>Target grade {rep.plan.targetGrade} · cap {rep.plan.maxWords} words · actual {rep.metrics?.words}.</p>}
-          {!en && <p className="muted">Readability uses the English Flesch–Kincaid formula, so it is not computed for {langOf(rep.lang).name}.</p>}
-          <div className="muted">Key-concept coverage (heuristic)</div><div className="bar" style={{ margin: "6px 0 14px" }}><i style={{ width: `${(rep.coverage ?? 0) * 100}%` }} /></div>
-          <div className="muted" style={{ marginBottom: 4 }}>Adaptation operations</div>
-          <div>{rep.adaptations.length ? rep.adaptations.map(a => <span key={a} className="tagl">{a}</span>) : <span className="muted">None applied</span>}</div>
-          <table style={{ marginTop: 14 }}><tbody>
-            <tr><td className="muted">Profile</td><td>Ages {profile.age}</td></tr><tr><td className="muted">Model</td><td>{rep.model}</td></tr><tr><td className="muted">Prompt</td><td>{rep.promptVersion}</td></tr><tr><td className="muted">Language</td><td>{langOf(rep.lang).name}</td></tr>
-            <tr><td className="muted">Grounded in</td><td>{rep.source ?? "No retrieved content"}</td></tr><tr><td className="muted">Safety rule</td><td>{rep.safety ?? "None triggered"}</td></tr></tbody></table></>}
-        {tab === "memory" && <>
-          <p className="muted" style={{ marginTop: 0 }}>What the app has learned from how you respond. Say “simpler”, “shorter”, “I don&apos;t understand” or “more detail” and watch these move.</p>
-          {([["Level shift", memory.levelShift, 2, "Reading level up (+) or down (−) from your age band"], ["Length bias", memory.lengthBias, 2, "Longer (+) or shorter (−) answers"], ["Scaffolding", memory.scaffold, 3, "Extra support: short sentences, examples, steps"]] as const).map(([l, v, mx, d]) => (
-            <div key={l} style={{ margin: "12px 0" }}><div style={{ display: "flex", justifyContent: "space-between" }}><b style={{ fontSize: "var(--t2)" }}>{l}</b><span className="muted">{v}</span></div>
-              <div className="bar" style={{ position: "relative" }}><i style={{ width: `${((v + (l === "Scaffolding" ? 0 : mx)) / (l === "Scaffolding" ? mx : mx * 2)) * 100}%` }} /></div><div className="muted" style={{ fontSize: "var(--t1)" }}>{d}</div></div>))}
-          <table><tbody><tr><td className="muted">Turns learned from</td><td>{memory.turns}</td></tr><tr><td className="muted">Example preference</td><td>{memory.exampleAffinity}</td></tr><tr><td className="muted">Step preference</td><td>{memory.stepAffinity}</td></tr></tbody></table>
-          <p className="muted"><Link href="/setup">View or reset memory</Link></p></>}
-        {tab === "trace" && <>
-          <ol className="trace">{rep.trace?.map(t => <li key={t.n} className={t.status}><b>{t.n}. {t.name}</b><span>{t.result}</span></li>)}</ol>
-          {!rep.trace?.length && <p className="muted">This answer was saved before traces existed.</p>}</>}
-        <p className="muted" style={{ marginTop: 16 }}>Grade and coverage are automated heuristics, not clinical measures. <Link href="/report">Full report</Link> · <Link href="/method">Method</Link> · <Link href="/log">Audit log</Link></p></>}
+      <div className="drawerhead"><div><div className="eyebrow" style={{ marginBottom: 4 }}>Research panel</div><h2 style={{ margin: 0 }}>How this was made</h2></div><button className="ib" onClick={() => setDrawer(false)} aria-label="Close"><X size={16} /></button></div>
+      <div className="tabs" role="tablist">{([["answer", "Message report"], ["memory", "Memory"], ["trace", "Algorithm"]] as const).map(([k, l]) => <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{l}</button>)}</div>
+      {tab === "memory" ? <MemoryPanel memory={memory} setMemory={setMemory} profile={profile} conv={active?.id ?? null} compact onChange={(k, d) => record(k, { conversationId: active?.id, ...d })} />
+        : !rep ? <p className="muted">Ask a question to see how the answer was adapted, measured and grounded.</p>
+        : tab === "answer" ? <MessageReport reply={rep} msg={msgs.find(m => m.reply === rep)} next={msgs[msgs.findIndex(m => m.reply === rep) + 2]} profile={profile} question={(() => { const i = msgs.findIndex(m => m.reply === rep); return [...msgs.slice(0, Math.max(0, i))].reverse().find(m => m.role === "user")?.text ?? ""; })()} />
+        : <><ol className="trace">{rep.trace?.map(t => <li key={t.n} className={t.status}><b>{t.n}. {t.name}</b>{t.component && <em>{t.component}</em>}<span>{t.result}</span></li>)}</ol>
+          {!rep.trace?.length && <p className="muted">This answer was saved before traces existed.</p>}<p className="muted">Each step is a component of the central engine. <Link href="/method">Method</Link></p></>}
     </aside>
   </div>);
 }

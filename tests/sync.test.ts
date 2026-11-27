@@ -21,7 +21,7 @@ describe("mergeLists", () => {
 describe("planSync", () => {
   const ago = "2026-01-01T00:00:00Z", later = "2026-02-01T00:00:00Z";
   it("pushes local data the cloud has never seen", () => {
-    expect(planSync({ "onc.profile": { age: "9-11" } }, {}, []).find(a => a.key === "onc.profile")?.op).toBe("pushLocal");
+    expect(planSync({ "onc.profile": { age: "9-12" } }, {}, []).find(a => a.key === "onc.profile")?.op).toBe("pushLocal");
   });
   it("pulls cloud data onto an empty device", () => {
     const a = planSync({}, {}, [{ key: "onc.profile", value: { age: "6-8" }, updated_at: later }]).find(x => x.key === "onc.profile");
@@ -35,15 +35,15 @@ describe("planSync", () => {
     expect(a.op).toBe("merged"); expect((a as { value: unknown[] }).value).toHaveLength(2);
   });
   it("last write wins for objects: newer cloud copy is applied", () => {
-    const a = planSync({ "onc.profile": { age: "9-11" } }, { "onc.profile": ago }, [{ key: "onc.profile", value: { age: "12-14" }, updated_at: later }])[0];
+    const a = planSync({ "onc.profile": { age: "9-12" } }, { "onc.profile": ago }, [{ key: "onc.profile", value: { age: "13-15" }, updated_at: later }])[0];
     expect(a.op).toBe("applyRemote");
   });
   it("last write wins for objects: a newer local copy is pushed", () => {
-    const a = planSync({ "onc.profile": { age: "9-11" } }, { "onc.profile": later }, [{ key: "onc.profile", value: { age: "12-14" }, updated_at: ago }])[0];
+    const a = planSync({ "onc.profile": { age: "9-12" } }, { "onc.profile": later }, [{ key: "onc.profile", value: { age: "13-15" }, updated_at: ago }])[0];
     expect(a.op).toBe("pushLocal");
   });
   it("on a first sync with no history, the local copy wins", () => {
-    expect(planSync({ "onc.profile": { age: "9-11" } }, {}, [{ key: "onc.profile", value: { age: "12-14" }, updated_at: later }])[0].op).toBe("pushLocal");
+    expect(planSync({ "onc.profile": { age: "9-12" } }, {}, [{ key: "onc.profile", value: { age: "13-15" }, updated_at: later }])[0].op).toBe("pushLocal");
   });
 });
 
@@ -54,10 +54,10 @@ describe("sync keys", () => {
 
 describe("research rows", () => {
   it("never carry chat text or profile notes", () => {
-    const row = answerRow({ id: "e1", session: "s", ts: "2026-01-01", age: "9-11", detail: "balanced", format: [], topic: "mri", adaptations: ["EXAMPLE_ADDED"], grade: 5.1, targetGrade: 5.5, words: 90, source: "x", coverage: 0.5, model: "m", promptVersion: "v", safety: undefined, clarification: null, feedback: null, lang: "en", mode: "adaptive", signals: [] } as never);
+    const row = answerRow({ id: "e1", session: "s", ts: "2026-01-01", age: "9-12", detail: "balanced", format: [], topic: "mri", adaptations: ["EXAMPLE_ADDED"], grade: 5.1, targetGrade: 5.5, words: 90, source: "x", coverage: 0.5, model: "m", promptVersion: "v", safety: undefined, clarification: null, feedback: null, lang: "en", mode: "adaptive", signals: [] } as never);
     expect(Object.keys(row)).not.toContain("text"); expect(JSON.stringify(row)).not.toMatch(/notes|question|answer/i);
     expect(row.grade).toBe(5.1); expect(row.adaptations).toEqual(["EXAMPLE_ADDED"]);
   });
   it("clips long free text on clinician comments", () => { expect(ratingRow({ id: "r", topic: "t", decision: "ok", accuracy: 4, ageFit: 4, safety: 5, comment: "x".repeat(900), rater: "dr", ts: "" } as never).comment).toHaveLength(500); });
-  it("keeps participant codes and conditions for the study", () => { const r = studyRow({ id: "s", ts: "", pid: "P001", condition: "adapted", topic: "mri", age: "9-11", score: 4, total: 5, selfRated: 4, ms: 1000, grade: 5 } as never); expect(r.pid).toBe("P001"); expect(r.condition).toBe("adapted"); });
+  it("keeps participant codes and conditions for the study", () => { const r = studyRow({ id: "s", ts: "", pid: "P001", condition: "adapted", topic: "mri", age: "9-12", score: 4, total: 5, selfRated: 4, ms: 1000, grade: 5 } as never); expect(r.pid).toBe("P001"); expect(r.condition).toBe("adapted"); });
 });

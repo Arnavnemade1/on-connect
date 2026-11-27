@@ -1,12 +1,40 @@
-const STEPS = [["RECEIVE", "Take in the message"], ["SAFETY_SCAN", "Check for distress language; if found, stop and redirect to a trusted adult"], ["DETECT_SIGNALS", "Find explicit signals: confused, simpler, more detail, shorter, longer, understood"], ["UPDATE_MEMORY", "Update the learned level shift, length bias and scaffolding"], ["TOPIC_MATCH", "Match an approved topic, or carry over the last one on follow-ups"], ["ADVICE_CHECK", "Separate general education from personal medical advice"], ["SELECT_LEVEL", "level = clamp(age index + round(level shift), 0, 3)"], ["SELECT_DEPTH", "depth = clamp(detail index + round(length bias), 0, 2)"], ["SELECT_STRATEGY", "Choose steps, examples, definitions, or an alternate analogy-first approach"], ["RETRIEVE", "Load the approved content for the topic"], ["GENERATE", "Gemini (with target grade and word cap) or the template engine; regenerate once if off target"], ["VALIDATE", "Compare reading grade, length and concept coverage to targets"], ["LOG", "Write a structured audit event"]];
-const OPS = [["DEVELOPMENTAL_ADAPTATION", "Wording for the age profile"], ["MEMORY_SIMPLIFIED / MEMORY_EXPANDED", "Level moved by chat memory"], ["CONFUSION_SCAFFOLDING", "Extra support after “I don't understand”"], ["ALTERNATE_STRATEGY", "Analogy-first after repeated confusion on a topic"], ["STEPWISE_EXPLANATION", "Numbered steps"], ["EXAMPLE_ADDED", "Familiar comparison"], ["VOCABULARY_DEFINED", "Inline definitions"], ["SHORT_FORMAT", "Cut to the core sentence"], ["SIMPLIFIED_ON_REQUEST / EXPANDED_ON_REQUEST", "Explicit user request"], ["GENERAL_KNOWLEDGE_ANSWER", "No approved content matched"], ["SAFETY_*", "Redirected personal advice or distress"]];
+import Link from "next/link";
+import { LEVELS, PROFILES } from "@/lib/content";
+import { BASE_GRADE, capFor } from "@/lib/engine";
+import { REGISTRY } from "@/lib/params";
+import { POLICY_TABLE } from "@/lib/memory";
+import { VERSIONS, VERSION_LABEL, type Versions } from "@/lib/versions";
+import { SOURCES } from "@/lib/sources";
+
+const COMPONENTS: [string, string][] = [
+  ["Patient Context Manager", "Profile, stated preferences and user-provided medical context, each with its source and confidence."],
+  ["Developmental Adaptation Engine", "Five profiles set reading level, concept density, pacing and visual support."],
+  ["Linguistic Adaptation Engine", "Terminology, definitions, analogies, structure and length."],
+  ["Psychological Communication Engine", "Responds to stated feelings only: acknowledges, avoids promises, suggests trusted adults, respects “not now”."],
+  ["Medical Context Engine", "Matches the topic, carries follow-ups, flags personal medical questions."],
+  ["Educational Knowledge Retrieval Engine", `Approved draft content plus ${SOURCES.length} link-checked sources with stored passages.`],
+  ["Comprehension and Learning Engine", "Detects confusion and understanding; offers teach-back checks."],
+  ["Memory Management Engine", "Typed records with source, confidence, status, expiry and full history; corrections never overwrite silently."],
+  ["Response Revision Engine", "Changes approach after repeated confusion or a missed check, without changing medical facts."],
+  ["Medical Safety and Verification Engine", "Crisis escalation, individual-advice redirect, output guard, citation check, reading-level validator."],
+  ["Research Instrumentation Engine", "Message, session and longitudinal reports; adaptation events; versions on every message."],
+];
+const FLOW = ["Read the message and the reader's profile", "Safety scan for crisis language", "Read stated emotions, signals and lasting statements", "Update memory and adaptation parameters (each change is an event with a reason)", "Match the medical topic and check for personal medical questions", "Decide whether to revise the approach", "Plan the answer from the parameters", "Retrieve approved content and verified sources", "Generate with the configured model, citing sources per sentence", "Check citations against the stored passages; guard against advice and false reassurance", "Validate reading level and length; regenerate once if far off", "Match verified community resources if a support need was stated", "Record the message report, events and memory changes"];
+
 export default function Method() {
-  return (<><div className="eyebrow">Method</div><h1>How Onconnect adapts an explanation</h1>
-    <div className="grid2" style={{ marginTop: 20 }}>
-      <div className="card"><h2>Response pipeline</h2>{STEPS.map(([n, d], i) => <div className="step" key={n}><b>{i + 1}</b><span><span className="tagl">{n}</span><div>{d}</div></span></div>)}<p className="muted">The Session Report shows the real inputs and results of each step for every reply.</p></div>
-      <div><div className="card"><h2>Adaptive chat memory</h2><p>Memory holds three numbers plus counters: <b>level shift</b> (−2 to +2), <b>length bias</b> (−2 to +2) and <b>scaffolding</b> (0 to 3). Explicit signals move them: “simpler” lowers the level and adds scaffolding; “more detail” raises it; “shorter/longer” moves length; “thanks / got it” eases scaffolding and nudges the level back up slowly.</p>
-        <p className="muted">Basis: scaffolding and the Zone of Proximal Development (Vygotsky), cognitive load theory (Sweller), and treating explicit “I don&apos;t understand” as metacognitive feedback. These are design inspirations, not validated clinical models.</p></div>
-        <div className="card"><h2>Adaptation operations</h2><table><tbody>{OPS.map(([a, d]) => <tr key={a}><td><span className="tagl">{a}</span></td><td>{d}</td></tr>)}</tbody></table></div>
-        <div className="card"><h2>Measures</h2><ul><li><b>Reading grade</b>: Flesch–Kincaid estimate.</li><li><b>Grade error</b>: |reply grade − target grade for the level used|.</li><li><b>Concept coverage</b>: share of key concepts present. A heuristic, not a fact-check.</li><li><b>Comprehension</b>: quiz score and self-rating in the study.</li><li><b>Accuracy</b>: clinician ratings.</li></ul></div>
-        <div className="card"><h2>Limitations</h2><ul><li>Content is draft and awaits clinician review.</li><li>Signal detection uses keyword rules and can miss or misread phrasing.</li><li>Profiles are starting points, not psychological classifications.</li><li>Metrics are automated and not validated with children.</li><li>No data collection with real participants without ethics approval.</li></ul></div></div></div></>);
+  return (<>
+    <div className="eyebrow">Research · Method</div><h1>How Onconnect decides how to explain</h1>
+    <p>One central engine coordinates eleven components. The language model only writes the words. Who it writes for, how much, in what order and with which sources is decided before it is called, and checked after.</p>
+    <div className="card"><h2>Components</h2><div className="wrap"><table><tbody>{COMPONENTS.map(([c, d]) => <tr key={c}><td><b>{c}</b></td><td className="muted">{d}</td></tr>)}</tbody></table></div></div>
+    <div className="card"><h2>What happens to every message</h2><ol className="plain">{FLOW.map(s => <li key={s}>{s}</li>)}</ol><p className="muted">Each step appears, with its real inputs and results, in the Algorithm tab of the research panel and in the session report.</p></div>
+    <div className="card"><h2>Five developmental profiles</h2><div className="wrap"><table><thead><tr><th>Profile</th><th>Target reading grade</th><th>Word cap (short / medium / long)</th></tr></thead><tbody>{LEVELS.map((l, i) => <tr key={l}><td>Ages {l} · {PROFILES[l]}</td><td>{BASE_GRADE[i]}</td><td>{capFor(i, 0)} / {capFor(i, 1)} / {capFor(i, 2)}</td></tr>)}</tbody></table></div>
+      <p className="muted">Targets use the Flesch–Kincaid grade, which is a coarse proxy for text difficulty and is not meaningful for read-aloud at ages 3–5. They are engineering starting points to be calibrated by research. Age is never treated as a measure of what a child understands.</p></div>
+    <div className="card"><h2>Adaptation parameters</h2><div className="wrap"><table><thead><tr><th>Parameter</th><th>Levels</th><th>What it controls</th></tr></thead><tbody>{REGISTRY.map(p => <tr key={p.id}><td><b>{p.label}</b></td><td className="muted">{p.values.join(" · ")}</td><td className="muted">{p.describe}</td></tr>)}</tbody></table></div>
+      <p className="muted">Named engineering settings, not validated scales.</p></div>
+    <div className="card"><h2>Adaptation policy</h2><p>Every change records its parameter, previous and new value, trigger, the reader&apos;s words, the rule, the component, and whether it lasts. One request changes only the current conversation; a repeated request or a direct statement becomes a saved preference; every change can be undone.</p>
+      <div className="wrap"><table><thead><tr><th>Rule</th><th>When</th><th>What changes</th><th>Scope</th></tr></thead><tbody>{POLICY_TABLE.map(r => <tr key={r.id}><td><code>{r.id}</code></td><td>{r.when}</td><td className="muted">{r.does}</td><td>{r.scope}</td></tr>)}</tbody></table></div></div>
+    <div className="card"><h2>What it never does</h2><ul className="plain"><li>Diagnose, give doses, or discuss an individual prognosis.</li><li>Infer or store a psychological condition; feelings are session-only and never labelled.</li><li>Treat medical details a reader mentions as verified.</li><li>Cite a source that is not in the verified registry, or show a citation number that points nowhere.</li><li>Change shared rules, safety policy or medical content from one patient&apos;s conversation.</li></ul></div>
+    <div className="card"><h2>Versions</h2><div className="wrap"><table><tbody>{(Object.keys(VERSIONS) as (keyof Versions)[]).map(k => <tr key={k}><td className="muted">{VERSION_LABEL[k]}</td><td><code>{VERSIONS[k]}</code></td></tr>)}</tbody></table></div>
+      <p className="muted"><Link href="/literature">Evidence behind each rule</Link> · <Link href="/eval">Evaluation harness</Link> · <Link href="/report">Session report</Link></p></div>
+  </>);
 }

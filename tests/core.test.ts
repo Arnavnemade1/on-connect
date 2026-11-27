@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { metrics, coverage } from "@/lib/metrics";
-import { applySignals, detectSignals, DEFAULT_MEMORY } from "@/lib/memory";
+import { adapt, detectSignals, detectStatements, DEFAULT_MEMORY, type Memory } from "@/lib/memory";
+import { initialConfig } from "@/lib/params";
+import { readEmotion } from "@/lib/psych";
 import { mean, sd, welch } from "@/lib/stats";
 import { respond, matchTopic, DEFAULT_PROFILE } from "@/lib/engine";
 import { cleanHistory, cleanProfile } from "@/lib/pipeline";
@@ -14,24 +16,19 @@ describe("metrics", () => {
 });
 
 describe("signal detection", () => {
-  it.each([["I don't understand", "CONFUSED"], ["make it simpler", "SIMPLER"], ["can you give more detail", "MORE_DETAIL"], ["that's too long", "SHORTER"], ["got it, thanks", "UNDERSTOOD"], ["show me an example", "WANTS_EXAMPLE"], ["walk me through step by step", "WANTS_STEPS"]])("%s → %s", (q, s) => { expect(detectSignals(q)).toContain(s); });
+  it.each([["I don't understand", "CONFUSED"], ["make it simpler", "SIMPLER"], ["can you explain that more simply?", "SIMPLER"], ["can you give more detail", "MORE_DETAIL"], ["that's too long", "SHORTER"], ["got it, thanks", "UNDERSTOOD"], ["show me an example", "WANTS_EXAMPLE"], ["walk me through step by step", "WANTS_STEPS"]])("%s → %s", (q, s) => { expect(detectSignals(q)).toContain(s); });
   it("does not read 'too simple' as a request for simpler", () => { const s = detectSignals("this is too simple, more detail please"); expect(s).toContain("MORE_DETAIL"); expect(s).not.toContain("SIMPLER"); });
   it("neutral questions produce no signals", () => { expect(detectSignals("what is an MRI")).toEqual([]); });
 });
 
+const say = (m: Memory, q: string, topic: string | null = null, conv = "c1") => adapt(m, { question: q, signals: detectSignals(q), statements: detectStatements(q), emotion: readEmotion(q), topic, conv, initial: initialConfig(DEFAULT_PROFILE) }).memory;
 describe("memory model", () => {
-  it("lowers level and adds scaffolding on confusion, and tracks per-topic confusion", () => {
-    const { memory } = applySignals(DEFAULT_MEMORY, ["CONFUSED"], "mri");
-    expect(memory.levelShift).toBe(-0.5); expect(memory.scaffold).toBe(1); expect(memory.confusion.mri).toBe(1);
+  it("tracks per-topic confusion and writes an educational record", () => {
+    const m = say(DEFAULT_MEMORY, "I don't understand", "mri"); expect(m.confusion.mri).toBe(1);
+    expect(m.records.some(r => r.key === "edu:clarify:mri" && r.status === "active")).toBe(true);
   });
-  it("clamps to bounds no matter how many signals", () => {
-    let m = DEFAULT_MEMORY; for (let i = 0; i < 20; i++) m = applySignals(m, ["SIMPLER", "CONFUSED"], null).memory;
-    expect(m.levelShift).toBe(-2); expect(m.lengthBias).toBe(-2); expect(m.scaffold).toBe(3);
-    for (let i = 0; i < 40; i++) m = applySignals(m, ["MORE_DETAIL", "UNDERSTOOD"], null).memory;
-    expect(m.levelShift).toBe(2); expect(m.lengthBias).toBe(2); expect(m.scaffold).toBe(0);
-  });
-  it("is pure: does not mutate its input", () => { const before = JSON.stringify(DEFAULT_MEMORY); applySignals(DEFAULT_MEMORY, ["SIMPLER"], "ct"); expect(JSON.stringify(DEFAULT_MEMORY)).toBe(before); });
-  it("keeps at most 100 events", () => { let m = DEFAULT_MEMORY; for (let i = 0; i < 130; i++) m = applySignals(m, ["SHORTER"], null).memory; expect(m.events.length).toBe(100); });
+  it("is pure: does not mutate its input", () => { const before = JSON.stringify(DEFAULT_MEMORY); say(DEFAULT_MEMORY, "simpler please", "ct"); expect(JSON.stringify(DEFAULT_MEMORY)).toBe(before); });
+  it("keeps a bounded history", () => { let m = DEFAULT_MEMORY; for (let i = 0; i < 300; i++) m = say(m, i % 2 ? "shorter please" : "make it longer", null, `c${i}`); expect(m.events.length).toBeLessThanOrEqual(400); });
 });
 
 describe("stats", () => {
@@ -49,14 +46,14 @@ describe("engine", () => {
     const r = respond("i want to die", DEFAULT_PROFILE, null, DEFAULT_MEMORY); expect(r.safety).toBe("SUPPORT_REDIRECT"); expect(r.text).toMatch(/trusted adult/i); expect(r.plan).toBeUndefined();
   });
   it("flags individual-advice questions", () => { expect(respond("should i stop taking my medicine", DEFAULT_PROFILE, null).safety).toBe("INDIVIDUAL_ADVICE_REDIRECT"); });
-  it("shifts the level down after the user says they are confused", () => {
-    const a = respond("what is a biopsy", { ...DEFAULT_PROFILE, age: "12-14" }, null, DEFAULT_MEMORY);
-    const { memory } = applySignals(DEFAULT_MEMORY, ["SIMPLER"], "biopsy"); const b = respond("what is a biopsy", { ...DEFAULT_PROFILE, age: "12-14" }, null, memory);
-    expect(b.plan!.targetGrade).toBeLessThan(a.plan!.targetGrade);
+  it("lowers the reading level for the rest of the conversation after “simpler”", () => {
+    const p = { ...DEFAULT_PROFILE, age: "13-15" as const }; const a = respond("what is a biopsy", p, null, DEFAULT_MEMORY, { conv: "x" });
+    const b = respond("can you explain that more simply", p, "biopsy", a.memory, { conv: "x" }); const c = respond("what is a biopsy", p, null, b.memory, { conv: "x" });
+    expect(b.plan!.targetGrade).toBeLessThan(a.plan!.targetGrade); expect(c.plan!.targetGrade).toBe(b.plan!.targetGrade);
   });
   it("switches to an analogy-first strategy after repeated confusion on one topic", () => {
-    let m = DEFAULT_MEMORY; m = applySignals(m, ["CONFUSED"], "mri").memory; m = applySignals(m, ["CONFUSED"], "mri").memory;
-    const r = respond("i still don't get mri", DEFAULT_PROFILE, "mri", m); expect(r.plan!.alt).toBe(true); expect(r.adaptations).toContain("ALTERNATE_STRATEGY");
+    let m = DEFAULT_MEMORY; m = say(m, "I don't understand the mri", "mri", "k"); 
+    const r = respond("i still don't get mri", DEFAULT_PROFILE, "mri", m, { conv: "k" }); expect(r.plan!.alt).toBe(true); expect(r.adaptations).toContain("ALTERNATE_STRATEGY");
   });
   it("follow-ups carry over the previous topic", () => { expect(respond("why?", DEFAULT_PROFILE, "ct").topicId).toBe("ct"); });
   it("every reply carries a numbered trace", () => { const r = respond("what is mri", DEFAULT_PROFILE, null); expect(r.trace.map(t => t.n)).toEqual(r.trace.map((_, i) => i + 1)); expect(r.trace[0].name).toBe("RECEIVE"); });

@@ -10,7 +10,7 @@ type Tab = "design" | "power" | "random" | "ethics" | "forms";
 
 export default function Protocol() {
   const [p, setP, ready] = useLocal<Protocol>("onc.protocol", PROTOCOL_DEFAULT); const [done, setDone] = useLocal<Record<string, boolean>>("onc.ethics", {});
-  const [tab, setTab] = useState<Tab>("design"); const [nTotal, setNTotal] = useState(60); const [age, setAge] = useState("12-14");
+  const [tab, setTab] = useState<Tab>("design"); const [nTotal, setNTotal] = useState(60); const [age, setAge] = useState("13-15");
   const between = p.design === "between"; const nGroup = between ? nPerGroup(p.d, p.power, p.alpha) : nPaired(p.d, p.power, p.alpha);
   const total = Math.ceil((between ? nGroup * 2 : nGroup) / (1 - p.attrition / 100));
   const set = <K extends keyof Protocol>(k: K, v: Protocol[K]) => setP({ ...p, [k]: v });
@@ -68,7 +68,7 @@ export default function Protocol() {
 
     {tab === "forms" && <div className="card"><h2>Consent and assent templates</h2><p className="muted">Starting points to adapt and submit to your review board. They are not approved forms.</p>
       <div className="row"><button className="btn alt" onClick={() => dl("parent-permission.md", CONSENT.parent(p.title, "[name, email, phone]"))}>Parent permission (.md)</button>
-        <button className="btn alt" onClick={() => dl("child-assent.md", CONSENT.assent(age))}>Child assent (.md)</button><select style={{ width: "auto" }} value={age} onChange={e => setAge(e.target.value)} aria-label="Assent age band">{["6-8", "9-11", "12-14", "15-17"].map(a => <option key={a}>{a}</option>)}</select></div>
+        <button className="btn alt" onClick={() => dl("child-assent.md", CONSENT.assent(age))}>Child assent (.md)</button><select style={{ width: "auto" }} value={age} onChange={e => setAge(e.target.value)} aria-label="Assent age band">{["3-5", "6-8", "9-12", "13-15", "16-18"].map(a => <option key={a}>{a}</option>)}</select></div>
       <pre className="algo" style={{ marginTop: 14 }}>{CONSENT.assent(age)}</pre></div>}
   </>);
 }

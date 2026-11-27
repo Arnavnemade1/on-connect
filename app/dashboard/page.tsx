@@ -34,6 +34,6 @@ export default function Dashboard() {
     <div className="card"><h2>Recent conversations and reports</h2>
       {convos.length === 0 ? <p className="muted">No conversations yet.</p> : convos.slice(0, 4).map(c => <div key={c.id} className="step" style={{ alignItems: "center" }}><span style={{ flex: 1 }}>{c.title}<div className="muted">{new Date(c.ts).toLocaleDateString()} · {c.msgs.filter(m => m.role === "user").length} questions</div></span>
         <button className="btn alt sm" onClick={() => { select(c.id); router.push("/report"); }}>Report</button><button className="btn alt sm" onClick={() => { select(c.id); router.push("/chat"); }}>Open</button></div>)}</div>
-    <div className="card"><h2>Chat memory</h2><p className="muted">Level shift {mem.levelShift} · length bias {mem.lengthBias} · scaffolding {mem.scaffold}. <Link href="/setup">See details or reset</Link></p>
+    <div className="card"><h2>Chat memory</h2><p className="muted">{mem.records.filter(r => r.status === "active" || r.status === "unconfirmed").length} things remembered · {mem.events.length} adaptation events · {mem.events.filter(e => e.status === "reversed").length} undone. <Link href="/setup#memory">See, correct or delete them</Link></p>
       <h2 style={{ marginTop: 16 }}>Privacy</h2><p className="muted">Your data stays in this browser. <Link href="/privacy">Export or delete it</Link></p></div></>);
 }

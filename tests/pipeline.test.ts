@@ -8,7 +8,7 @@ let mock: Mock;
 beforeAll(async () => { mock = await startMock(); process.env.GEMINI_BASE = mock.url; process.env.GEMINI_API_KEY = "test-key"; delete process.env.OPENROUTER_API_KEY; delete process.env.LLM_PROVIDER; });
 afterAll(async () => { await mock.close(); });
 beforeEach(() => { mock.calls.length = 0; mock.setStatus(200); process.env.GEMINI_API_KEY = "test-key"; });
-const base = { profile: { ...DEFAULT_PROFILE, age: "9-11" as const }, lastTopic: null };
+const base = { profile: { ...DEFAULT_PROFILE, age: "9-12" as const }, lastTopic: null };
 
 describe("gemini client", () => {
   it("assembles streamed chunks in order", async () => {

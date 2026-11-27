@@ -31,7 +31,7 @@ export default function Eval() {
     if (stopRef.current) return null; const t0 = Date.now(); const j = await post({ question: q, lastTopic: null, mode: cond, profile: PROFILE(age) });
     const base = { q, age: age as Run["age"], cond };
     if (!j) return { ...base, id: "", topic: false, grade: 0, words: 0, coverage: null, model: "", ms: Date.now() - t0, err: "request failed" };
-    return { ...base, id: j.id, topic: !!j.topicId, grade: j.metrics.grade, words: j.metrics.words, coverage: j.coverage ?? null, model: j.model, ms: Date.now() - t0, err: null };
+    return { ...base, id: j.id, topic: !!j.topicId, grade: j.metrics.grade, words: j.metrics.words, coverage: j.coverage ?? null, model: j.model, ms: Date.now() - t0, err: null, hits: j.guidance?.hits?.length ?? 0 };
   }
   async function pool<T, R>(jobs: T[], work: (j: T) => Promise<R | null>, onItem: (r: R) => void) {
     let next = 0, n = 0; const w = async () => { while (next < jobs.length && !stopRef.current) { const j = jobs[next++]; const r = await work(j); if (r) onItem(r); setDone(++n); } }; await Promise.all([w(), w(), w()]);
@@ -46,12 +46,13 @@ export default function Eval() {
     const qs = quick ? MEM_QS.filter((_, i) => i % 3 === 0) : MEM_QS; const jobs = qs.flatMap(q => AGES.map(a => ({ q, a }))); setTotal(jobs.length); const acc: MemRun[] = [];
     // Each job is one scripted conversation: T1 ask → T2 "I don't understand" → T3 neutral follow-up, with the memory either carried forward or wiped before T3.
     const work = async ({ q, a }: { q: string; a: string }): Promise<MemRun | null> => {
-      const t1 = await post({ question: q, lastTopic: null, profile: PROFILE(a), memory: DEFAULT_MEMORY, stream: false }); if (!t1) return null;
+      const cid = `eval-${Math.random().toString(36).slice(2, 8)}`;   // one conversation id, so session-scoped adaptations apply across its turns
+      const t1 = await post({ question: q, lastTopic: null, profile: PROFILE(a), memory: DEFAULT_MEMORY, stream: false, conversationId: cid }); if (!t1) return null;
       const h1 = [{ role: "user", text: q }, { role: "bot", text: t1.text }]; const q2 = "I don't understand, can you explain it more simply?";
-      const t2 = await post({ question: q2, lastTopic: t1.topicId, profile: PROFILE(a), memory: t1.memory, history: h1 }); if (!t2) return null;
+      const t2 = await post({ question: q2, lastTopic: t1.topicId, profile: PROFILE(a), memory: t1.memory, history: h1, conversationId: cid }); if (!t2) return null;
       const h2 = [...h1, { role: "user", text: q2 }, { role: "bot", text: t2.text }]; const q3 = "Can you tell me what happens next?";
       for (const cond of ["carried", "reset"] as const) {
-        const t3 = await post({ question: q3, lastTopic: t1.topicId, profile: PROFILE(a), memory: cond === "carried" ? t2.memory as Memory : DEFAULT_MEMORY, history: h2 });
+        const t3 = await post({ question: q3, lastTopic: t1.topicId, profile: PROFILE(a), memory: cond === "carried" ? t2.memory as Memory : DEFAULT_MEMORY, history: h2, conversationId: cond === "carried" ? cid : `${cid}-reset` });
         const row: MemRun = t3 ? { q, age: a as MemRun["age"], cond, g1: t1.metrics.grade, g3: t3.metrics.grade, w1: t1.metrics.words, w3: t3.metrics.words, model: t3.model, err: null } : { q, age: a as MemRun["age"], cond, g1: 0, g3: 0, w1: 0, w3: 0, model: "", err: "request failed" };
         acc.push(row); setMruns([...acc]);
       } return null;
@@ -73,7 +74,7 @@ export default function Eval() {
 
     {tab !== "repro" && <div className="card">
       <label style={{ margin: 0, display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" checked={quick} onChange={e => setQuick(e.target.checked)} disabled={running} />
-        {tab === "ablation" ? `Quick run (${Math.ceil(BANK.length / 2)} questions × 4 ages × 3 arms = ${Math.ceil(BANK.length / 2) * 12} calls)` : `Quick run (${Math.ceil(MEM_QS.length / 3)} topics × 4 ages × 3 turns + 1 extra branch ≈ ${Math.ceil(MEM_QS.length / 3) * 16} calls)`}</label>
+        {tab === "ablation" ? `Quick run (${Math.ceil(BANK.length / 2)} questions × ${AGES.length} ages × 3 arms = ${Math.ceil(BANK.length / 2) * AGES.length * 3} calls)` : `Quick run (${Math.ceil(MEM_QS.length / 3)} topics × ${AGES.length} ages × 4 calls ≈ ${Math.ceil(MEM_QS.length / 3) * AGES.length * 4} calls)`}</label>
       <div className="row">
         {!running ? <button className="btn" onClick={tab === "ablation" ? startAblation : startMemory}>{(tab === "ablation" ? has : hasM) ? "Re-run" : "Run"} experiment {tab === "ablation" ? 1 : 2}</button> : <button className="btn alt" onClick={() => { stopRef.current = true; }}>Stop</button>}
         {tab === "ablation" && <><button className="btn alt" disabled={!has} onClick={() => dl("onconnect-eval-runs.csv", runsCsv(runs), "text/csv")}>Export CSV</button><button className="btn alt" disabled={!has} onClick={() => dl("onconnect-eval-summary.json", JSON.stringify({ generated: stamp, models, summary: S, runs }, null, 2), "application/json")}>Export JSON</button></>}
@@ -85,8 +86,8 @@ export default function Eval() {
     {tab === "ablation" && has && <>
       <div className="card"><div className="eyebrow">Result</div><h2>Reading-level fit by arm</h2>
         <p className="muted">Absolute distance between each answer&apos;s Flesch–Kincaid grade and the target for that age band (lower is better). Intervals are 95% bootstrap CIs.</p>
-        <div className="wrap"><table><thead><tr><th>Arm</th><th>n</th><th>Grade error</th><th>95% CI</th><th>Within ±2</th><th>Within words</th><th>Coverage</th><th>Words</th></tr></thead><tbody>
-          {CONDS.map(c => { const x = S[c === "age" ? "age" : c]; return <tr key={c}><td><b style={{ color: COLOR[c] }}>●</b> {CONDLABEL[c]}</td><td>{x.n}</td><td><b>{f(x.err)}</b> ± {f(x.errSd)}</td><td>{f(x.errCi[0])} – {f(x.errCi[1])}</td><td>{pct(x.band)}</td><td>{pct(x.cap)}</td><td>{f(x.cov)}</td><td>{f(x.words, 0)}</td></tr>; })}</tbody></table></div>
+        <div className="wrap"><table><thead><tr><th>Arm</th><th>n</th><th>Grade error</th><th>95% CI</th><th>Within ±2</th><th>Within words</th><th>Coverage</th><th>Words</th><th title="Share of answers that used a word the guideline matrix says to avoid for that age and topic">Avoided-word slips</th></tr></thead><tbody>
+          {CONDS.map(c => { const x = S[c === "age" ? "age" : c]; return <tr key={c}><td><b style={{ color: COLOR[c] }}>●</b> {CONDLABEL[c]}</td><td>{x.n}</td><td><b>{f(x.err)}</b> ± {f(x.errSd)}</td><td>{f(x.errCi[0])} – {f(x.errCi[1])}</td><td>{pct(x.band)}</td><td>{pct(x.cap)}</td><td>{f(x.cov)}</td><td>{f(x.words, 0)}</td><td>{Number.isFinite(x.hitRate) ? pct(x.hitRate) : "–"}</td></tr>; })}</tbody></table></div>
         <h3 style={{ marginTop: 20 }}>Pairwise tests on grade error</h3>
         <div className="wrap"><table><thead><tr><th>Comparison</th><th>Δ error</th><th>Welch <i>t</i></th><th><i>p</i></th><th><i>p</i> (Holm)</th><th>Cohen&apos;s <i>d</i></th><th>Mann–Whitney <i>p</i></th><th>Reading</th></tr></thead><tbody>
           {S.pairs.map(r => <tr key={r.x + r.y}><td>{CONDLABEL[r.x]} vs {CONDLABEL[r.y]}</td>{r.w ? <><td>{f(r.w.diff)}</td><td>{f(r.w.t)} (df {f(r.w.df, 1)})</td><td>{pv(r.w.p)}</td><td>{pv(r.pHolm)}</td><td>{f(r.w.d)}</td><td>{r.mw ? pv(r.mw.p) : "–"}</td><td>{sig(r.pHolm, r.w.diff < 0)}</td></> : <td colSpan={7} className="muted">not enough runs</td>}</tr>)}</tbody></table></div>

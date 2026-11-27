@@ -2,14 +2,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Activity, Bone, BookOpen, Bookmark, Calculator, ChartLine, ChevronDown, ChevronsLeft, Cloud, ChevronsRight, CircleHelp, ClipboardCheck, FileText, FlaskConical, GitCompare, HeartPulse, LayoutDashboard, Library, Lock, Menu, MessageSquarePlus, Microscope, Moon, PenLine, Plus, ScrollText, Search, ShieldCheck, Stethoscope, Sun, UserRound, Users, X, Sigma, type LucideIcon } from "lucide-react";
+import { Activity, Bone, BookOpen, Bookmark, Calculator, ChartLine, ChevronDown, ChevronsLeft, Cloud, History, Award, Grid3x3, ChevronsRight, CircleHelp, ClipboardCheck, FileText, FlaskConical, GitCompare, HeartPulse, LayoutDashboard, Library, Lock, Menu, MessageSquarePlus, Microscope, Moon, PenLine, Plus, ScrollText, Search, ShieldCheck, Stethoscope, Sun, UserRound, Users, X, Sigma, type LucideIcon } from "lucide-react";
 import { useChat } from "@/lib/chat";
 
 const GROUPS: [string, [string, string, LucideIcon][]][] = [
   ["Learn", [["/dashboard", "Dashboard", LayoutDashboard], ["/procedures", "Procedure explorer", Stethoscope], ["/anatomy", "Anatomy", Bone], ["/words", "Medical words", BookOpen]]],
   ["Support", [["/feelings", "My feelings", HeartPulse], ["/questions", "My questions", CircleHelp], ["/family", "Family & school", Users]]],
-  ["Research", [["/study", "Comprehension study", FlaskConical], ["/protocol", "Protocol & power", Calculator], ["/eval", "Evaluation harness", Activity], ["/analysis", "Data analysis", Sigma], ["/research", "Research dashboard", ChartLine], ["/compare", "Compare ages", GitCompare], ["/literature", "Literature map", Library], ["/log", "Audit log", ScrollText], ["/clinician", "Clinician review", ClipboardCheck], ["/method", "Method", Microscope], ["/paper", "Paper draft", PenLine]]],
-  ["You", [["/report", "Session report", FileText], ["/library", "Saved", Bookmark], ["/setup", "My profile", UserRound], ["/account", "Account & sync", Cloud], ["/privacy", "Privacy & data", Lock]]],
+  ["Research", [["/study", "Comprehension study", FlaskConical], ["/protocol", "Protocol & power", Calculator], ["/eval", "Evaluation harness", Activity], ["/analysis", "Data analysis", Sigma], ["/research", "Research dashboard", ChartLine], ["/compare", "Compare ages", GitCompare], ["/literature", "Evidence", Library], ["/log", "Audit log", ScrollText], ["/clinician", "Clinician review", ClipboardCheck], ["/method", "Method", Microscope], ["/paper", "Paper draft", PenLine], ["/isef", "Science fair hub", Award], ["/guidelines", "Guideline matrix", Grid3x3], ["/admin", "Research admin", ShieldCheck]]],
+  ["You", [["/report", "Session report", FileText], ["/library", "Saved", Bookmark], ["/setup", "My profile", UserRound], ["/history", "Conversation history", History], ["/account", "Account & research", Cloud], ["/privacy", "Privacy & data", Lock]]],
 ];
 const PAGES = GROUPS.flatMap(([, l]) => l);
 
@@ -19,7 +19,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const [shut, setShut] = useState<Record<string, boolean>>({}); const [pal, setPal] = useState(false); const [q, setQ] = useState(""); const [side, setSide] = useState(false); const [find, setFind] = useState("");
   const isChat = path === "/chat";
   useEffect(() => { try { const t = localStorage.getItem("onc.theme"); setDark(t ? t === "dark" : true); setSize(Number(localStorage.getItem("onc.size")) || 100); setRail(localStorage.getItem("onc.rail") === "1"); } catch {} }, []);
-  useEffect(() => { document.documentElement.dataset.theme = path === "/" || dark ? "dark" : "light"; document.documentElement.style.fontSize = `${size}%`; try { localStorage.setItem("onc.theme", dark ? "dark" : "light"); localStorage.setItem("onc.size", String(size)); localStorage.setItem("onc.rail", rail ? "1" : "0"); } catch {} }, [dark, size, rail, path]);
+  useEffect(() => { document.documentElement.dataset.theme = path === "/" || path.startsWith("/admin") || dark ? "dark" : "light"; document.documentElement.style.fontSize = `${size}%`; try { localStorage.setItem("onc.theme", dark ? "dark" : "light"); localStorage.setItem("onc.size", String(size)); localStorage.setItem("onc.rail", rail ? "1" : "0"); } catch {} }, [dark, size, rail, path]);
   useEffect(() => { const h = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setPal(o => !o); } if (e.key === "Escape") { setPal(false); setSide(false); } };
     addEventListener("keydown", h); return () => removeEventListener("keydown", h); }, []);
   useEffect(() => setSide(false), [path]);
@@ -29,7 +29,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const on = (h: string) => path === h || (h !== "/" && path.startsWith(h + "/"));
   const startChat = () => { newChat(); router.push("/chat"); };
 
-  if (path === "/") return <>{children}</>;
+  if (path === "/" || path.startsWith("/admin")) return <>{children}</>;   // landing page and the Research Admin backend have their own chrome
   return (<div className={"app" + (rail ? " railed" : "") + (isChat ? " chatmode" : "")}>
     <aside className={"side" + (side ? " open" : "") + (rail ? " rail" : "")} aria-label="Primary">
       <div className="sidetop"><Link href="/" className="logo" aria-label="Onconnect home"><span className="mark"><i /></span><span className="lbl">Onconnect</span></Link>

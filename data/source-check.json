@@ -1,0 +1,180 @@
+{
+  "checked": "2026-11-27",
+  "results": [
+    {
+      "id": "medline-biopsy",
+      "url": "https://medlineplus.gov/biopsy.html",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/biopsy.html",
+      "title": "Biopsy: MedlinePlus"
+    },
+    {
+      "id": "kh-biopsy",
+      "url": "https://kidshealth.org/en/parents/biopsy.html",
+      "status": 200,
+      "finalUrl": "https://kidshealth.org/en/parents/biopsy.html",
+      "title": "Biopsies | Nemours KidsHealth"
+    },
+    {
+      "id": "nci-diagnosis",
+      "url": "https://www.cancer.gov/about-cancer/diagnosis-staging/diagnosis",
+      "status": 200,
+      "finalUrl": "https://www.cancer.gov/about-cancer/diagnosis-staging/diagnosis",
+      "title": "Tests and Procedures Used to Diagnose Cancer - NCI"
+    },
+    {
+      "id": "medline-ct",
+      "url": "https://medlineplus.gov/ctscans.html",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/ctscans.html",
+      "title": "CT Scans: MedlinePlus"
+    },
+    {
+      "id": "nibib-ct",
+      "url": "https://www.nibib.nih.gov/science-education/science-topics/computed-tomography-ct",
+      "status": 200,
+      "finalUrl": "https://www.nibib.nih.gov/science-education/science-topics/computed-tomography-ct",
+      "title": "Computed Tomography (CT)"
+    },
+    {
+      "id": "medline-mri",
+      "url": "https://medlineplus.gov/mriscans.html",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/mriscans.html",
+      "title": "MRI Scans: MedlinePlus"
+    },
+    {
+      "id": "nibib-mri",
+      "url": "https://www.nibib.nih.gov/science-education/science-topics/magnetic-resonance-imaging-mri",
+      "status": 200,
+      "finalUrl": "https://www.nibib.nih.gov/science-education/science-topics/magnetic-resonance-imaging-mri",
+      "title": "Magnetic Resonance Imaging (MRI)"
+    },
+    {
+      "id": "kh-mri",
+      "url": "https://kidshealth.org/en/parents/mri.html",
+      "status": 200,
+      "finalUrl": "https://kidshealth.org/en/parents/mri.html",
+      "title": "Magnetic Resonance Imaging (MRI) | Nemours KidsHealth"
+    },
+    {
+      "id": "medline-us",
+      "url": "https://medlineplus.gov/lab-tests/sonogram/",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/lab-tests/sonogram/",
+      "title": "Ultrasound: MedlinePlus Medical Test"
+    },
+    {
+      "id": "nibib-us",
+      "url": "https://www.nibib.nih.gov/science-education/science-topics/ultrasound",
+      "status": 200,
+      "finalUrl": "https://www.nibib.nih.gov/science-education/science-topics/ultrasound",
+      "title": "Ultrasound"
+    },
+    {
+      "id": "medline-cbc",
+      "url": "https://medlineplus.gov/lab-tests/complete-blood-count-cbc/",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/lab-tests/complete-blood-count-cbc/",
+      "title": "Complete Blood Count (CBC): MedlinePlus Medical Test"
+    },
+    {
+      "id": "medline-venipuncture",
+      "url": "https://medlineplus.gov/ency/article/003423.htm",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/ency/article/003423.htm",
+      "title": "Venipuncture: MedlinePlus Medical Encyclopedia"
+    },
+    {
+      "id": "nhlbi-blood",
+      "url": "https://www.nhlbi.nih.gov/health/blood-tests",
+      "status": 200,
+      "finalUrl": "https://www.nhlbi.nih.gov/health/blood-tests",
+      "title": "Blood Tests - Blood Tests | NHLBI, NIH"
+    },
+    {
+      "id": "kh-ports",
+      "url": "https://kidshealth.org/en/parents/implanted-ports.html",
+      "status": 200,
+      "finalUrl": "https://kidshealth.org/en/parents/implanted-ports.html",
+      "title": "Implanted Ports | Nemours KidsHealth"
+    },
+    {
+      "id": "mskcc-port",
+      "url": "https://www.mskcc.org/cancer-care/patient-education/your-implanted-port-peds",
+      "status": 200,
+      "finalUrl": "https://www.mskcc.org/cancer-care/patient-education/your-implanted-port-peds",
+      "title": "About Your Implanted Port: Information for Pediatric Patients | Memorial Sloan Kettering Cancer Center"
+    },
+    {
+      "id": "ri-embol",
+      "url": "https://www.radiologyinfo.org/en/info/cathembol",
+      "status": 200,
+      "finalUrl": "https://www.radiologyinfo.org/en/info/cathembol",
+      "title": "Catheter Embolization"
+    },
+    {
+      "id": "ri-ablation",
+      "url": "https://www.radiologyinfo.org/en/info/thermal-ablation-therapy",
+      "status": 200,
+      "finalUrl": "https://www.radiologyinfo.org/en/info/thermal-ablation-therapy",
+      "title": "Thermal Ablation for Tumor Treatment |Cryotherapy, RFA, MWA,"
+    },
+    {
+      "id": "ri-sedation",
+      "url": "https://www.radiologyinfo.org/en/info/sedation",
+      "status": 200,
+      "finalUrl": "https://www.radiologyinfo.org/en/info/sedation",
+      "title": "Pediatric Sedation"
+    },
+    {
+      "id": "kh-anesthesia",
+      "url": "https://kidshealth.org/en/parents/anesthesia-basics.html",
+      "status": 200,
+      "finalUrl": "https://kidshealth.org/en/parents/anesthesia-basics.html",
+      "title": "Types of Anesthesia | Nemours KidsHealth"
+    },
+    {
+      "id": "medline-children",
+      "url": "https://medlineplus.gov/cancerinchildren.html",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/cancerinchildren.html",
+      "title": "Cancer in Children: MedlinePlus"
+    },
+    {
+      "id": "kh-cancer",
+      "url": "https://kidshealth.org/en/parents/cancer.html",
+      "status": 200,
+      "finalUrl": "https://kidshealth.org/en/parents/cancer.html",
+      "title": "Childhood Cancer | Nemours KidsHealth"
+    },
+    {
+      "id": "medline-prep-preschool",
+      "url": "https://medlineplus.gov/ency/article/002057.htm",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/ency/article/002057.htm",
+      "title": "Preschooler test or procedure preparation: MedlinePlus Medical Encyclopedia"
+    },
+    {
+      "id": "medline-prep-school",
+      "url": "https://medlineplus.gov/ency/article/002058.htm",
+      "status": 200,
+      "finalUrl": "https://medlineplus.gov/ency/article/002058.htm",
+      "title": "School age test or procedure preparation: MedlinePlus Medical Encyclopedia"
+    },
+    {
+      "id": "nci-feelings",
+      "url": "https://www.cancer.gov/about-cancer/coping/feelings",
+      "status": 200,
+      "finalUrl": "https://www.cancer.gov/about-cancer/coping/feelings",
+      "title": "Emotions and Cancer - NCI"
+    },
+    {
+      "id": "sir-patients",
+      "url": "https://www.sirweb.org/patients/",
+      "status": 200,
+      "finalUrl": "https://www.sirweb.org/patients/",
+      "title": "Interventional radiology for patients | Society of Interventional Radiology"
+    }
+  ]
+}

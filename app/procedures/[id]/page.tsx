@@ -14,7 +14,7 @@ export default function Procedure() {
   const [i, setI] = useState(0); const [ans, setAns] = useState<Record<number, number>>({}); const [simple, setSimple] = useState(false);
   useEffect(() => { if (t) setViewed(v => [t.id, ...v.filter(x => x !== t.id)].slice(0, 20)); /* eslint-disable-next-line */ }, [id]);
   if (!t) return <p>Procedure not found. <Link href="/procedures">Back</Link></p>;
-  const d = PROC[t.id]; const lvl: Level = depth === "simple" ? "6-8" : depth === "detailed" ? "15-17" : profile.age;
+  const d = PROC[t.id]; const lvl: Level = depth === "simple" ? "6-8" : depth === "detailed" ? "16-18" : profile.age;
   const quiz = QUIZ[t.id] ?? [];
   const stages = [{ n: "Introduction", b: [t.why[simple ? "6-8" : profile.age]] }, { n: "Meeting the medical team", b: ["You will usually meet the people who will take care of you, like nurses, a doctor and a technologist. They can answer questions before anything starts."] },
     ...(d ? [{ n: "General preparation", b: d.before }] : []), ...t.steps.map((s, k) => ({ n: `During · step ${k + 1}`, b: [s] })), ...(d ? [{ n: "Recovery and follow-up", b: d.after }] : [])];

@@ -11,7 +11,7 @@ import { shareStudy } from "@/lib/research";
 const csv = (rows: StudyRow[]) => { const h = ["id", "ts", "pid", "condition", "topic", "age", "score", "total", "selfRated", "ms", "grade"]; return [h.join(","), ...rows.map(r => h.map(k => `"${(r as any)[k] ?? ""}"`).join(","))].join("\n"); };
 export default function Study() {
   const [rows, setRows, ready] = useStudy(); const [phase, setPhase] = useState<"setup" | "read" | "quiz" | "done">("setup");
-  const [pid, setPid] = useState(""); const [age, setAge] = useState<Level>("9-11"); const [topic, setTopic] = useState("biopsy");
+  const [pid, setPid] = useState(""); const [age, setAge] = useState<Level>("9-12"); const [topic, setTopic] = useState("biopsy");
   const [cond, setCond] = useState<"adapted" | "generic">("adapted"); const [text, setText] = useState(""); const [ans, setAns] = useState<number[]>([]); const [self, setSelf] = useState(0); const t0 = useRef(0); const [ok, setOk] = useState(false);
   if (!ready) return null;
   const quiz = QUIZ[topic] ?? [];
@@ -19,7 +19,7 @@ export default function Study() {
     const n = (c: string) => rows.filter(r => r.condition === c && r.age === age).length; const a = n("adapted"), g = n("generic");
     const c: "adapted" | "generic" = a === g ? (crypto.getRandomValues(new Uint8Array(1))[0] % 2 ? "adapted" : "generic") : a < g ? "adapted" : "generic"; // balanced within age band
     const tp = TOPICS.find(x => x.id === topic)!;
-    const out = c === "adapted" ? respond(`What is ${tp.title}?`, { ...DEFAULT_PROFILE, age, detail: "balanced", format: ["steps", "examples"] }, null).text : tp.why["15-17"];
+    const out = c === "adapted" ? respond(`What is ${tp.title}?`, { ...DEFAULT_PROFILE, age, detail: "balanced", format: ["steps", "examples"] }, null).text : tp.why["16-18"];
     setCond(c); setText(out); setAns([]); setSelf(0); t0.current = Date.now(); setPhase("read");
   };
   const submit = () => { const score = quiz.filter((q, i) => ans[i] === q.answer).length;
